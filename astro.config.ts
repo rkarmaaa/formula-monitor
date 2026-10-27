@@ -6,8 +6,10 @@ const fontsource = (pkg: string, file: string) => `./node_modules/${pkg}/files/$
 
 // App locale: il bridge UDP → WebSocket gira dentro il dev server (vedi server/integration.ts).
 // Font self-hosted da @fontsource: Saira (display, numeri grandi) + Geist (interfaccia, tabelle).
+// SITE_URL e BASE_PATH arrivano dal workflow di GitHub Pages; in locale il sito sta nella radice
 export default defineConfig({
-  site: 'https://formula-monitor.local',
+  site: process.env.SITE_URL ?? 'http://localhost:20780',
+  base: process.env.BASE_PATH ?? '/',
   output: 'static',
   integrations: [icon({ iconDir: 'src/assets/icons' }), formulaMonitorBridge()],
   devToolbar: { enabled: false },

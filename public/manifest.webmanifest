@@ -2,10 +2,10 @@
   "name": "Formula Monitor",
   "short_name": "F. Monitor",
   "description": "Telemetria live di F1 25 per lo schermo verticale",
-  "start_url": "/monitor/",
+  "start_url": "./monitor/",
   "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#08090c",
   "theme_color": "#08090c",
-  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+  "icons": [{ "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }

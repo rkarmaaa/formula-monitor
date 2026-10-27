@@ -1,4 +1,5 @@
 ---
+import { href } from '@lib/paths';
 import Logo from '@components/brand/Logo.astro';
 import Button from '@components/ui/Button.astro';
 import BridgePill from '@components/setup/BridgePill.astro';
@@ -10,15 +11,15 @@ interface Props {
 
 const { current } = Astro.props;
 const links = [
-  { id: 'home', href: '/', label: t.common.nav.home },
-  { id: 'guide', href: '/guida/', label: t.common.nav.guide },
-  { id: 'brand', href: '/brand/', label: t.common.nav.brand },
+  { id: 'home', href: href(''), label: t.common.nav.home },
+  { id: 'guide', href: href('guida/'), label: t.common.nav.guide },
+  { id: 'brand', href: href('brand/'), label: t.common.nav.brand },
 ] as const;
 ---
 
 <header class="site-header">
   <div class="site-header-inner">
-    <Logo href="/" />
+    <Logo href={href('')} />
     <nav class="site-nav" aria-label={t.common.navLabel}>
       {links.map((link) => (
         <a
@@ -32,7 +33,7 @@ const links = [
     </nav>
     <div class="site-header-actions">
       <BridgePill />
-      <Button href="/monitor/" size="sm" icon="lucide:layout-dashboard">
+      <Button href={href('monitor/')} size="sm" icon="lucide:layout-dashboard">
         {t.common.nav.monitor}
       </Button>
     </div>

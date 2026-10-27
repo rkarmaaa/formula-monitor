@@ -1,4 +1,5 @@
 ---
+import { href } from '@lib/paths';
 import Logo from '@components/brand/Logo.astro';
 import Button from '@components/ui/Button.astro';
 import Icon from '@components/ui/Icon.astro';
@@ -10,7 +11,7 @@ const a = t.monitor.actions;
 ---
 
 <header class="monitor-bar" data-bar>
-  <Logo variant="mark" href="/" />
+  <Logo variant="mark" href={href('')} />
   <p class="monitor-status" data-status data-state="connecting" role="status">
     <span class="monitor-status-dot" aria-hidden="true"></span>
     <span class="monitor-status-label" data-status-label>
@@ -39,7 +40,7 @@ const a = t.monitor.actions;
     <button class="monitor-icon" type="button" data-action="dev" aria-label={a.dev}>
       <Icon name="lucide:bug" />
     </button>
-    <a class="monitor-icon" href="/guida/" aria-label={a.guide}>
+    <a class="monitor-icon" href={href('guida/')} aria-label={a.guide}>
       <Icon name="lucide:circle-help" />
     </a>
     <button class="monitor-icon" type="button" data-action="fullscreen" aria-label={a.fullscreen}>

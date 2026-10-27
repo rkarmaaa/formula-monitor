@@ -1,6 +1,7 @@
 import { gameById, gameByFormat, isGameId } from '@data/games';
 import type { WidgetId } from '@data/widgets';
 import { fill } from '@lib/text';
+import { href } from '@lib/paths';
 import { t } from '@i18n/index';
 import { getGame, hasGame, setGame } from '../prefs';
 import type { BridgeState, BridgeStatus } from '../bridge';
@@ -15,7 +16,7 @@ const params = new URLSearchParams(location.search);
 const preview = params.has('preview');
 
 // Prima apertura: la versione di gioco si sceglie dalla pagina di avvio (insieme alle istruzioni)
-if (!preview && !params.has('demo') && !hasGame()) location.replace('/#avvio');
+if (!preview && !params.has('demo') && !hasGame()) location.replace(`${href()}#avvio`);
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const monitor = $('[data-monitor]');

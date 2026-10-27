@@ -15,11 +15,14 @@ interface Handlers {
 const RETRY_MIN = 1000;
 const RETRY_MAX = 6000;
 
-// ?bridge=192.168.1.20:20780 per collegarsi a un bridge diverso dalla pagina corrente
+// Bridge della pagina stessa (npm start / npm run dev), quello indicato con ?bridge=host:porta,
+// oppure quello di build PUBLIC_BRIDGE (versione online: il bridge in esecuzione su questo PC)
+const LOCAL_HOST = /^(localhost|127\.0\.0\.1)(:|$)/;
+
 function bridgeUrl() {
-  const override = new URLSearchParams(location.search).get('bridge');
-  const secure = location.protocol === 'https:';
-  return `${secure ? 'wss' : 'ws'}://${override ?? location.host}${wsPath}`;
+  const host = new URLSearchParams(location.search).get('bridge') ?? import.meta.env.PUBLIC_BRIDGE ?? location.host;
+  const secure = location.protocol === 'https:' && !LOCAL_HOST.test(host);
+  return `${secure ? 'wss' : 'ws'}://${host}${wsPath}`;
 }
 
 export function connectBridge(handlers: Handlers): () => void {

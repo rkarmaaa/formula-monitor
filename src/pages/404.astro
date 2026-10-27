@@ -1,4 +1,5 @@
 ---
+import { href } from '@lib/paths';
 import SiteLayout from '@layouts/SiteLayout.astro';
 import Section from '@components/ui/Section.astro';
 import SectionTitle from '@components/ui/SectionTitle.astro';
@@ -12,10 +13,10 @@ const n = t.notFound;
   <Section width="narrow" class="not-found">
     <SectionTitle level={1} size="display" eyebrow={n.eyebrow} title={n.heading} lead={n.lead} align="center" />
     <div class="not-found-actions">
-      <Button href="/" icon="lucide:arrow-right">
+      <Button href={href('')} icon="lucide:arrow-right">
         {t.common.nav.home}
       </Button>
-      <Button href="/monitor/" variant="outline" icon="lucide:layout-dashboard">
+      <Button href={href('monitor/')} variant="outline" icon="lucide:layout-dashboard">
         {t.common.nav.monitor}
       </Button>
     </div>

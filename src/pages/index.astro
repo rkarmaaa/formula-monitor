@@ -1,4 +1,5 @@
 ---
+import { href } from '@lib/paths';
 import SiteLayout from '@layouts/SiteLayout.astro';
 import Section from '@components/ui/Section.astro';
 import SectionTitle from '@components/ui/SectionTitle.astro';
@@ -27,16 +28,22 @@ const steps = h.steps;
           {h.lead}
         </p>
         <div class="home-hero-actions" data-reveal>
-          <Button href="/monitor/" size="lg" icon="lucide:layout-dashboard" arrow>
+          <Button href={href('monitor/')} size="lg" icon="lucide:layout-dashboard" arrow>
             {t.common.openMonitor}
           </Button>
-          <Button href="/monitor/?demo" size="lg" variant="outline" icon="lucide:play">
+          <Button href={href('monitor/?demo')} size="lg" variant="outline" icon="lucide:play">
             {t.common.demo}
           </Button>
         </div>
       </div>
       <div class="home-hero-device" data-reveal="scale" aria-hidden="true">
-        <iframe class="home-hero-screen" src="/monitor/?demo&preview" title="" tabindex="-1" loading="lazy"></iframe>
+        <iframe
+          class="home-hero-screen"
+          src={href('monitor/?demo&preview')}
+          title=""
+          tabindex="-1"
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
   </section>
@@ -72,7 +79,7 @@ const steps = h.steps;
           <h3 class="home-step-title">{steps.game2.title}</h3>
           <p class="home-step-text">{steps.game2.text}</p>
           <UdpSettings />
-          <a class="home-step-link" href="/guida/">
+          <a class="home-step-link" href={href('guida/')}>
             {t.common.nav.guide} <Icon name="lucide:arrow-right" />
           </a>
         </div>
@@ -85,7 +92,7 @@ const steps = h.steps;
           <h3 class="home-step-title">{steps.open.title}</h3>
           <p class="home-step-text">{steps.open.text}</p>
           <CommandList lines={[`http://IP:${ports.http}/monitor/`]} live="url" />
-          <Button href="/monitor/" icon="lucide:layout-dashboard" arrow>
+          <Button href={href('monitor/')} icon="lucide:layout-dashboard" arrow>
             {t.common.openMonitor}
           </Button>
         </div>

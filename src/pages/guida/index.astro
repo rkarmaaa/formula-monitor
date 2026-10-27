@@ -1,4 +1,5 @@
 ---
+import { href } from '@lib/paths';
 import SiteLayout from '@layouts/SiteLayout.astro';
 import Section from '@components/ui/Section.astro';
 import SectionTitle from '@components/ui/SectionTitle.astro';
@@ -82,10 +83,10 @@ const g = t.setup;
       {g.ctaText}
     </p>
     <div class="guide-cta-actions" data-reveal>
-      <Button href="/monitor/" size="lg" icon="lucide:layout-dashboard" arrow>
+      <Button href={href('monitor/')} size="lg" icon="lucide:layout-dashboard" arrow>
         {t.common.openMonitor}
       </Button>
-      <Button href="/monitor/?demo" size="lg" variant="outline" icon="lucide:play">
+      <Button href={href('monitor/?demo')} size="lg" variant="outline" icon="lucide:play">
         {t.common.demo}
       </Button>
     </div>

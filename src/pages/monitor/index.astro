@@ -1,4 +1,5 @@
 ---
+import { href } from '@lib/paths';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Button from '@components/ui/Button.astro';
 import Icon from '@components/ui/Icon.astro';
@@ -33,7 +34,7 @@ const m = t.monitor;
             <Button icon="lucide:play" data-action="demo">
               {m.actions.demoOn}
             </Button>
-            <Button href="/guida/" variant="outline" icon="lucide:circle-help">
+            <Button href={href('guida/')} variant="outline" icon="lucide:circle-help">
               {m.actions.guide}
             </Button>
           </div>
