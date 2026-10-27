@@ -1,0 +1,15 @@
+---
+import { t } from '@i18n/index';
+
+// Telemetria dei pedali: traccia di acceleratore e freno degli ultimi secondi (senza sterzo).
+// Disegnata da scripts/blocks/inputs.ts sul canvas [data-trace].
+const b = t.monitor.blocks.pedals;
+---
+
+<section class="pedals" data-block="pedals" aria-label={b.title}>
+  <p class="pedals-legend" aria-hidden="true">
+    <span class="pedals-key throttle">{b.throttle}</span>
+    <span class="pedals-key brake">{b.brake}</span>
+  </p>
+  <canvas class="pedals-canvas" data-trace></canvas>
+</section>

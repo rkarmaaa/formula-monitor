@@ -1,45 +1,33 @@
 @use '../abstracts' as *;
 
-// Classifica live: una riga per pilota, colonne in em che seguono il testo (scala con il blocco).
-// Viola = migliore assoluto (pieno), verde = migliore personale, settori del giro precedente attenuati.
+// Classifica dei giri veloci: righe divise da un filo, cifre in Saira condensata.
+// Viola = migliore assoluto, verde = migliore personale; il giocatore ha la riga evidenziata.
 .timing-tower {
-  @include numeric($stretch-condensed);
   display: flex;
   flex-direction: column;
-  height: 100%;
-  font-size: $value-list;
-  line-height: $lh-none;
+  min-height: 0;
+  padding: dp($q-card-pad) dp($q-card-pad-x);
+  border: $border-thin solid $color-line;
 
   .timing-tower-head,
   .timing-tower-row {
     display: grid;
-    grid-template-columns:
-      $col-pos minmax($col-driver, 1fr) $col-time $col-gap repeat(3, $col-sector)
-      $col-tyre;
+    grid-template-columns: minmax(0, 1fr) dp($q-col-best) repeat(3, dp($q-col-sector));
     align-items: center;
-    column-gap: $sp-1;
-    flex: 0 0 $row-height;
-    padding-right: $sp-cq-sm;
+    column-gap: dp($q-col-gap);
   }
 
-  // Stessa dimensione del testo delle righe (le colonne sono in em): solo le etichette sono più piccole
   .timing-tower-head {
-    color: $color-ink-faint;
+    padding-bottom: dp($q-lap-gap);
     border-bottom: $border-thin solid $color-line;
-
-    > span {
-      @include label($fs-head);
-      letter-spacing: $tracking-wide;
-      color: $color-ink-faint;
-    }
-
-    .timing-tower-sector,
-    .timing-tower-best,
-    .timing-tower-gap {
-      background: none;
-    }
+    font-family: $font-body;
+    font-size: dp($q-fs-head);
+    line-height: $lh-none;
+    text-transform: uppercase;
+    color: $color-ink-faint;
   }
 
+  // Le righe si dividono l'altezza disponibile, fino a 46 px di design ciascuna (20–22 auto)
   .timing-tower-list {
     display: flex;
     flex-direction: column;
@@ -49,22 +37,26 @@
   }
 
   .timing-tower-row {
-    position: relative;
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: dp($q-row-max);
+    margin-inline: calc(-1 * #{dp($q-card-pad-x)});
+    padding-inline: dp($q-card-pad-x);
     border-bottom: $border-thin solid $color-line;
-    color: $color-ink;
+    font-size: dp($q-fs-row);
+    line-height: $lh-none;
+
+    &:last-child {
+      border-bottom: 0;
+    }
 
     &[data-player] {
       background: $color-player;
-
-      .timing-tower-pos {
-        background: $color-primary;
-        color: $color-on-primary;
-      }
     }
 
     &[data-garage],
     &[data-out] {
-      color: $color-ink-ghost;
+      opacity: $opacity-dim;
     }
 
     &[data-pit] .timing-tower-tag.pit,
@@ -73,92 +65,42 @@
     }
   }
 
-  .timing-tower-pos {
-    @include flex-center;
-    align-self: stretch;
-    font-weight: $fw-semibold;
-  }
-
   .timing-tower-driver {
     display: flex;
     align-items: center;
-    gap: $driver-gap;
+    gap: dp($q-logo-gap);
     min-width: 0;
-    height: 100%;
-    padding-left: $driver-pad;
-    border-left: $col-stripe solid var(--team, $color-ink-ghost);
   }
 
-  .timing-tower-head .timing-tower-driver {
-    border-left-color: transparent;
+  .timing-tower-pos {
+    @include figures($fw-light, $stretch-narrow);
+    width: dp($q-col-pos);
+    color: $color-ink-faint;
   }
 
   .timing-tower-code {
-    font-weight: $fw-semibold;
-    letter-spacing: $tracking-wide;
+    @include figures($fw-medium, $stretch-narrow);
+    width: dp($q-col-code);
+    margin-left: dp($q-gap - $q-logo-gap);
+    color: $color-ink;
   }
 
-  .timing-tower-tag {
-    @include label($fs-tag);
-    display: none;
-    padding: $tag-pad;
-    background: $color-surface-high;
-    color: $color-ink-soft;
-  }
-
-  .timing-tower-best,
-  .timing-tower-gap,
-  .timing-tower-sector {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    align-self: stretch;
-    padding-inline: $cell-pad;
-    white-space: nowrap;
-  }
-
-  .timing-tower-gap {
-    color: $color-ink-soft;
-  }
-
-  .timing-tower-sector {
-    color: $color-ink-faint;
-
-    &[data-live] {
-      color: $color-ink;
-    }
-
-    &[data-tone='personal'] {
-      color: $color-personal;
-    }
-
-    &[data-tone='invalid'] {
-      color: $color-ink-ghost;
-      text-decoration: line-through;
-    }
-  }
-
-  .timing-tower-best,
-  .timing-tower-sector {
-    &[data-tone='best'] {
-      background: $color-best;
-      color: $color-white;
-    }
-  }
-
+  // Chip della mescola: cerchio con fondo al 20% del colore
   .timing-tower-tyre {
     @include flex-center;
-    justify-self: end;
-    width: $chip;
-    height: $chip;
-    border: $border-thin solid currentColor;
+    flex-shrink: 0;
+    width: dp($q-chip);
+    height: dp($q-chip);
+    border-radius: $radius-round;
     font-family: $font-body;
-    font-size: $fs-chip;
-    font-weight: $fw-bold;
-    color: $color-ink-faint;
+    font-size: dp($q-fs-chip);
+    font-weight: $fw-semibold;
+    line-height: $lh-none;
+    color: $color-ink-soft;
+    background: color-mix(in srgb, currentColor $tyre-chip-alpha, transparent);
 
     &:empty {
-      border: 0;
+      visibility: hidden;
     }
 
     &[data-compound='soft'] {
@@ -182,18 +124,43 @@
     }
   }
 
-  // Intestazione del distacco: "Distacco" in qualifica, "Intervallo" in gara
-  .timing-tower-racing {
+  .timing-tower-tag {
+    @include label($fs-tag);
     display: none;
+    padding: $tag-pad;
+    background: $color-surface-high;
+    color: $color-ink-soft;
   }
 
-  &[data-race] {
-    .timing-tower-quali {
-      display: none;
+  .timing-tower-best,
+  .timing-tower-sector {
+    white-space: nowrap;
+  }
+
+  .timing-tower-row .timing-tower-best,
+  .timing-tower-row .timing-tower-sector {
+    @include figures($fw-light, $stretch-narrow);
+    color: $color-ink-faint;
+
+    &[data-live] {
+      color: $color-ink;
     }
 
-    .timing-tower-racing {
-      display: inline;
+    &[data-tone='best'] {
+      color: $color-best;
     }
+
+    &[data-tone='personal'] {
+      color: $color-personal;
+    }
+
+    &[data-tone='invalid'] {
+      color: $color-ink-ghost;
+      text-decoration: line-through;
+    }
+  }
+
+  .timing-tower-row .timing-tower-best {
+    color: $color-ink;
   }
 }

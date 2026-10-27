@@ -8,8 +8,10 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 ## 1. Overview
 
 - **Prodotto:** cruscotto live per la telemetria UDP di F1 25 (formati 2025 e 2026), ottimizzato per display 9:16
-  e utilizzabile anche a 16:9. Home con tutorial, monitor con schermata di attesa e tre blocchi base (sessione,
-  classifica con settori, mappa), da sviluppare uno alla volta.
+  e utilizzabile anche a 16:9. Home con tutorial, monitor con schermata di attesa e cruscotto disegnato in Figma
+  (file "Roba", frame **QUALI & TESTING**, nodo `1283:9`): intestazione con cronometro, scheda del giocatore
+  (posizione, settori, delta), classifica dei giri veloci, meteo, power unit, pedali, gomme e ali.
+  Le modifiche visive al monitor partono dal Figma (vedi `DESIGN-SYSTEM.md`, scala `dp()`).
 - **Stack:** Astro 7 statico · TypeScript strict · SCSS (solo `@use`) · bridge Node 22.18+ (TypeScript eseguito
   nativamente da Node, senza build).
 - **Lingua:** italiano, testi in `src/i18n/it.ts`.
@@ -31,6 +33,9 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 - **`src/data/circuits.ts`**: forme reali dei circuiti da github.com/bacinger/f1-circuits (MIT), generate una volta
   e incluse nel sorgente; servono a mostrare la mappa prima che le auto girino.
 - **`respond(landscape)`**: unica media query sulle proporzioni, perché il monitor dipende dal formato dello schermo.
+- **`dp()` e `--dp`**: le misure del cruscotto sono pixel del frame Figma scalati sullo schermo (container query),
+  non token `$sp-*`; i raggi esistono solo nei grafici dati (chip, anelli, sagome delle gomme).
+- **Loghi dei team** in `public/teams/<id>.png` (oggi solo Ferrari, dal Figma); senza logo un quadrato nel colore del team.
 - I file in `src/lib/` e `src/data/` usati dal server importano con percorsi relativi ed estensione `.ts`
   (Node li esegue direttamente): niente alias `@…` lì dentro e solo sintassi TypeScript "cancellabile"
   (`erasableSyntaxOnly`: niente `enum`, `namespace`, parameter properties).
@@ -45,7 +50,8 @@ src/lib/f1/             struct.ts (codec dichiarativo), schema.ts (2025/2026), c
 src/lib/telemetry/      state.ts (reducer), view.ts (vista per frame), track.ts (tracciato appreso +
                         allineamento della forma reale del circuito)
 src/lib/sim/            simulatore isomorfo, gara o qualifica (demo ?demo nel browser e mock UDP)
-src/components/blocks/  Block (cornice), Session, Timing, Map: i blocchi base del monitor
+src/components/blocks/  blocchi del cruscotto (Header, PlayerCard, Timing, Forecast, Engine, Pedals, Car, TeamLogo)
+                        + Map e Block (cornice) per la simulazione completa
 src/components/widgets/ i 24 blocchi completi (catalogo in src/data/widgets.ts), visibili solo in simulazione
 src/scripts/monitor/    index (attesa/cruscotto, diagnosi), runtime (rAF + ripiego a timer), sources, bind, formatters
 src/scripts/blocks/     renderer canvas: mappa, pedali, grafico posizioni, forze G

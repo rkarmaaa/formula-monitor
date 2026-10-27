@@ -1,0 +1,159 @@
+@use '../abstracts' as *;
+
+// Gomme e ali: mescola in alto, quattro gomme (anello d'usura + sagoma con la temperatura), integrità delle ali
+.car-state {
+  @include card;
+  @include stack(dp($q-gap));
+  min-width: 0;
+  min-height: 0;
+  padding: dp($q-card-pad-x);
+
+  .car-state-compound {
+    display: flex;
+    align-items: center;
+    gap: dp($q-head-gap);
+    padding-bottom: dp($q-gap);
+    border-bottom: $border-thin solid $color-line;
+    font-family: $font-body;
+    font-size: dp($q-fs-compound);
+    font-weight: $fw-semibold;
+    line-height: $lh-none;
+    text-transform: uppercase;
+    color: $color-ink-soft;
+
+    &[data-compound='soft'] {
+      color: $tyre-soft;
+    }
+
+    &[data-compound='medium'] {
+      color: $tyre-medium;
+    }
+
+    &[data-compound='hard'] {
+      color: $tyre-hard;
+    }
+
+    &[data-compound='inter'] {
+      color: $tyre-inter;
+    }
+
+    &[data-compound='wet'] {
+      color: $tyre-wet;
+    }
+  }
+
+  .car-state-chip {
+    @include flex-center;
+    width: dp($q-chip-lg);
+    height: dp($q-chip-lg);
+    border-radius: $radius-round;
+    background: color-mix(in srgb, currentColor $tyre-chip-alpha, transparent);
+  }
+
+  .car-state-tyres {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: center;
+    gap: dp($q-gap);
+    flex: 1;
+    min-height: 0;
+  }
+
+  .car-state-wheel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: dp($q-lap-gap);
+
+    // A destra la sagoma resta verso il centro della vettura, l'anello all'esterno
+    &.right {
+      flex-direction: row-reverse;
+    }
+  }
+
+  // Anello d'usura: arco conico pari a --v (0..1) su una traccia scura, centro pieno sopra
+  .car-state-ring {
+    --ring: #{$color-personal};
+    @include flex-center;
+    position: relative;
+    flex-shrink: 0;
+    width: dp($q-ring);
+    height: dp($q-ring);
+    border-radius: $radius-round;
+    background: conic-gradient(
+      var(--ring) calc(var(--v, 0) * 1turn),
+      color-mix(in srgb, var(--ring) $tyre-chip-alpha, transparent) 0
+    );
+    color: var(--ring);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: dp($q-ring-width);
+      border-radius: $radius-round;
+      background: $color-surface;
+    }
+
+    &[data-tone='high'] {
+      --ring: #{$color-wear};
+    }
+
+    &[data-tone='over'] {
+      --ring: #{$color-danger};
+    }
+  }
+
+  .car-state-wear {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    font-family: $font-body;
+    font-size: dp($q-fs-ring);
+    font-weight: $fw-medium;
+    line-height: $lh-none;
+
+    small {
+      font-size: dp($q-fs-ring-unit);
+      font-weight: $fw-regular;
+    }
+  }
+
+  // Sagoma della gomma con la temperatura di superficie
+  .car-state-tyre {
+    @include flex-center;
+    flex-shrink: 0;
+    width: dp($q-tyre-w);
+    height: dp($q-tyre-h);
+    border-radius: dp($q-tyre-radius);
+    background: $color-surface-raised;
+    font-family: $font-body;
+    font-size: dp($q-fs-tyre-temp);
+    line-height: $lh-none;
+    color: $color-ink-faint;
+  }
+
+  .car-state-wings {
+    @include stack(dp($q-lap-gap));
+    padding-top: dp($q-gap);
+    border-top: $border-thin solid $color-line;
+  }
+
+  .car-state-wing {
+    display: flex;
+    justify-content: space-between;
+    gap: dp($q-gap);
+    font-family: $font-display;
+    font-size: dp($q-fs-lap);
+    line-height: $lh-none;
+
+    dt {
+      text-transform: uppercase;
+      color: $color-ink-faint;
+    }
+
+    dd {
+      @include figures;
+      color: $color-ink;
+    }
+  }
+}

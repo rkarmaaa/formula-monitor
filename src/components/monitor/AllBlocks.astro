@@ -1,5 +1,6 @@
 ---
 import { t } from '@i18n/index';
+import Map from '@components/blocks/Map.astro';
 import Position from '@components/widgets/Position.astro';
 import Lap from '@components/widgets/Lap.astro';
 import Delta from '@components/widgets/Delta.astro';
@@ -34,6 +35,7 @@ import Speedtrap from '@components/widgets/Speedtrap.astro';
     {t.monitor.all.title}
   </h2>
   <div class="monitor-all-grid">
+    <Map />
     <Position />
     <Lap />
     <Delta />

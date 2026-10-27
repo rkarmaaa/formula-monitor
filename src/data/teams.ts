@@ -3,11 +3,13 @@
 interface Team {
   name: string;
   color: string;
+  // Logo in public/teams/<logo>.png, quando disponibile (altrimenti un quadrato nel colore del team)
+  logo?: string;
 }
 
 const base: Record<string, Team> = {
   mercedes: { name: 'Mercedes', color: '#2bd9c2' },
-  ferrari: { name: 'Ferrari', color: '#e8102e' },
+  ferrari: { name: 'Ferrari', color: '#e8102e', logo: 'ferrari' },
   redbull: { name: 'Red Bull', color: '#4777d6' },
   williams: { name: 'Williams', color: '#5ab8f5' },
   aston: { name: 'Aston Martin', color: '#26a37a' },

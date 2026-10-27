@@ -1,0 +1,77 @@
+@use '../abstracts' as *;
+
+// Intestazione del monitor: circuito e sessione a sinistra, cronometro grande a destra (in gara il giro)
+.quali-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: dp($q-gap);
+  min-width: 0;
+
+  .quali-header-place {
+    @include stack(dp($q-head-gap));
+    min-width: 0;
+    font-family: $font-display;
+    line-height: $lh-none;
+  }
+
+  .quali-header-track {
+    @include ellipsis;
+    font-size: dp($q-fs-track);
+    color: $color-ink;
+  }
+
+  .quali-header-session {
+    @include cap-trim;
+    font-size: dp($q-fs-session);
+    text-transform: uppercase;
+    color: $color-ink-soft;
+  }
+
+  .quali-header-clock,
+  .quali-header-laps {
+    display: flex;
+    align-items: center;
+    gap: dp($q-head-gap);
+    flex-shrink: 0;
+  }
+
+  .quali-header-icon {
+    width: dp($q-icon-timer);
+    height: dp($q-icon-timer);
+    color: $color-ink-soft;
+  }
+
+  // inline-flex: niente spazi tra giro e totale anche se il markup va a capo
+  .quali-header-timer {
+    @include figures;
+    display: inline-flex;
+    align-items: baseline;
+    font-size: dp($q-fs-timer);
+    color: $color-ink;
+  }
+
+  .quali-header-label {
+    font-size: dp($q-fs-session);
+    text-transform: uppercase;
+    color: $color-ink-faint;
+  }
+
+  .quali-header-total {
+    color: $color-ink-faint;
+  }
+
+  .quali-header-laps {
+    display: none;
+  }
+
+  &[data-race] {
+    .quali-header-clock {
+      display: none;
+    }
+
+    .quali-header-laps {
+      display: flex;
+    }
+  }
+}

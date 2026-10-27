@@ -1,0 +1,27 @@
+@use '../abstracts' as *;
+
+// Logo del team; senza immagine disponibile resta un quadrato nel colore del team (--team)
+.team-logo {
+  @include flex-center;
+  flex-shrink: 0;
+  width: dp($q-logo-sm);
+  height: dp($q-logo-sm);
+
+  &:has(.team-logo-image[hidden])::before {
+    content: '';
+    width: $team-mark;
+    height: $team-mark;
+    background: var(--team, $color-ink-ghost);
+  }
+
+  .team-logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &.lg {
+    width: dp($q-logo-w);
+    height: dp($q-logo-h);
+  }
+}

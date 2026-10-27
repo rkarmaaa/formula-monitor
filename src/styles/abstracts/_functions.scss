@@ -4,3 +4,8 @@
 @function rem($px, $base: 16px) {
   @return math.div($px, $base) * 1rem;
 }
+
+// Pixel del design Figma (1080 × 1920) → misura reale: --dp è impostata dal monitor in base allo schermo
+@function dp($px) {
+  @return calc(#{$px} * var(--dp));
+}

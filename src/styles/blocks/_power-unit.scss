@@ -1,0 +1,53 @@
+@use '../abstracts' as *;
+
+// Power unit: griglia 4 × 2 divisa da fili, ogni casella con nome, percentuale e barra d'usura
+.power-unit {
+  @include card($color-surface-raised);
+  min-width: 0;
+
+  .power-unit-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: $border-thin;
+    height: 100%;
+  }
+
+  .power-unit-part {
+    --bar: #{$color-personal};
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: center;
+    row-gap: dp($q-pu-gap);
+    padding: dp($q-pu-pad-y) dp($q-card-pad-x);
+    background: $color-surface;
+    font-size: dp($q-fs-pu);
+    line-height: $lh-none;
+    color: $color-ink-faint;
+
+    &[data-tone='high'] {
+      --bar: #{$color-wear};
+    }
+
+    &[data-tone='over'] {
+      --bar: #{$color-critical};
+    }
+  }
+
+  .power-unit-name {
+    @include ellipsis;
+    font-family: $font-body;
+  }
+
+  .power-unit-value {
+    @include figures($fw-regular);
+  }
+
+  // Barra d'usura: traccia scura, riempimento pari a --v (0..1)
+  .power-unit-bar {
+    grid-column: 1 / -1;
+    height: dp($q-pu-bar-h);
+    background: linear-gradient(to right, var(--bar) 0 calc(var(--v, 0) * 100%), $color-surface-raised 0);
+    transition: background $dur-data linear;
+  }
+}

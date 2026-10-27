@@ -37,13 +37,14 @@ interface Renderer {
   update(view: RaceView): void;
 }
 const canvasRenderers: Record<string, (root: HTMLElement) => Renderer> = {
+  map: createMap,
   inputs: createInputs,
   positions: createPositions,
   gforce: createGforce,
 };
 
 const roots = [...document.querySelectorAll<HTMLElement>('.monitor-board [data-block], [data-bind]')];
-const renderers: Renderer[] = [createMap($('.monitor-board [data-block="map"]'))];
+const renderers: Renderer[] = [createInputs($('.monitor-board [data-block="pedals"]'))];
 if (demo) {
   // Simulazione sviluppatore: anche tutti i blocchi completi, con ogni dato disponibile
   const all = $('[data-all]');

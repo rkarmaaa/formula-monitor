@@ -2,6 +2,8 @@ import type { CarView, EventView, RaceView } from '@lib/telemetry/view';
 import { fill } from '@lib/text';
 import { teamOf } from '@data/teams';
 import { tracks } from '@data/tracks';
+import { href } from '@lib/paths';
+import type { CarDamage } from '@lib/f1/schema';
 import { t } from '@i18n/index';
 
 // Formatter del binder: valore grezzo → testo, numero (custom property) o stato (attributo).
@@ -12,6 +14,10 @@ export interface Scope {
 export type Formatter = (value: unknown, arg: string | undefined, scope: Scope) => unknown;
 
 const DASH = '—';
+const WEAR_OK = 10;
+const WEAR_HIGH = 40;
+const PU_OK = 30;
+const PU_HIGH = 60;
 const MINUS = '−';
 const isNum = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
@@ -171,4 +177,26 @@ export const formatters: Record<string, Formatter> = {
   event: (v, _, { view }) => (v ? eventText(v as EventView, view) : DASH),
   eventTone: (v) => (typeof v === 'string' ? (EVENT_TONES[v] ?? 'info') : null),
   lapLabel: (v) => (isNum(v) && v > 0 ? `G${v}` : DASH),
+
+  // ——— Monitor in qualifica ———
+  // Settore in secondi anche oltre il minuto (giri di lancio): resta largo come gli altri
+  sectorTime: (v) => (isNum(v) && v > 0 ? (v / 1000).toFixed(3) : DASH),
+  pad2: (v) => (isNum(v) && v > 0 ? String(v).padStart(2, '0') : DASH),
+  teamLogo: (v) => {
+    const logo = teamOf(isNum(v) ? v : undefined).logo;
+    return logo ? href(`teams/${logo}.png`) : null;
+  },
+  noTeamLogo: (v) => (teamOf(isNum(v) ? v : undefined).logo ? null : true),
+  compoundName: (v) => compound(v)?.name ?? '',
+  offset: (v) => (isNum(v) ? `+${v}’` : DASH),
+  // Usura gomma: verde fino a WEAR_OK, arancio fino a WEAR_HIGH, poi rosso (soglie anche in _variables.scss)
+  wearTone: (v) => (isNum(v) ? (v < WEAR_OK ? 'ok' : v < WEAR_HIGH ? 'high' : 'over') : null),
+  // Integrità delle ali: 100% = nessun danno; l'ala anteriore conta il lato più danneggiato
+  frontWing: (v) => {
+    const damage = v as CarDamage | undefined;
+    return damage ? `${100 - Math.max(damage.frontLeftWingDamage, damage.frontRightWingDamage)}%` : DASH;
+  },
+  health: (v) => (isNum(v) ? `${100 - v}%` : DASH),
+  // Usura dei componenti della power unit: verde fino a PU_OK, arancio fino a PU_HIGH, poi rosso
+  puTone: (v) => (isNum(v) ? (v < PU_OK ? 'ok' : v < PU_HIGH ? 'high' : 'over') : null),
 };

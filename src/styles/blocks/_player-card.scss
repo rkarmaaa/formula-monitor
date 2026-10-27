@@ -1,0 +1,118 @@
+@use '../abstracts' as *;
+
+// Scheda del giocatore: logo e posizione a sinistra; a destra settori, delta, ultimo e migliore giro
+.player-card {
+  @include card;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: dp($q-gap);
+  padding: dp($q-card-pad);
+  min-width: 0;
+
+  .player-card-place {
+    display: flex;
+    align-items: center;
+    gap: dp($q-gap);
+  }
+
+  .player-card-position {
+    @include figures;
+    font-size: dp($q-fs-pos);
+    color: $color-ink;
+  }
+
+  .player-card-times {
+    @include stack(dp($q-divider-gap));
+    width: min(100%, dp($q-side-w));
+  }
+
+  .player-card-sectors {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: dp($q-bar-gap);
+  }
+
+  // Barra del settore: colore secondo il tempo del giro in corso, grigia finché non è chiuso
+  .player-card-sector {
+    @include flex-center;
+    height: dp($q-bar-h);
+    background: $sector-none;
+    font-family: $font-display;
+    font-size: dp($q-fs-bar);
+    font-weight: $fw-medium;
+    line-height: $lh-none;
+    color: $color-ink;
+    opacity: $opacity-dim;
+
+    &[data-live] {
+      opacity: 1;
+    }
+
+    &[data-tone='best'] {
+      background: $sector-best;
+    }
+
+    &[data-tone='personal'] {
+      background: $sector-personal;
+    }
+
+    &[data-tone='slower'] {
+      background: $sector-slower;
+    }
+  }
+
+  .player-card-delta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: dp($q-gap);
+    padding-bottom: dp($q-divider-gap);
+    border-bottom: $border-thin solid $color-line;
+  }
+
+  .player-card-label {
+    font-family: $font-display;
+    font-size: dp($q-fs-delta-label);
+    line-height: $lh-none;
+    text-transform: uppercase;
+    color: $color-ink;
+  }
+
+  .player-card-delta-value {
+    @include figures;
+    font-size: dp($q-fs-delta);
+    color: $color-ink;
+
+    &[data-tone='loss'] {
+      color: $color-danger;
+    }
+
+    &[data-tone='gain'] {
+      color: $color-personal;
+    }
+  }
+
+  .player-card-laps {
+    @include stack(dp($q-lap-gap));
+  }
+
+  .player-card-lap {
+    display: flex;
+    justify-content: space-between;
+    gap: dp($q-gap);
+    font-family: $font-display;
+    font-size: dp($q-fs-lap);
+    line-height: $lh-none;
+
+    dt {
+      text-transform: uppercase;
+      color: $color-ink-faint;
+    }
+
+    dd {
+      @include figures;
+      color: $color-ink;
+    }
+  }
+}

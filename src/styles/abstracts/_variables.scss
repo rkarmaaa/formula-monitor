@@ -2,65 +2,76 @@
 
 // =====================================================================
 // TOKEN DEL DESIGN SYSTEM — FORMULA MONITOR "Grafite"
-// Nero assoluto, scala di grigi, bianco per le azioni. Spigoli vivi ovunque: niente raggi né tagli.
-// L'unico colore è il dato (viola/verde dei tempi, mescole, bandiere, colori team).
-// Ogni valore usato nei partial deve venire da qui.
+// Base: il design Figma "QUALI & TESTING" (file Roba, nodo 1283:9). Carbone #141414, schede con filo
+// #2d2d2d, testo #d9d9d9, etichette #767676. Schede a spigoli vivi; cerchi e raggi solo nei grafici dati
+// (chip delle mescole, anelli d'usura, sagome delle gomme). Il colore è il dato: viola, verde, rosso
+// dei tempi, mescole, colori e loghi dei team. Ogni valore usato nei partial deve venire da qui.
 // =====================================================================
 
 // ——— Scala dei grigi (0 = nero, 1000 = bianco) ———
 $gray-0: #000000;
-$gray-50: #070707;
-$gray-100: #0d0d0d;
+$gray-50: #0e0e0e;
+$gray-100: #111111;
 $gray-150: #141414;
-$gray-200: #1b1b1b;
-$gray-300: #262626;
+$gray-200: #1c1c1c;
+$gray-300: #2d2d2d;
 $gray-400: #3a3a3a;
-$gray-500: #575757;
-$gray-600: #7a7a7a;
-$gray-700: #a1a1a1;
-$gray-800: #c8c8c8;
-$gray-900: #e8e8e8;
-$gray-1000: #ffffff;
+$gray-500: #4f4f4f;
+$gray-600: #767676;
+$gray-700: #8d8d8d;
+$gray-800: #b3b3b3;
+$gray-900: #d9d9d9;
+$gray-1000: #f2f2f2;
 
 // ——— Palette (ruoli) ———
-$color-bg: $gray-0;
-$color-bg-alt: $gray-50;
-$color-surface: $gray-100;
-$color-surface-raised: $gray-150;
-$color-surface-high: $gray-200;
-$color-line: rgba(255, 255, 255, 0.08);
-$color-line-strong: rgba(255, 255, 255, 0.18);
+$color-bg: $gray-150;
+$color-bg-alt: $gray-100;
+$color-surface: $gray-150;
+$color-surface-raised: $gray-200;
+$color-surface-high: $gray-300;
+$color-line: $gray-300;
+$color-line-strong: $gray-400;
 $color-ink: $gray-900;
 $color-ink-strong: $gray-1000;
 $color-ink-soft: $gray-700;
 $color-ink-faint: $gray-600;
 $color-ink-ghost: $gray-500;
 // Azione: bottoni chiari su fondo scuro
-$color-primary: $gray-1000;
+$color-primary: $gray-900;
 $color-primary-deep: $gray-800;
-$color-on-primary: $gray-0;
+$color-on-primary: $gray-150;
 $color-white: $gray-1000;
 $color-black: $gray-0;
 
-// Semantica dati (convenzione cronometraggio F1: viola = migliore assoluto, verde = personale)
-$color-best: #8f3fff;
-$color-personal: #22c55e;
-$color-warn: #f5c400;
-$color-danger: #ff3b30;
+// Semantica dati (convenzione cronometraggio F1: viola = migliore assoluto, verde = personale,
+// rosso = più lento del proprio migliore / delta in perdita)
+$color-best: #b325cc;
+$color-personal: #089d09;
+$color-warn: #eacc08;
+$color-danger: #bb152e;
 $color-live: $color-personal;
+$color-wear: #b74815;
+$color-critical: #b92020;
 
-// Mescole
-$tyre-soft: #ff3b30;
-$tyre-medium: #f5c400;
-$tyre-hard: $gray-1000;
-$tyre-inter: #22c55e;
+// Barre dei settori del giocatore (gradienti dal Figma)
+$sector-best: linear-gradient(to right, #a315bc, #4b0a56);
+$sector-personal: linear-gradient(to right, #089d09, #033703);
+$sector-slower: linear-gradient(to right, #bc152e, #560a15);
+$sector-none: linear-gradient(to right, $gray-400, $gray-200);
+
+// Mescole: testo pieno, fondo del chip al 20%
+$tyre-soft: $color-critical;
+$tyre-medium: #eacc08;
+$tyre-hard: $gray-900;
+$tyre-inter: #089d09;
 $tyre-wet: #2f80ff;
+$tyre-chip-alpha: 20%;
 
 // Trasparenze derivate
-$color-bg-glass: rgba(0, 0, 0, 0.88);
-$color-white-tint: rgba(255, 255, 255, 0.06);
-$color-white-hover: rgba(255, 255, 255, 0.1);
-$color-player: rgba(255, 255, 255, 0.1);
+$color-bg-glass: rgba(20, 20, 20, 0.9);
+$color-white-tint: rgba(217, 217, 217, 0.06);
+$color-white-hover: rgba(217, 217, 217, 0.1);
+$color-player: $gray-200;
 
 // Mappa (lette dal canvas come custom property)
 $map-track: $gray-400;
@@ -85,6 +96,7 @@ $fw-heavy: 800;
 
 // Larghezze di Saira (asse wdth): condensata per numeri e tabelle dense
 $stretch-condensed: 80%;
+$stretch-narrow: 75%; // come "Saira Condensed" del Figma (classifica)
 $stretch-semi: 90%;
 $stretch-normal: 100%;
 
@@ -189,9 +201,9 @@ $hero-photo-ratio: list.slash(1920, 2110);
 $hero-photo-max: 80svh;
 $hero-photo-filter: grayscale(1) brightness(0.62) contrast(1.18);
 $hero-photo-shade:
-  linear-gradient(to bottom, $gray-0 0%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0) 70%, $gray-0 100%),
-  linear-gradient(to right, $gray-0 0%, rgba(0, 0, 0, 0) 22%, rgba(0, 0, 0, 0) 78%, $gray-0 100%),
-  radial-gradient(ellipse 60% 55% at 50% 62%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.7) 100%);
+  linear-gradient(to bottom, $gray-150 0%, rgba(20, 20, 20, 0) 38%, rgba(20, 20, 20, 0) 70%, $gray-150 100%),
+  linear-gradient(to right, $gray-150 0%, rgba(20, 20, 20, 0) 22%, rgba(20, 20, 20, 0) 78%, $gray-150 100%),
+  radial-gradient(ellipse 60% 55% at 50% 62%, rgba(20, 20, 20, 0) 40%, rgba(20, 20, 20, 0.7) 100%);
 $hero-top: clamp(64px, 12svh, 136px);
 
 // Colonne della classifica (in em: seguono la dimensione del testo della riga)
@@ -323,3 +335,89 @@ $arrow-shift: 4px;
 $grid-columns: 12;
 $grid-rows: 24;
 $games: f1-25, f1-25-2026;
+
+// ——— Monitor in qualifica (Figma "QUALI & TESTING") ———
+// Valori in pixel del design 1080 × 1920: nei partial passano da dp(), che li scala sullo schermo.
+// Base del design: 9:16 = 1080 × 1880 (sopra la barra); 16:9 = 2112 × 1000, cioè classifica a sinistra e
+// il resto del 9:16 a destra.
+$q-base-w: 1080;
+$q-base-h: 1880;
+$q-base-w-land: 2112;
+$q-base-h-land: 1000;
+$q-pad: 32;
+$q-gap: 16;
+$q-card-pad: 24;
+$q-card-pad-x: 20;
+$q-divider-gap: 20;
+
+// Intestazione: circuito, sessione, cronometro
+$q-fs-track: 20;
+$q-fs-session: 16;
+$q-fs-timer: 48;
+$q-icon-timer: 32;
+$q-head-gap: 8;
+
+// Scheda del giocatore: logo, posizione, settori, delta, ultimo e migliore
+$q-logo-w: 63;
+$q-logo-h: 84;
+$q-fs-pos: 96;
+$q-side-w: 400;
+$q-bar-h: 20;
+$q-bar-gap: 8;
+$q-fs-bar: 16;
+$q-fs-delta-label: 32;
+$q-fs-delta: 56;
+$q-fs-lap: 24;
+$q-lap-gap: 12;
+
+// Classifica: righe da 46 (22 + 12 sopra e sotto il filo), testo condensato
+$q-fs-head: 16;
+$q-fs-row: 32;
+$q-row-max: 46;
+$q-logo-sm: 22;
+$q-chip: 22;
+$q-fs-chip: 16;
+$q-name-gap: 16;
+$q-logo-gap: 12;
+$q-col-pos: 40;
+$q-col-code: 64;
+$q-col-best: 104;
+$q-col-sector: 84;
+$q-col-gap: 24;
+
+// Riquadri in basso: meteo, pedali, gomme e ali
+$q-bottom-h: 523;
+$q-content-w: 1016; // larghezza utile del 9:16 (1080 − 2 × 32)
+$q-left-w: 637;
+$q-car-w: 363;
+// Colonna in basso a sinistra (523): meteo 156 + engine 156 + pedali 180, con 16 di spazio tra i riquadri
+$q-forecast-h: 156;
+$q-engine-h: 156;
+$q-pedals-h: 180;
+$q-weather-pad-y: 26;
+$q-weather-gap: 20;
+$q-fs-weather: 16;
+$q-icon-weather: 40;
+$q-chip-lg: 32;
+$q-fs-compound: 23;
+$q-ring: 64;
+$q-ring-width: 5;
+$q-fs-ring: 20;
+$q-fs-ring-unit: 12;
+$q-tyre-w: 60;
+$q-tyre-h: 100;
+$q-tyre-radius: 12;
+$q-fs-tyre-temp: 14;
+$q-key-h: 4;
+$team-mark: 60%; // quadrato colore team quando manca il logo
+
+// Soglie d'usura degli anelli (%): verde sotto la prima, arancio fino alla seconda, rosso oltre
+$wear-ok: 10;
+$wear-high: 40;
+
+// Power unit: 4 × 2 componenti con barra d'usura (verde, arancio, rosso secondo le soglie in formatters.ts)
+$q-pu-pad-y: 12;
+$q-pu-gap: 10;
+$q-fs-pu: 20;
+$q-pu-bar-h: 6;
+$radius-round: 50%;

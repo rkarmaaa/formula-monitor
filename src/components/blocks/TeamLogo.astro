@@ -1,0 +1,14 @@
+---
+// Logo del team dal percorso del binder (es. "teamId" in una riga, "player.teamId" nella scheda).
+// Senza logo disponibile resta un quadrato nel colore del team.
+interface Props {
+  path: string;
+  size?: 'sm' | 'lg';
+}
+
+const { path, size = 'sm' } = Astro.props;
+---
+
+<span class:list={['team-logo', size]} data-var={`--team:${path}|team`}>
+  <img class="team-logo-image" alt="" data-attr={`src:${path}|teamLogo; hidden:${path}|noTeamLogo`} hidden />
+</span>

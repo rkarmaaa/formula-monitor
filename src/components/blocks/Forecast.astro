@@ -1,0 +1,32 @@
+---
+import Icon from '@components/ui/Icon.astro';
+import { t } from '@i18n/index';
+
+// Meteo previsto: le prossime 5 previsioni della sessione (minuti, icona, temperatura dell'aria).
+// Le icone sono tutte nel markup: il CSS mostra quella di data-weather; la pioggia evidenzia la casella.
+const b = t.monitor.blocks.forecast;
+const icons = [
+  'lucide:sun',
+  'lucide:cloud-sun',
+  'lucide:cloud',
+  'lucide:cloud-drizzle',
+  'lucide:cloud-rain',
+  'lucide:cloud-lightning',
+];
+---
+
+<section class="forecast" data-block="forecast" aria-label={b.title}>
+  <ol class="forecast-list" data-list="weatherNext" data-limit="5">
+    <template>
+      <li class="forecast-slot" data-attr="data-weather:weather; data-wet:wet|bool">
+        <span class="forecast-offset" data-text="offset|offset"></span>
+        <span class="forecast-icon">
+          {icons.map((icon, i) => (
+            <Icon name={icon} class={`forecast-glyph w${i}`} />
+          ))}
+        </span>
+        <span class="forecast-temp" data-text="air|temp"></span>
+      </li>
+    </template>
+  </ol>
+</section>

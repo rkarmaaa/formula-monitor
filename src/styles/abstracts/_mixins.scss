@@ -192,6 +192,25 @@
   gap: $gap;
 }
 
+// Scheda del monitor (Figma): fondo carbone, filo #2d2d2d, spigoli vivi
+@mixin card($fill: $color-surface) {
+  background: $fill;
+  border: $border-thin solid $color-line;
+}
+
+// Cifre del monitor in Saira: normale per i valori grandi, condensata per le tabelle
+@mixin figures($weight: $fw-medium, $stretch: $stretch-normal) {
+  @include numeric($stretch);
+  @include cap-trim;
+  font-weight: $weight;
+  line-height: $lh-none;
+}
+
+// Testo rifilato all'altezza delle maiuscole, come i testi del Figma (text-box-trim): misure identiche al design
+@mixin cap-trim {
+  text-box: trim-both cap alphabetic;
+}
+
 // Barra squadrata riempita da --v (0..1) impostata dal binder
 @mixin meter($color: $color-ink-strong, $height: $bar-thin) {
   position: relative;

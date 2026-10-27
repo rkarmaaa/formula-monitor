@@ -1,0 +1,27 @@
+---
+import Icon from '@components/ui/Icon.astro';
+import { t } from '@i18n/index';
+
+// Intestazione: circuito e sessione a sinistra, cronometro a destra (in gara il giro)
+const b = t.monitor.blocks.header;
+---
+
+<header class="quali-header" data-block="header" data-attr="data-race:race.isRace|bool" aria-label={b.title}>
+  <p class="quali-header-place">
+    <span class="quali-header-track" data-text="session.trackId|track"></span>
+    <span class="quali-header-session" data-text="session.sessionType|session"></span>
+  </p>
+  <p class="quali-header-clock" aria-label={b.left}>
+    <Icon name="lucide:timer" class="quali-header-icon" />
+    <span class="quali-header-timer" data-text="race.timeLeft|time"></span>
+  </p>
+  <p class="quali-header-laps" aria-label={b.lap}>
+    <span class="quali-header-label">{b.lap}</span>
+    <span class="quali-header-timer">
+      <span data-text="race.lap"></span>
+      <span class="quali-header-total">
+        /<span data-text="race.totalLaps"></span>
+      </span>
+    </span>
+  </p>
+</header>

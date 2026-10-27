@@ -1,56 +1,50 @@
 ---
-import Block from './Block.astro';
+import TeamLogo from './TeamLogo.astro';
 import { t } from '@i18n/index';
 
-// Classifica live: tutti i piloti con giro migliore, distacco e settori (viola = migliore assoluto)
+// Classifica live per i giri veloci: posizione, logo, sigla e mescola; giro migliore (viola il più veloce)
+// e settori (viola = migliore assoluto, verde = personale, attenuati quelli del giro precedente)
 const b = t.monitor.blocks.timing;
 const sectors = [0, 1, 2];
 ---
 
-<Block id="timing" title={b.title}>
-  <div class="timing-tower" data-attr="data-race:race.isRace|bool">
-    <p class="timing-tower-head" aria-hidden="true">
-      <span class="timing-tower-pos">{b.pos}</span>
-      <span class="timing-tower-driver">{b.driver}</span>
-      <span class="timing-tower-best">{b.best}</span>
-      <span class="timing-tower-gap">
-        <span class="timing-tower-quali">{b.gap}</span>
-        <span class="timing-tower-racing">{b.interval}</span>
-      </span>
-      {sectors.map((i) => (
-        <span class="timing-tower-sector">{b.sectors[i]}</span>
-      ))}
-      <span class="timing-tower-tyre"></span>
-    </p>
-    <ol class="timing-tower-list" data-list="cars" data-key="index" data-flip>
-      <template>
-        <li
-          class="timing-tower-row"
-          data-attr="data-player:isPlayer|bool; data-pit:inPit|bool; data-garage:inGarage|bool; data-out:retired|bool"
-          data-var="--team:teamId|team"
-        >
-          <span class="timing-tower-pos" data-text="position"></span>
-          <span class="timing-tower-driver">
-            <span class="timing-tower-code" data-text="code"></span>
-            <span class="timing-tower-tag pit">{b.pit}</span>
-            <span class="timing-tower-tag out">{b.out}</span>
-          </span>
-          <span class="timing-tower-best" data-text="bestLapMs|lapTime" data-attr="data-tone:bestLapTone"></span>
-          <span class="timing-tower-gap" data-text=".|towerGap"></span>
-          {sectors.map((i) => (
-            <span
-              class="timing-tower-sector"
-              data-text={`sectors.${i}.ms|lapTime`}
-              data-attr={`data-tone:sectors.${i}.tone; data-live:sectors.${i}.live|bool`}
-            ></span>
-          ))}
+<section class="timing-tower" data-block="timing" aria-labelledby="timing-title">
+  <p class="timing-tower-head">
+    <span class="timing-tower-title" id="timing-title">
+      {b.title}
+    </span>
+    <span class="timing-tower-best">{b.best}</span>
+    {sectors.map((i) => (
+      <span class="timing-tower-sector">{b.sectors[i]}</span>
+    ))}
+  </p>
+  <ol class="timing-tower-list" data-list="cars" data-key="index" data-flip>
+    <template>
+      <li
+        class="timing-tower-row"
+        data-attr="data-player:isPlayer|bool; data-pit:inPit|bool; data-garage:inGarage|bool; data-out:retired|bool"
+      >
+        <span class="timing-tower-driver">
+          <span class="timing-tower-pos" data-text="position|pad2"></span>
+          <TeamLogo path="teamId" />
+          <span class="timing-tower-code" data-text="code"></span>
           <span
             class="timing-tower-tyre"
             data-text="status.visualTyreCompound|compoundLetter"
             data-attr="data-compound:status.visualTyreCompound|compoundClass"
           ></span>
-        </li>
-      </template>
-    </ol>
-  </div>
-</Block>
+          <span class="timing-tower-tag pit">{b.pit}</span>
+          <span class="timing-tower-tag out">{b.out}</span>
+        </span>
+        <span class="timing-tower-best" data-text="bestLapMs|lapTime" data-attr="data-tone:bestLapTone"></span>
+        {sectors.map((i) => (
+          <span
+            class="timing-tower-sector"
+            data-text={`sectors.${i}.ms|sectorTime`}
+            data-attr={`data-tone:sectors.${i}.tone; data-live:sectors.${i}.live|bool`}
+          ></span>
+        ))}
+      </li>
+    </template>
+  </ol>
+</section>

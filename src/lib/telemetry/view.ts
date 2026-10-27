@@ -122,6 +122,8 @@ export interface RaceView {
   flags: { safetyCar: number; redFlag: boolean; yellowSectors: boolean[]; player: number };
   pit: { idealLap: number; latestLap: number; rejoinPosition: number; limiter: boolean; from: number; to: number };
   forecast: SessionData['weatherForecastSamples'];
+  // Prossime previsioni della sessione in corso (al massimo 5), con la pioggia segnalata
+  weatherNext: WeatherSlot[];
   events: EventView[];
   lapPositions: number[][];
   trackLength: number;
@@ -333,6 +335,36 @@ function yellowSectors(session: SessionData | undefined, sectorStarts: number[],
   return sectors;
 }
 
+export interface WeatherSlot {
+  offset: number;
+  weather: number;
+  air: number;
+  track: number;
+  rain: number;
+  wet: boolean;
+}
+
+const WEATHER_SLOTS = 5;
+const RAIN_WEATHER = 3; // da "pioggia leggera" in su
+
+// Previsioni della sessione in corso a partire dalla prossima (offset > 0); se il gioco ne manda meno, anche l'attuale
+function weatherNext(session: SessionData | undefined): WeatherSlot[] {
+  if (!session) return [];
+  const own = session.weatherForecastSamples
+    .slice(0, session.numWeatherForecastSamples)
+    .filter((sample) => sample.sessionType === session.sessionType)
+    .sort((a, b) => a.timeOffset - b.timeOffset);
+  const future = own.filter((sample) => sample.timeOffset > 0);
+  return (future.length >= WEATHER_SLOTS ? future : own).slice(0, WEATHER_SLOTS).map((sample) => ({
+    offset: sample.timeOffset,
+    weather: sample.weather,
+    air: sample.airTemperature,
+    track: sample.trackTemperature,
+    rain: sample.rainPercentage,
+    wet: sample.weather >= RAIN_WEATHER,
+  }));
+}
+
 export function buildView(state: RaceState): RaceView {
   const { session } = state;
   const lapData = state.lapData?.lapData ?? [];
@@ -436,6 +468,7 @@ export function buildView(state: RaceState): RaceView {
       to: totalLaps && session?.pitStopWindowLatestLap ? Math.min(1, session.pitStopWindowLatestLap / totalLaps) : 0,
     },
     forecast: session ? session.weatherForecastSamples.slice(0, session.numWeatherForecastSamples) : [],
+    weatherNext: weatherNext(session),
     events: state.events.map((record) => {
       const details = record.event.details as { vehicleIdx?: number; otherVehicleIdx?: number };
       const pair = record.event.code === 'OVTK' ? record.event.details : undefined;

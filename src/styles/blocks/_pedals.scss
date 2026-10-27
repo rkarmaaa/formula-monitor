@@ -1,0 +1,54 @@
+@use '../abstracts' as *;
+
+// Telemetria dei pedali: traccia di acceleratore (verde) e freno (rosso), colori letti dal canvas
+.pedals {
+  @include card;
+  --trace-throttle: #{$color-personal};
+  --trace-brake: #{$color-danger};
+  --trace-grid: #{$color-line};
+  display: flex;
+  flex-direction: column;
+  gap: dp($q-lap-gap);
+  min-width: 0;
+  min-height: 0;
+  padding: dp($q-card-pad-x);
+
+  // La traccia occupa lo spazio sotto la legenda
+  .pedals-canvas {
+    display: block;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .pedals-legend {
+    display: flex;
+    gap: dp($q-gap);
+    font-family: $font-body;
+    font-size: dp($q-fs-head);
+    line-height: $lh-none;
+    text-transform: uppercase;
+    color: $color-ink-faint;
+  }
+
+  .pedals-key {
+    display: inline-flex;
+    align-items: center;
+    gap: dp($q-head-gap);
+
+    &::before {
+      content: '';
+      width: dp($q-lap-gap);
+      height: dp($q-key-h);
+      background: currentColor;
+    }
+
+    &.throttle::before {
+      background: $color-personal;
+    }
+
+    &.brake::before {
+      background: $color-danger;
+    }
+  }
+}

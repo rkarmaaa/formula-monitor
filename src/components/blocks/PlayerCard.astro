@@ -1,0 +1,48 @@
+---
+import TeamLogo from './TeamLogo.astro';
+import { t } from '@i18n/index';
+
+// Scheda del giocatore: logo e posizione; settori del giro in corso (viola/verde/rosso), delta live sul
+// proprio miglior giro, ultimo e migliore
+const b = t.monitor.blocks.player;
+const sectors = [0, 1, 2];
+---
+
+<section class="player-card" data-block="player" aria-label={b.title}>
+  <div class="player-card-place">
+    <TeamLogo path="player.teamId" size="lg" />
+    <p class="player-card-position" aria-label={b.position}>
+      P<span data-text="player.position"></span>
+    </p>
+  </div>
+  <div class="player-card-times">
+    <ol class="player-card-sectors">
+      {sectors.map((i) => (
+        <li
+          class="player-card-sector"
+          data-attr={`data-tone:player.sectors.${i}.tone; data-live:player.sectors.${i}.live|bool`}
+        >
+          {b.sectors[i]}
+        </li>
+      ))}
+    </ol>
+    <p class="player-card-delta">
+      <span class="player-card-label">{b.delta}</span>
+      <span
+        class="player-card-delta-value"
+        data-text="liveDeltaMs|delta"
+        data-attr="data-tone:liveDeltaMs|deltaTone"
+      ></span>
+    </p>
+    <dl class="player-card-laps">
+      <div class="player-card-lap">
+        <dt>{b.last}</dt>
+        <dd data-text="player.lastLapMs|lapTime"></dd>
+      </div>
+      <div class="player-card-lap">
+        <dt>{b.best}</dt>
+        <dd data-text="player.bestLapMs|lapTime"></dd>
+      </div>
+    </dl>
+  </div>
+</section>

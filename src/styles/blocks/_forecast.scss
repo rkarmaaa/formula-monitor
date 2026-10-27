@@ -1,0 +1,60 @@
+@use '../abstracts' as *;
+
+// Meteo previsto: cinque caselle divise da un filo, quella con pioggia evidenziata
+.forecast {
+  @include card($color-surface-raised);
+  min-width: 0;
+
+  .forecast-list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: $border-thin;
+    height: 100%;
+  }
+
+  .forecast-slot {
+    @include stack(dp($q-weather-gap));
+    align-items: center;
+    justify-content: center;
+    padding: dp($q-weather-pad-y) dp($q-card-pad-x);
+    background: $color-surface;
+    font-family: $font-body;
+    font-size: dp($q-fs-weather);
+    line-height: $lh-none;
+    color: $color-ink-faint;
+
+    &[data-wet] {
+      background: $color-surface-raised;
+      color: $color-ink;
+    }
+  }
+
+  .forecast-offset,
+  .forecast-temp {
+    @include cap-trim;
+  }
+
+  .forecast-icon {
+    @include flex-center;
+    width: dp($q-icon-weather);
+    height: dp($q-icon-weather);
+    color: $color-ink-faint;
+  }
+
+  // Una sola icona visibile: quella del codice meteo (0 sereno … 5 temporale)
+  .forecast-glyph {
+    display: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  @for $i from 0 through 5 {
+    .forecast-slot[data-weather='#{$i}'] .forecast-glyph.w#{$i} {
+      display: block;
+    }
+  }
+
+  .forecast-slot[data-wet] .forecast-icon {
+    color: $color-ink;
+  }
+}

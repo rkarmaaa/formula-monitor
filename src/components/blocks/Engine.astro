@@ -1,0 +1,33 @@
+---
+import { t } from '@i18n/index';
+
+// Componenti della power unit: usura di ciascun elemento (ICE, MGU-H, MGU-K, ES, CE, TC) e danni a cambio
+// e motore, con barra colorata per soglia (verde, arancio, rosso).
+const b = t.monitor.blocks.engine;
+const parts = [
+  { key: 'engineICEWear', label: b.parts.ice },
+  { key: 'engineMGUHWear', label: b.parts.mguh },
+  { key: 'engineMGUKWear', label: b.parts.mguk },
+  { key: 'engineESWear', label: b.parts.es },
+  { key: 'engineCEWear', label: b.parts.ce },
+  { key: 'engineTCWear', label: b.parts.tc },
+  { key: 'gearBoxDamage', label: b.parts.gearbox },
+  { key: 'engineDamage', label: b.parts.engine },
+];
+---
+
+<section class="power-unit" data-block="engine" aria-label={b.title}>
+  <ul class="power-unit-list">
+    {parts.map(({ key, label }) => (
+      <li
+        class="power-unit-part"
+        data-var={`--v:player.damage.${key}|ratio:100`}
+        data-attr={`data-tone:player.damage.${key}|puTone`}
+      >
+        <span class="power-unit-name">{label}</span>
+        <span class="power-unit-value" data-text={`player.damage.${key}|pct`}></span>
+        <span class="power-unit-bar" aria-hidden="true"></span>
+      </li>
+    ))}
+  </ul>
+</section>

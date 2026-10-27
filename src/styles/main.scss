@@ -18,14 +18,20 @@
 @use 'components/udp-settings';
 @use 'components/hero-car';
 @use 'components/block';
+@use 'components/team-logo';
 @use 'components/monitor-bar';
 @use 'components/monitor-wait';
 @use 'components/tyre-chip';
 @use 'components/battle-car';
 
 // Blocchi del monitor
-@use 'blocks/session-clock';
+@use 'blocks/quali-header';
+@use 'blocks/player-card';
 @use 'blocks/timing-tower';
+@use 'blocks/forecast';
+@use 'blocks/power-unit';
+@use 'blocks/pedals';
+@use 'blocks/car-state';
 @use 'blocks/track-map';
 
 // Blocchi della simulazione completa
