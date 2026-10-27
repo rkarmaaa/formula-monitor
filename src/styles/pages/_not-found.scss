@@ -1,15 +1,23 @@
 @use '../abstracts' as *;
 
-// Pagina 404 centrata
+// Pagina 404
 .not-found {
-  min-height: calc(100dvh - #{$header-height});
-  display: flex;
-  align-items: center;
+  @include container($container-narrow);
+  @include stack($sp-24);
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 80svh;
 
-  .not-found-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: $sp-12;
+  .not-found-eyebrow {
+    @include eyebrow;
+  }
+
+  .not-found-title {
+    @include title-display($fs-display);
+  }
+
+  .not-found-lead {
+    @include type-size($fs-lead);
+    color: $color-ink-soft;
   }
 }

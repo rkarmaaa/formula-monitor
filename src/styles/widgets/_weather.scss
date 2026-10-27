@@ -14,12 +14,11 @@
     align-items: center;
     justify-content: space-between;
     padding: $sp-cq-xs;
-    border-radius: $radius-xs;
     background: $color-surface-raised;
     font-size: $value-xs;
 
     &[data-rain] {
-      background: $color-accent-tint;
+      background: $color-white-tint;
     }
   }
 
@@ -49,7 +48,7 @@
 
   .w-weather-rain {
     @include numeric;
-    color: $color-accent;
+    color: $color-ink-strong;
     font-weight: $fw-semibold;
   }
 

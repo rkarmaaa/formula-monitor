@@ -1,24 +1,25 @@
 ---
-import Logo from '@components/brand/Logo.astro';
+import { href } from '@lib/paths';
+import Icon from '@components/ui/Icon.astro';
 import { t } from '@i18n/index';
 import { site } from '@data/site';
 
 const year = new Date().getFullYear();
+const f = t.common.footer;
 ---
 
 <footer class="site-footer">
-  <div class="site-footer-inner">
-    <div class="site-footer-brand">
-      <Logo />
-      <p class="site-footer-tagline">{t.common.tagline}</p>
-    </div>
-    <div class="site-footer-legal">
-      <p>{t.common.footer.spec}</p>
-      <p>{t.common.footer.disclaimer}</p>
-      <p>
-        © {year}
-        {t.common.brand} · v{site.version} · <a href={site.repository}>{t.common.footer.source}</a>
-      </p>
-    </div>
-  </div>
+  <p class="site-footer-brand">
+    © {year} {t.common.brand} · v{site.version}
+  </p>
+  <p class="site-footer-legal">{f.disclaimer}</p>
+  <nav class="site-footer-links" aria-label={t.common.brand}>
+    <a class="site-footer-link" href={href('monitor/?demo')} title={f.simulationHint}>
+      <Icon name="lucide:terminal" />
+      {f.simulation}
+    </a>
+    <a class="site-footer-link" href={site.repository}>
+      {f.source}
+    </a>
+  </nav>
 </footer>

@@ -56,7 +56,6 @@
     position: relative;
     flex: 0 0 22%;
     border: $border-bold solid var(--temp);
-    border-radius: $radius-sm;
     overflow: hidden;
 
     &::after {

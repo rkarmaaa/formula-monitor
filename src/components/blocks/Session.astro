@@ -1,0 +1,29 @@
+---
+import Block from './Block.astro';
+import { t } from '@i18n/index';
+
+// Sessione: circuito, tipo di sessione e il timer (in gara il giro)
+const b = t.monitor.blocks.session;
+---
+
+<Block id="session" title={b.title}>
+  <div class="session-clock" data-attr="data-race:race.isRace|bool">
+    <p class="session-clock-name">
+      <span data-text="session.trackId|track"></span>
+      <span class="session-clock-type" data-text="session.sessionType|session"></span>
+    </p>
+    <p class="session-clock-timer">
+      <span class="session-clock-label">{b.left}</span>
+      <span class="session-clock-value" data-text="race.timeLeft|time"></span>
+    </p>
+    <p class="session-clock-laps">
+      <span class="session-clock-label">{b.lap}</span>
+      <span class="session-clock-value">
+        <span data-text="race.lap"></span>
+        <span class="session-clock-total">
+          /<span data-text="race.totalLaps"></span>
+        </span>
+      </span>
+    </p>
+  </div>
+</Block>

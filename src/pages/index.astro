@@ -1,115 +1,91 @@
 ---
 import { href } from '@lib/paths';
 import SiteLayout from '@layouts/SiteLayout.astro';
-import Section from '@components/ui/Section.astro';
-import SectionTitle from '@components/ui/SectionTitle.astro';
 import Button from '@components/ui/Button.astro';
 import Icon from '@components/ui/Icon.astro';
-import GamePicker from '@components/setup/GamePicker.astro';
+import HeroCar from '@components/home/HeroCar.astro';
 import UdpSettings from '@components/setup/UdpSettings.astro';
 import CommandList from '@components/setup/CommandList.astro';
 import { accent } from '@lib/text';
-import { ports } from '@data/games';
 import { t } from '@i18n/index';
 
 const h = t.home;
-const steps = h.steps;
+const tut = h.tutorial;
+const [run, game, open] = tut.steps;
 ---
 
-<SiteLayout title={h.title} description={h.description} page="home">
+<SiteLayout title={h.title} description={h.description}>
   <section class="home-hero" aria-labelledby="home-title">
-    <div class="home-hero-inner">
-      <div class="home-hero-copy">
-        <p class="home-hero-eyebrow" data-reveal="fade">
-          {h.eyebrow}
-        </p>
-        <h1 class="home-hero-title" id="home-title" data-reveal set:html={accent(h.heading)} />
-        <p class="home-hero-lead" data-reveal>
-          {h.lead}
-        </p>
-        <div class="home-hero-actions" data-reveal>
-          <Button href={href('monitor/')} size="lg" icon="lucide:layout-dashboard" arrow>
-            {t.common.openMonitor}
-          </Button>
-          <Button href={href('monitor/?demo')} size="lg" variant="outline" icon="lucide:play">
-            {t.common.demo}
-          </Button>
-        </div>
-      </div>
-      <div class="home-hero-device" data-reveal="scale" aria-hidden="true">
-        <iframe
-          class="home-hero-screen"
-          src={href('monitor/?demo&preview')}
-          title=""
-          tabindex="-1"
-          loading="lazy"
-        ></iframe>
+    <HeroCar />
+    <div class="home-hero-content">
+      <p class="home-hero-eyebrow">{h.hero.eyebrow}</p>
+      <h1 class="home-hero-title" id="home-title" set:html={accent(h.hero.heading)} />
+      <div class="home-hero-actions">
+        <Button href={href('monitor/')} size="lg" arrow>
+          {h.hero.start}
+        </Button>
+        <Button href="#tutorial" size="lg" variant="outline">
+          {h.hero.tutorial}
+        </Button>
       </div>
     </div>
+    <a class="home-hero-scroll" href="#tutorial" aria-label={h.hero.scroll}>
+      <Icon name="lucide:arrow-down" />
+    </a>
   </section>
 
-  <Section id="avvio" labelledby="start-title" tone="alt">
-    <SectionTitle id="start-title" title={h.startTitle} lead={h.startLead} />
-    <ol class="home-steps">
-      <li class="home-step" data-reveal>
-        <span class="home-step-num" aria-hidden="true">
-          1
+  <section class="home-tutorial" id="tutorial" aria-labelledby="tutorial-title">
+    <header class="home-tutorial-head" data-reveal>
+      <p class="home-tutorial-eyebrow">{tut.eyebrow}</p>
+      <h2 class="home-tutorial-title" id="tutorial-title" set:html={accent(tut.heading)} />
+      <p class="home-tutorial-lead">{tut.lead}</p>
+    </header>
+
+    <ol class="home-tutorial-steps">
+      <li class="home-tutorial-step" data-reveal>
+        <span class="home-tutorial-num" aria-hidden="true">
+          01
         </span>
-        <div class="home-step-body">
-          <h3 class="home-step-title">{steps.game.title}</h3>
-          <p class="home-step-text">{steps.game.text}</p>
-          <GamePicker />
-        </div>
-      </li>
-      <li class="home-step" data-reveal>
-        <span class="home-step-num" aria-hidden="true">
-          2
-        </span>
-        <div class="home-step-body">
-          <h3 class="home-step-title">{steps.run.title}</h3>
-          <p class="home-step-text">{steps.run.text}</p>
+        <div class="home-tutorial-body">
+          <h3 class="home-tutorial-step-title">{run!.title}</h3>
+          <p class="home-tutorial-text">{run!.text}</p>
           <CommandList lines={['npm install', 'npm run build', 'npm start']} />
         </div>
       </li>
-      <li class="home-step" data-reveal>
-        <span class="home-step-num" aria-hidden="true">
-          3
+      <li class="home-tutorial-step" data-reveal>
+        <span class="home-tutorial-num" aria-hidden="true">
+          02
         </span>
-        <div class="home-step-body">
-          <h3 class="home-step-title">{steps.game2.title}</h3>
-          <p class="home-step-text">{steps.game2.text}</p>
+        <div class="home-tutorial-body">
+          <h3 class="home-tutorial-step-title">{game!.title}</h3>
+          <p class="home-tutorial-text">{game!.text}</p>
           <UdpSettings />
-          <a class="home-step-link" href={href('guida/')}>
-            {t.common.nav.guide} <Icon name="lucide:arrow-right" />
-          </a>
         </div>
       </li>
-      <li class="home-step" data-reveal>
-        <span class="home-step-num" aria-hidden="true">
-          4
+      <li class="home-tutorial-step" data-reveal>
+        <span class="home-tutorial-num" aria-hidden="true">
+          03
         </span>
-        <div class="home-step-body">
-          <h3 class="home-step-title">{steps.open.title}</h3>
-          <p class="home-step-text">{steps.open.text}</p>
-          <CommandList lines={[`http://IP:${ports.http}/monitor/`]} live="url" />
-          <Button href={href('monitor/')} icon="lucide:layout-dashboard" arrow>
-            {t.common.openMonitor}
-          </Button>
+        <div class="home-tutorial-body">
+          <h3 class="home-tutorial-step-title">{open!.title}</h3>
+          <p class="home-tutorial-text">{open!.text}</p>
+          <CommandList lines={[h.urlPlaceholder]} live="url" />
+          <div class="home-tutorial-actions">
+            <Button href={href('monitor/')} arrow>
+              {h.hero.start}
+            </Button>
+          </div>
         </div>
       </li>
     </ol>
-  </Section>
 
-  <Section labelledby="features-title">
-    <SectionTitle id="features-title" title={h.featuresTitle} />
-    <ul class="home-features" data-reveal-group>
-      {h.features.map((feature) => (
-        <li class="home-feature" data-reveal>
-          <Icon name={feature.icon} class="home-feature-icon" />
-          <h3 class="home-feature-title">{feature.title}</h3>
-          <p class="home-feature-text">{feature.text}</p>
-        </li>
-      ))}
-    </ul>
-  </Section>
+    <aside class="home-tutorial-trouble" data-reveal>
+      <h3 class="home-tutorial-step-title">{tut.troubleTitle}</h3>
+      <ul class="home-tutorial-list">
+        {tut.trouble.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+    </aside>
+  </section>
 </SiteLayout>

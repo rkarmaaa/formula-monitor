@@ -75,6 +75,16 @@ function eventText(record: EventView, view: RaceView): string {
   }
 }
 
+// Distacco in classifica: in gara dall'auto davanti (o giri di ritardo), altrimenti dal giro migliore del primo
+function towerGap(car: CarView | undefined, view: RaceView): string {
+  if (!car || car.position === 1) return '';
+  if (view.race.isRace) {
+    if (car.lapsDown > 0) return `+${car.lapsDown} ${t.monitor.blocks.timing.laps}`;
+    return car.intervalMs > 0 ? `+${(car.intervalMs / 1000).toFixed(3)}` : DASH;
+  }
+  return car.gapMs > 0 ? `+${(car.gapMs / 1000).toFixed(3)}` : car.bestLapMs > 0 ? '' : DASH;
+}
+
 const EVENT_TONES: Record<string, string> = {
   OVTK: 'overtake',
   PENA: 'penalty',
@@ -116,8 +126,11 @@ export const formatters: Record<string, Formatter> = {
   gainedTone: (v) => (isNum(v) && v !== 0 ? (v > 0 ? 'up' : 'down') : null),
   gear: (v) => (isNum(v) ? (v < 0 ? 'R' : v === 0 ? 'N' : v) : DASH),
   compound: (v) => compound(v)?.short ?? DASH,
+  compoundLetter: (v) => compound(v)?.short ?? '',
+  towerGap: (v, _, { view }) => towerGap(v as CarView | undefined, view),
   compoundClass: (v) => COMPOUND_CLASS[compound(v)?.short ?? ''] ?? null,
-  track: (v) => (isNum(v) ? (tracks[v]?.short ?? DASH) : DASH),
+  track: (v) => (isNum(v) ? (tracks[v]?.name ?? DASH) : DASH),
+  trackShort: (v) => (isNum(v) ? (tracks[v]?.short ?? DASH) : DASH),
   session: (v) => (isNum(v) ? (t.f1.sessionTypes[v] ?? DASH) : DASH),
   weather: (v) => (isNum(v) ? (t.f1.weather[v] ?? DASH) : DASH),
   ersMode: (v, _, { view }) =>

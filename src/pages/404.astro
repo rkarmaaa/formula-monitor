@@ -1,24 +1,20 @@
 ---
 import { href } from '@lib/paths';
 import SiteLayout from '@layouts/SiteLayout.astro';
-import Section from '@components/ui/Section.astro';
-import SectionTitle from '@components/ui/SectionTitle.astro';
 import Button from '@components/ui/Button.astro';
+import { accent } from '@lib/text';
 import { t } from '@i18n/index';
 
 const n = t.notFound;
 ---
 
-<SiteLayout title={n.title} description={n.description} page="home">
-  <Section width="narrow" class="not-found">
-    <SectionTitle level={1} size="display" eyebrow={n.eyebrow} title={n.heading} lead={n.lead} align="center" />
-    <div class="not-found-actions">
-      <Button href={href('')} icon="lucide:arrow-right">
-        {t.common.nav.home}
-      </Button>
-      <Button href={href('monitor/')} variant="outline" icon="lucide:layout-dashboard">
-        {t.common.nav.monitor}
-      </Button>
-    </div>
-  </Section>
+<SiteLayout title={n.title} description={n.description}>
+  <section class="not-found">
+    <p class="not-found-eyebrow">{n.eyebrow}</p>
+    <h1 class="not-found-title" set:html={accent(n.heading)} />
+    <p class="not-found-lead">{n.lead}</p>
+    <Button href={href('')} variant="outline" icon="lucide:arrow-left">
+      {n.home}
+    </Button>
+  </section>
 </SiteLayout>

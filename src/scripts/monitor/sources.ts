@@ -1,6 +1,6 @@
 import { decodePacket, type DecodeResult } from '@lib/f1/codec';
 import type { UdpFormat } from '@lib/f1/schema';
-import { createSimulator, type SimCommand } from '@lib/sim/simulator';
+import { createSimulator, type SimSession } from '@lib/sim/simulator';
 import { connectBridge, type BridgeState, type BridgeStatus } from '../bridge';
 import type { Runtime } from './runtime';
 
@@ -34,28 +34,20 @@ export function startBridge(
 
 export interface DemoSource {
   stop(): void;
-  command(command: SimCommand): void;
-  speed: number;
-  paused: boolean;
 }
 
 const TICK_MS = 1000 / 60;
 
-export function startDemo(runtime: Runtime, format: UdpFormat): DemoSource {
-  const sim = createSimulator({ format, rate: 30, seed: Math.floor(Math.random() * 100_000) });
+// Solo per sviluppo (?demo): il simulatore nel browser, senza bridge né gioco
+export function startDemo(runtime: Runtime, format: UdpFormat, session: SimSession): DemoSource {
+  const sim = createSimulator({ format, session, rate: 30, seed: Math.floor(Math.random() * 100_000) });
   let last = performance.now();
-  const demo: DemoSource = {
-    speed: 1,
-    paused: false,
-    stop: () => window.clearInterval(timer),
-    command: (command) => sim.command(command),
-  };
   // Timer invece di rAF: la gara prosegue anche con la scheda in background
   const timer = window.setInterval(() => {
     const now = performance.now();
-    const dt = demo.paused ? 0 : ((now - last) / 1000) * demo.speed;
+    const dt = (now - last) / 1000;
     last = now;
     for (const packet of sim.step(dt)) runtime.push(packet, format);
   }, TICK_MS);
-  return demo;
+  return { stop: () => window.clearInterval(timer) };
 }

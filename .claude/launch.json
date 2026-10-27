@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
       "port": 20780
+    },
+    {
+      "name": "formula-monitor-start-alt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start", "--", "--port", "20790", "--udp", "20877"],
+      "port": 20790
     }
   ]
 }

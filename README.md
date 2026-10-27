@@ -4,18 +4,16 @@
 
 # Formula Monitor
 
-**Il muretto box di F1 25, in verticale.**
+**Il muretto box di F1 25, sul tuo schermo.**
 
-Telemetria live di F1 25 (PS5 · Xbox · PC) su un cruscotto a blocchi pensato per uno schermo 9:16:<br />
-i dati che l'HUD del gioco non ti mostra, organizzati come preferisci.
+Telemetria live di F1 25 (PS5 · Xbox · PC) in qualsiasi browser di casa: timer della sessione,<br />
+classifica con i tempi di settore e mappa del circuito. Pensato per il 9:16, funziona anche a 16:9.
 
 [![CI](https://github.com/rkarmaaa/formula-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/rkarmaaa/formula-monitor/actions/workflows/ci.yml)
-![Node](https://img.shields.io/badge/node-%E2%89%A522.18-3c873a?logo=node.js&logoColor=white)
-![Astro](https://img.shields.io/badge/astro-7-ff5d01?logo=astro&logoColor=white)
-![F1 25](https://img.shields.io/badge/UDP-2025%20%C2%B7%202026-f23d33)
-![License](https://img.shields.io/badge/license-MIT-35c5f0)
-
-<img src="docs/monitor.jpg" width="380" alt="Il monitor a metà gara: posizione, delta live, battaglia, classifica, mappa, gomme e strategia" />
+![Node](https://img.shields.io/badge/node-%E2%89%A522.18-000000?logo=node.js&logoColor=white)
+![Astro](https://img.shields.io/badge/astro-7-000000?logo=astro&logoColor=white)
+![F1 25](https://img.shields.io/badge/UDP-2025%20%C2%B7%202026-8f3fff)
+![License](https://img.shields.io/badge/license-MIT-000000)
 
 </div>
 
@@ -23,14 +21,15 @@ i dati che l'HUD del gioco non ti mostra, organizzati come preferisci.
 
 ## ✨ In breve
 
-|                                  |                                                                                                                                                                                                              |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 📡 **Live dal gioco**            | Un piccolo bridge Node riceve l'UDP di F1 25 e lo porta in qualsiasi browser di casa: telefono, tablet, secondo monitor.                                                                                     |
-| 🧩 **26 blocchi**                | Di diverse dimensioni e importanza: sposta, ridimensiona, aggiungi, togli. Il layout si salva da solo.                                                                                                       |
-| 🕵️ **Quello che l'HUD non dice** | Trend del distacco a giro e _"lo prendi in N giri"_, gomme ed età di ogni avversario, avvisi track limits, rientro previsto dai box, margine carburante, delta live metro per metro, usura della power unit. |
-| 🗺️ **Mappa vera**                | Il gioco non invia il tracciato: Formula Monitor lo ricostruisce dalle auto e lo ricorda. 4 stili, etichette, livelli e orientamento automatico.                                                             |
-| 🎮 **Due versioni**              | F1 25 (formato 2025) e Season Pack 2026 (24 auto, aero attiva, Overtake). Si sceglie al primo avvio.                                                                                                         |
-| 🧪 **Modalità demo e DEV**       | Una gara completa simulata (semafori, sorpassi, pit, VSC, penalità, meteo) che genera pacchetti F1 reali.                                                                                                    |
+|                            |                                                                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📡 **Live dal gioco**      | Un piccolo bridge Node riceve l'UDP di F1 25 e lo porta in qualsiasi browser di casa: telefono, tablet, secondo monitor.                    |
+| ⏱️ **Qualifica in chiaro** | Timer della sessione e classifica di tutti i piloti con giro migliore, distacco e S1·S2·S3: viola il migliore assoluto, verde il personale. |
+| 🗺️ **Mappa subito**        | La forma reale del circuito appare appena entri in sessione, poi si allinea da sola alle posizioni del gioco.                               |
+| ⏳ **Attesa che spiega**   | Finché la sessione non parte il monitor dice cosa manca: PC non raggiungibile, nessun dato UDP, formato sbagliato.                          |
+| 🎮 **Due formati**         | F1 25 (formato 2025) e Season Pack 2026 (22 auto): riconosciuti automaticamente.                                                            |
+| ◼️ **Grafite**             | Design geometrico in bianco e nero, spigoli vivi; il colore è solo dato.                                                                    |
+| 🧪 **Simulazione**         | Dal footer della home: una sessione simulata con tutti i 24 blocchi completi (battaglia, gomme, strategia, ERS, danni, meteo…).             |
 
 ## 🚀 Avvio rapido
 
@@ -45,7 +44,7 @@ npm start
 ```
 
 Il terminale mostra l'indirizzo da aprire, per esempio `http://192.168.1.20:20780`.
-Aprilo dal telefono o dal tablet sulla stessa rete, scegli la versione del gioco e segui i quattro passi.
+Aprilo dal telefono o dal tablet sulla stessa rete: il tutorial è nella home, **Avvia** apre il monitor.
 
 ### 🎛️ Nel gioco
 
@@ -61,31 +60,30 @@ _Opzioni di gioco → Impostazioni → Impostazioni telemetria UDP_
 | UDP Format         | **2025** per F1 25 · **2026** con il Season Pack                          |
 | Your Telemetry     | **Public** (solo online, per mostrare i tuoi dati agli altri)             |
 
-> 💡 Su Windows consenti Node.js nel firewall per le reti private. La guida completa con la risoluzione dei
-> problemi è nella pagina **Guida setup** dell'app.
+> 💡 Su Windows consenti Node.js nel firewall per le reti private.
 
 ## 🌐 Versione online
 
-Il workflow `pages.yml` pubblica il sito su GitHub Pages: guida, brand e monitor in **demo** funzionano ovunque.
-Il monitor online si collega anche al bridge in esecuzione **sullo stesso PC** (`npm start`, porta 20780).
+Il workflow `pages.yml` pubblica il sito su GitHub Pages: home e tutorial funzionano ovunque.
+Il monitor online si collega al bridge in esecuzione **sullo stesso PC** (`npm start`, porta 20780).
 Per il telefono usa l'indirizzo locale stampato da `npm start`: il browser non permette a una pagina HTTPS di
 collegarsi a un indirizzo di rete locale.
 
 ## 🛠️ Sviluppo
 
 ```bash
-npm run dev     # sito + bridge UDP sulla stessa porta → http://localhost:4321
-npm run mock    # gioco finto via UDP (--format 2026 --rate 60 --laps 10)
-npm test        # codec contro le specifiche ufficiali + gara simulata completa
-npm run check   # TypeScript e Astro: 0 errori, 0 warning, 0 hint
+npm run dev                         # sito + bridge UDP sulla stessa porta → http://localhost:4321
+npm run mock -- --session quali     # gioco finto via UDP (--format 2026 --rate 60 --laps 10)
+npm test                            # codec, gara e qualifica simulate, allineamento della mappa
+npm run check                       # TypeScript e Astro: 0 errori, 0 warning, 0 hint
 ```
 
-| Scorciatoia        | Azione                                                                            |
-| ------------------ | --------------------------------------------------------------------------------- |
-| `/monitor/?demo`   | gara simulata nel browser, senza bridge                                           |
-| `D` o `?dev`       | pannello DEV: FPS, pacchetti/s, velocità 1–8×, comandi VSC, penalità, box, ritiro |
-| `E` · `F` · `Esc`  | personalizza · schermo intero · esci dalla modifica                               |
-| `?bridge=IP:20780` | collegati a un bridge su un altro PC                                              |
+| Scorciatoia                   | Azione                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `/monitor/?demo`              | qualifica simulata nel browser con tutti i blocchi, senza bridge né gioco |
+| `?demo=race` · `&format=2026` | gara simulata · formato 2026                                              |
+| `F`                           | schermo intero                                                            |
+| `?bridge=IP:20780`            | collegati a un bridge su un altro PC                                      |
 
 ## 🧠 Come funziona
 
@@ -93,17 +91,18 @@ npm run check   # TypeScript e Astro: 0 errori, 0 warning, 0 hint
 flowchart LR
   G["F1 25<br/>PS5 · Xbox · PC"] -- "UDP :20777" --> B["server/bridge.ts<br/>inoltro dei datagrammi"]
   B -- "WebSocket /ws<br/>frame binari" --> C["src/lib/f1<br/>codec 2025 / 2026"]
-  C --> S["src/lib/telemetry<br/>stato · analisi · vista"]
+  C --> S["src/lib/telemetry<br/>stato · vista · tracciato"]
   S --> W["Blocchi del monitor<br/>binder dichiarativo"]
   D["src/lib/sim<br/>simulatore"] -. "demo / npm run mock" .-> C
 ```
 
 - **Codec dichiarativo**: la stessa definizione legge e scrive i pacchetti; ogni dimensione è verificata nei
   test contro le specifiche ufficiali EA.
-- **Analisi**: delta live sul miglior giro, trend dei distacchi che ignora i pit stop, tracciato appreso.
-- **Binder**: i blocchi sono markup con `data-text`, `data-var`, `data-attr`, `data-list`; solo mappa e grafici
-  hanno un renderer dedicato.
-- **Simulatore**: circuito da spline con profilo di velocità fisico, 20–22 auto, strategie ed eventi.
+- **Mappa**: forma reale del circuito ([bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT)
+  allineata alle coordinate del gioco con un fit di Procrustes; il tracciato osservato la sostituisce man mano.
+- **Binder**: i blocchi sono markup con `data-text`, `data-var`, `data-attr`, `data-list`; solo la mappa ha un
+  renderer dedicato.
+- **Simulatore**: Monza reale con profilo di velocità fisico, 20–22 auto, gara o qualifica.
 
 <details>
 <summary><b>📁 Struttura del progetto</b></summary>
@@ -111,12 +110,12 @@ flowchart LR
 ```
 server/            bridge UDP→WebSocket, avvio di produzione, mock UDP, integrazione dev
 src/lib/f1/        codec binario e schema dei pacchetti 2025/2026
-src/lib/telemetry/ stato gara, vista, tracciato appreso
-src/lib/sim/       simulatore di gara e circuito
-src/data/          versioni di gioco, catalogo blocchi e layout, team, piste, dati demo
+src/lib/telemetry/ stato, vista, tracciato appreso e allineamento della forma reale
+src/lib/sim/       simulatore di gara e qualifica
+src/data/          formati, forme dei circuiti, team, piste, dati demo
 src/i18n/it.ts     tutti i testi dell'interfaccia
-src/components/    pagine, cornice dei blocchi, 26 blocchi
-src/scripts/       runtime del monitor, binder, griglia, renderer canvas
+src/components/    home (illustrazione, tutorial), monitor (barra), blocchi (sessione, classifica, mappa)
+src/scripts/       runtime del monitor, binder, renderer della mappa
 src/styles/        design system SCSS (token, mixin, un partial per componente)
 docs/              protocollo UDP ed elenco completo dei dati
 ```
@@ -126,12 +125,11 @@ docs/              protocollo UDP ed elenco completo dei dati
 <details>
 <summary><b>📦 Scelte tecniche</b></summary>
 
-| Libreria                                | Perché                                                                |
-| --------------------------------------- | --------------------------------------------------------------------- |
-| [Astro](https://astro.build)            | pagine statiche, componenti, SCSS e TypeScript senza framework client |
-| [gridstack.js](https://gridstackjs.com) | griglia drag & resize con collisioni e touch, zero dipendenze         |
-| [ws](https://github.com/websockets/ws)  | WebSocket per il bridge (il browser non riceve UDP)                   |
-| Saira + Geist                           | font self-hosted: numeri tabellari da cruscotto e testo leggibile     |
+| Libreria                               | Perché                                                                |
+| -------------------------------------- | --------------------------------------------------------------------- |
+| [Astro](https://astro.build)           | pagine statiche, componenti, SCSS e TypeScript senza framework client |
+| [ws](https://github.com/websockets/ws) | WebSocket per il bridge (il browser non riceve UDP)                   |
+| Geist + Saira                          | font self-hosted: testo pulito e numeri tabellari da cruscotto        |
 
 Scartati i parser UDP esistenti per Node: decodificano solo lato server, non scrivono pacchetti (servono al
 simulatore) e non coprono il formato 2026.
@@ -141,8 +139,8 @@ simulatore) e non coprono il formato 2026.
 ## 📚 Documenti
 
 - [Come funziona la telemetria UDP di F1 25](docs/UDP-F1-25.md)
-- [Tutti i dati mostrabili e in quale blocco](docs/DATI.md)
-- [Design system e brand](DESIGN-SYSTEM.md)
+- [Tutti i dati mostrabili](docs/DATI.md)
+- [Design system "Grafite"](DESIGN-SYSTEM.md)
 - [Regole di sviluppo](CLAUDE.md)
 
 ## ⚖️ Note
@@ -150,4 +148,6 @@ simulatore) e non coprono il formato 2026.
 Il bridge è pensato per la rete di casa: non ha autenticazione, non esporlo su Internet.
 
 Progetto indipendente, non affiliato né approvato da Formula 1, FIA, Electronic Arts o Codemasters.
-F1® è un marchio di Formula One Licensing BV. Licenza [MIT](LICENSE).
+F1® è un marchio di Formula One Licensing BV. Forme dei circuiti © Tomislav Bacinger (MIT).
+Foto della home: McLaren MP4/9 di Nathan Vaganay su [Pexels](https://www.pexels.com/photo/f1-mclaren-mp4-9-17491423/).
+Licenza [MIT](LICENSE).

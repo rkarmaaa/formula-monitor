@@ -2,21 +2,20 @@
 
 // Righe di terminale con prompt e bottone copia
 .command-list {
-  @include stack($sp-6);
+  @include stack($sp-1);
 
   .command-list-line {
     display: flex;
     align-items: center;
-    gap: $sp-8;
-    padding: $sp-4 $sp-4 $sp-4 $sp-14;
+    gap: $sp-12;
+    min-height: $touch-min-sm;
+    padding-left: $sp-12;
     border: $border-thin solid $color-line;
-    border-radius: $radius-sm;
-    background: $color-black;
+    background: $color-surface;
 
     &::before {
-      content: '›';
-      color: $color-primary;
-      font-weight: $fw-bold;
+      content: '$';
+      color: $color-ink-ghost;
     }
   }
 
@@ -24,15 +23,12 @@
     @include ellipsis;
     flex: 1;
     min-width: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: $color-ink;
   }
 
   .command-list-copy {
     @include icon-button($touch-min-sm);
     flex-shrink: 0;
+    border-left: $border-thin solid $color-line;
 
     &[data-copied] {
       color: $color-personal;

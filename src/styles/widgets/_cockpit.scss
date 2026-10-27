@@ -17,7 +17,6 @@
   // Acceso quando --rev × 15 supera l'indice del LED: nessun JS per LED
   .w-cockpit-led {
     aspect-ratio: 1;
-    border-radius: $radius-round;
     background: $color-personal;
     opacity: clamp(#{$opacity-ghost}, (var(--rev, 0) * #{$rev-leds} - var(--i)) * #{$rev-sharpness}, 1);
 
@@ -67,7 +66,7 @@
   }
 
   .w-cockpit-rpm {
-    @include meter($color-accent, $bar-medium);
+    @include meter($color-ink-strong, $bar-medium);
   }
 
   .w-cockpit-chips {
@@ -79,7 +78,6 @@
   .w-cockpit-chip {
     @include racing-label;
     padding: $sp-cq-xs $sp-cq-sm;
-    border-radius: $radius-xs;
     background: $color-surface-raised;
     font-size: $label-widget;
     color: $color-ink-soft;

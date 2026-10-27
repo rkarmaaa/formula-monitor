@@ -22,15 +22,13 @@
     position: relative;
     height: $bar-medium;
     margin-block: $sp-cq-xs;
-    border-radius: $radius-pill;
     background: $color-line-strong;
   }
 
   .w-strategy-range {
     position: absolute;
     inset: 0;
-    border-radius: inherit;
-    background: $color-accent;
+    background: $color-ink-strong;
     clip-path: inset(0 calc((1 - var(--to, 0)) * 100%) 0 calc(var(--from, 0) * 100%));
   }
 
@@ -40,9 +38,7 @@
     bottom: (-$sp-3);
     left: calc(var(--now, 0) * 100%);
     width: $border-heavy;
-    border-radius: $radius-pill;
     background: $color-white;
-    box-shadow: $glow-primary;
   }
 
   .w-strategy-laps {
@@ -52,7 +48,7 @@
     color: $color-ink-soft;
 
     b {
-      color: $color-accent;
+      color: $color-ink-strong;
     }
   }
 

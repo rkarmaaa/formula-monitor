@@ -2,7 +2,7 @@
 
 // ERS: batteria in ciano, modalità in evidenza quando è "Sorpasso/Boost"
 .w-ers {
-  --tone: #{$color-accent};
+  --tone: #{$color-ink-strong};
   display: flex;
   flex-direction: column;
   justify-content: safe center;
@@ -34,19 +34,18 @@
   .w-ers-mode {
     @include racing-label;
     padding: $sp-cq-xs $sp-cq-sm;
-    border-radius: $radius-xs;
     background: $color-surface-raised;
     font-size: $label-widget;
     color: $color-ink-soft;
   }
 
   &[data-mode='3'] .w-ers-mode {
-    background: $color-accent;
+    background: $color-ink-strong;
     color: $color-bg;
   }
 
   .w-ers-meter {
-    @include meter($color-accent, $bar-medium);
+    @include meter($color-ink-strong, $bar-medium);
   }
 
   .w-ers-meta {

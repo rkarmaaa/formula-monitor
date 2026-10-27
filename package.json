@@ -28,7 +28,6 @@
     "@iconify-json/lucide": "^1.2.147",
     "astro": "^7.4.2",
     "astro-icon": "^1.2.0",
-    "gridstack": "^14.0.0",
     "sass": "^1.106.1",
     "ws": "^8.22.0"
   },

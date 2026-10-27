@@ -100,4 +100,10 @@ test('rifiuta formati sconosciuti e dimensioni errate', () => {
   const truncated = encodePacket(2025, { kind: 'session', data: blank(schemas[2025].codecs.session) }).slice(0, 700);
   assert.equal(decodePacket(truncated).ok, false);
   assert.equal(decodePacket(new ArrayBuffer(4)).ok, false);
+
+  // Coda in più (patch future): il pacchetto resta decodificabile
+  const session = encodePacket(2025, { kind: 'session', data: blank(schemas[2025].codecs.session) });
+  const longer = new Uint8Array(session.byteLength + 16);
+  longer.set(new Uint8Array(session));
+  assert.equal(decodePacket(longer.buffer).ok, true);
 });

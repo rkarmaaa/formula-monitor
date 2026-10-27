@@ -21,7 +21,6 @@
     align-items: center;
     justify-content: center;
     gap: $sp-cq-xs;
-    border-radius: $radius-sm;
     background: radial-gradient(
       circle at center,
       color-mix(in srgb, var(--temp) calc(var(--heat, 0) * #{$mix-heat}), transparent),

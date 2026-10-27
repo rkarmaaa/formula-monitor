@@ -1,158 +1,151 @@
-import { gameById, gameByFormat, isGameId } from '@data/games';
-import type { WidgetId } from '@data/widgets';
 import { fill } from '@lib/text';
-import { href } from '@lib/paths';
 import { t } from '@i18n/index';
-import { getGame, hasGame, setGame } from '../prefs';
 import type { BridgeState, BridgeStatus } from '../bridge';
-import { createBinder } from './bind';
-import { createGrid } from './grid';
+import { createBinder, type Binder } from './bind';
 import { createRuntime } from './runtime';
-import { startBridge, startDemo, type BridgeSource, type DemoSource } from './sources';
-import { initMapDialog } from './map-dialog';
-import { initDevPanel } from './dev';
+import { startBridge, startDemo } from './sources';
+import { createMap } from '../blocks/map';
+import { createInputs } from '../blocks/inputs';
+import { createPositions } from '../blocks/positions';
+import { createGforce } from '../blocks/gforce';
+import { gameByFormat } from '@data/games';
+import type { RaceView } from '@lib/telemetry/view';
 
+// Monitor: schermata di attesa finché il gioco non invia una sessione, poi i blocchi.
+// La versione del gioco (formato 2025/2026) si riconosce dai pacchetti: nessuna scelta da fare.
 const params = new URLSearchParams(location.search);
-const preview = params.has('preview');
-
-// Prima apertura: la versione di gioco si sceglie dalla pagina di avvio (insieme alle istruzioni)
-if (!preview && !params.has('demo') && !hasGame()) location.replace(`${href()}#avvio`);
+const demo = params.has('demo');
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const monitor = $('[data-monitor]');
-const bar = $('[data-bar]');
 const status = $('[data-status]');
 const statusLabel = $('[data-status-label]');
-const banner = $('[data-banner]');
-const bannerText = $('[data-banner-text]');
-const bannerAction = $<HTMLButtonElement>('[data-banner-action]');
-const empty = $('[data-empty]');
-const drawer = $<HTMLDialogElement>('[data-drawer]');
-const toast = $('[data-toast]');
-const devPanel = $('[data-dev]');
+const waitDetail = $('[data-wait-detail]');
+const domain = $('[data-domain]');
 
-const game = gameById(getGame());
+const BOARD_TIMEOUT = 15_000; // senza pacchetti per 15 s si torna all'attesa (menu del gioco)
+const LIVE_TIMEOUT = 2500;
+const FORMAT_TIMEOUT = 5000;
+
 const runtime = createRuntime();
-const grid = createGrid($('[data-grid]'), $('[data-stage]'), game.id, { locked: preview });
-const barBinder = createBinder(bar);
-const mapDialog = initMapDialog($<HTMLDialogElement>('[data-map-dialog]'));
-const gameDialog = $<HTMLDialogElement>('[data-game-dialog]');
-
-let bridge: BridgeSource | undefined;
-let demo: DemoSource | undefined;
 let bridgeState: BridgeState = 'connecting';
 let bridgeStatus: BridgeStatus | undefined;
-let toastTimer: number | undefined;
+let rejected: { format: number; at: number } | undefined;
 
-if (preview) document.documentElement.classList.add('preview');
-
-function notify(message: string) {
-  toast.textContent = message;
-  toast.hidden = false;
-  window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => (toast.hidden = true), 3200);
+// ——— Blocchi: binder dichiarativo + renderer canvas (mappa e, in simulazione, grafici dei blocchi completi) ———
+interface Renderer {
+  update(view: RaceView): void;
 }
+const canvasRenderers: Record<string, (root: HTMLElement) => Renderer> = {
+  inputs: createInputs,
+  positions: createPositions,
+  gforce: createGforce,
+};
 
-function showBanner(message?: string, action?: { label: string; run: () => void }) {
-  banner.hidden = !message;
-  bannerText.textContent = message ?? '';
-  bannerAction.hidden = !action;
-  if (action) {
-    bannerAction.textContent = action.label;
-    bannerAction.onclick = action.run;
+const roots = [...document.querySelectorAll<HTMLElement>('.monitor-board [data-block], [data-bind]')];
+const renderers: Renderer[] = [createMap($('.monitor-board [data-block="map"]'))];
+if (demo) {
+  // Simulazione sviluppatore: anche tutti i blocchi completi, con ogni dato disponibile
+  const all = $('[data-all]');
+  all.hidden = false;
+  monitor.toggleAttribute('data-demo', true);
+  for (const block of all.querySelectorAll<HTMLElement>('[data-block]')) {
+    roots.push(block);
+    const create = canvasRenderers[block.dataset.block ?? ''];
+    if (create) renderers.push(create(block));
   }
 }
+const binders: Binder[] = roots.map((el) => createBinder(el));
 
-// ——— Stato della sorgente ———
-function renderStatus() {
-  const live = performance.now() - runtime.stats.lastPacketAt < 2500 && runtime.stats.lastPacketAt > 0;
+runtime.subscribe((view) => {
+  if (monitor.dataset.view !== 'board') return;
+  for (const binder of binders) binder.update(view, view);
+  for (const renderer of renderers) renderer.update(view);
+});
+
+// Versione del gioco dal formato dei pacchetti: mostra solo i blocchi di quella versione (DRS / aero attiva)
+function applyFormat(format: number) {
+  const game = gameByFormat(format);
+  if (game) document.documentElement.dataset.game = game.id;
+}
+
+// ——— Stato: attesa o cruscotto, etichetta della barra, diagnosi per l'utente ———
+function render() {
+  const now = performance.now();
+  const since = runtime.stats.lastPacketAt ? now - runtime.stats.lastPacketAt : Infinity;
+  const hasSession = Boolean(runtime.view.session);
+  const board = hasSession && since < BOARD_TIMEOUT;
+  const view = board ? 'board' : 'wait';
+  if (monitor.dataset.view !== view) {
+    monitor.dataset.view = view;
+    if (board) {
+      for (const binder of binders) binder.update(runtime.view, runtime.view);
+      for (const renderer of renderers) renderer.update(runtime.view);
+    }
+  }
+
   const state = demo
     ? 'demo'
-    : live
+    : since < LIVE_TIMEOUT
       ? 'live'
-      : bridgeState === 'open'
-        ? 'waiting'
-        : bridgeState === 'connecting'
-          ? 'connecting'
-          : 'offline';
+      : board
+        ? 'paused'
+        : bridgeState === 'open'
+          ? 'waiting'
+          : bridgeState === 'connecting'
+            ? 'connecting'
+            : 'offline';
   status.dataset.state = state;
   statusLabel.textContent = t.monitor.status[state];
-  empty.hidden = Boolean(demo) || runtime.stats.lastPacketAt > 0;
-  document.querySelectorAll<HTMLButtonElement>('[data-action="demo"]').forEach((button) => {
-    button.setAttribute('aria-pressed', String(Boolean(demo)));
-    button.querySelector('.button-label')!.textContent = demo ? t.monitor.actions.demoOff : t.monitor.actions.demoOn;
-  });
-}
-window.setInterval(renderStatus, 1000);
 
-function connect() {
-  bridge = startBridge(runtime, {
+  const d = t.monitor.wait.detail;
+  waitDetail.textContent =
+    rejected && now - rejected.at < FORMAT_TIMEOUT
+      ? fill(d.format, { format: rejected.format })
+      : bridgeStatus?.error
+        ? fill(d.error, { error: bridgeStatus.error })
+        : since < LIVE_TIMEOUT
+          ? d.session
+          : bridgeState === 'open'
+            ? fill(d.listening, { port: bridgeStatus?.udpPort ?? 20777 })
+            : bridgeState === 'connecting'
+              ? d.connecting
+              : d.offline;
+}
+window.setInterval(render, 500);
+
+// Indirizzo da aprire sugli altri dispositivi: su localhost mostriamo l'IP di rete del PC
+function renderDomain() {
+  const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  const ip = bridgeStatus?.addresses[0];
+  domain.textContent = local && ip ? `${ip}${location.port ? `:${location.port}` : ''}` : location.host;
+}
+renderDomain();
+
+if (demo) {
+  const format = params.get('format') === '2026' ? 2026 : 2025;
+  applyFormat(format);
+  startDemo(runtime, format, params.get('demo') === 'race' ? 'race' : 'qualifying');
+} else {
+  startBridge(runtime, {
     onState(state) {
       bridgeState = state;
-      renderStatus();
+      render();
     },
     onStatus(next) {
       bridgeStatus = next;
-      if (next.error) showBanner(fill(t.monitor.bridgeError, { error: next.error }));
-      renderStatus();
+      renderDomain();
     },
-    onFormat(format) {
-      const detected = gameByFormat(format);
-      if (!detected || detected.id === game.id) return showBanner();
-      showBanner(fill(t.monitor.formatMismatch, { got: format, game: t.games[game.id].name }), {
-        label: fill(t.monitor.formatSwitch, { game: t.games[detected.id].name }),
-        run: () => {
-          setGame(detected.id);
-          location.reload();
-        },
-      });
-    },
+    onFormat: applyFormat,
     onReject(result) {
-      if (result.reason === 'format') showBanner(fill(t.monitor.formatUnknown, { got: result.format ?? '?' }));
+      if (result.reason === 'format' && result.format !== undefined)
+        rejected = { format: result.format, at: performance.now() };
     },
   });
 }
+render();
 
-function setDemo(active: boolean) {
-  bridge?.stop();
-  demo?.stop();
-  bridge = undefined;
-  demo = undefined;
-  runtime.reset();
-  showBanner();
-  if (active) demo = startDemo(runtime, game.udpFormat);
-  else connect();
-  if (!preview) {
-    const query = new URLSearchParams(location.search);
-    if (active) query.set('demo', '');
-    else query.delete('demo');
-    const search = query.toString().replace(/=(?=&|$)/g, '');
-    history.replaceState(null, '', `${location.pathname}${search ? `?${search}` : ''}`);
-  }
-  renderStatus();
-}
-
-// ——— Modalità Personalizza ———
-function setEditing(editing: boolean) {
-  monitor.toggleAttribute('data-editing', editing);
-  grid.setEditing(editing);
-  const button = $<HTMLButtonElement>('[data-action="edit"]');
-  button.setAttribute('aria-pressed', String(editing));
-  button.querySelector('.button-label')!.textContent = editing ? t.monitor.actions.done : t.monitor.actions.edit;
-  if (editing) drawer.show();
-  else drawer.close();
-  syncDrawer();
-}
-
-function syncDrawer() {
-  drawer.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((button) => {
-    const added = grid.has(button.dataset.add as WidgetId);
-    button.disabled = added;
-    button.querySelector('.button-label')!.textContent = added ? t.monitor.drawer.added : t.monitor.drawer.add;
-  });
-}
-grid.onChange(syncDrawer);
-
+// ——— Schermo intero e schermo sempre acceso ———
 let wakeLock: WakeLockSentinel | undefined;
 async function keepAwake() {
   try {
@@ -162,57 +155,15 @@ async function keepAwake() {
   }
 }
 
-async function toggleFullscreen() {
-  if (document.fullscreenElement) await document.exitFullscreen();
-  else await document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => undefined);
-}
-
-const actions: Record<string, () => void> = {
-  edit: () => setEditing(!monitor.hasAttribute('data-editing')),
-  demo: () => setDemo(!demo),
-  fullscreen: () => void toggleFullscreen(),
-  dev: () => (devPanel.hidden = !devPanel.hidden),
-  drawer: () => (drawer.open ? drawer.close() : drawer.show()),
-  game: () => gameDialog.showModal(),
-};
-
 document.addEventListener('click', (event) => {
-  const target = event.target as HTMLElement;
-  const action = target.closest<HTMLElement>('[data-action]')?.dataset.action;
-  if (action) actions[action]?.();
-
-  const add = target.closest<HTMLButtonElement>('[data-add]');
-  if (add && !grid.add(add.dataset.add as WidgetId)) notify(t.monitor.drawer.full);
-
-  const widget = target.closest<HTMLElement>('[data-widget]')?.dataset.widget as WidgetId | undefined;
-  if (widget && target.closest('[data-widget-remove]')) grid.remove(widget);
-  if (widget === 'map' && target.closest('[data-widget-settings]')) mapDialog.open();
-
-  if (target.closest('[data-reset]')) grid.reset();
-  if (target.closest('[data-drawer-close]')) setEditing(false);
-  if (target.closest('[data-drawer-hide]')) drawer.close();
-  if (target.closest('[data-dialog-close]')) target.closest('dialog')?.close();
+  if (!(event.target as HTMLElement).closest('[data-action="fullscreen"]')) return;
+  if (document.fullscreenElement) void document.exitFullscreen();
+  else void document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => undefined);
 });
-
-gameDialog.querySelectorAll<HTMLInputElement>('input[name="game"]').forEach((input) => {
-  input.checked = input.value === game.id;
-  input.onchange = () => {
-    if (!isGameId(input.value)) return;
-    setGame(input.value);
-    location.reload();
-  };
-});
-
 document.addEventListener('keydown', (event) => {
-  const typing = (event.target as HTMLElement).closest('input, textarea, select, dialog');
-  if (typing || event.metaKey || event.ctrlKey || event.altKey) return;
-  const key = event.key.toLowerCase();
-  if (key === 'e') actions.edit!();
-  if (key === 'f') actions.fullscreen!();
-  if (key === 'd') actions.dev!();
-  if (key === 'escape' && monitor.hasAttribute('data-editing')) setEditing(false);
+  if (event.key.toLowerCase() === 'f' && !event.metaKey && !event.ctrlKey && !event.altKey)
+    $('[data-action="fullscreen"]').click();
 });
-
 document.addEventListener('fullscreenchange', () => {
   document.documentElement.classList.toggle('fullscreen', Boolean(document.fullscreenElement));
   if (document.fullscreenElement) void keepAwake();
@@ -221,18 +172,3 @@ document.addEventListener('fullscreenchange', () => {
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && document.fullscreenElement) void keepAwake();
 });
-
-runtime.subscribe((view) => {
-  grid.update(view);
-  barBinder.update(view, view);
-});
-
-initDevPanel(
-  devPanel,
-  runtime,
-  () => demo,
-  () => (demo ? t.monitor.status.demo : bridgeStatus ? `bridge · UDP ${bridgeStatus.udpPort}` : '—'),
-);
-if (params.has('dev')) devPanel.hidden = false;
-
-setDemo(preview || params.has('demo'));

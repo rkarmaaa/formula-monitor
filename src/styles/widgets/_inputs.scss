@@ -17,7 +17,6 @@
   .w-inputs-pedal {
     position: relative;
     width: $bar-medium;
-    border-radius: $radius-pill;
     background: $color-line-strong;
     overflow: hidden;
 
@@ -43,7 +42,6 @@
     position: relative;
     flex: 1;
     min-width: 0;
-    border-radius: $radius-xs;
     background: $color-bg;
   }
 
@@ -59,8 +57,7 @@
     bottom: 0;
     width: $sp-16;
     height: $border-heavy;
-    border-radius: $radius-pill;
-    background: $color-accent;
+    background: $color-ink-strong;
     transform: translateX(calc(-50% + var(--s, 0) * #{$steer-travel}));
     transition: transform $dur-data linear;
   }

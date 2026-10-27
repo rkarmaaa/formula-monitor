@@ -2,8 +2,7 @@
 
 h1,
 h2,
-h3,
-h4 {
+h3 {
   @include title-display($fs-h2);
 }
 
@@ -14,17 +13,13 @@ h1 {
 h3 {
   @include type-size($fs-h3);
   line-height: $lh-heading;
-}
-
-h4 {
-  @include type-size($fs-h4);
-  line-height: $lh-heading;
+  letter-spacing: $tracking-normal;
 }
 
 strong,
 b {
   font-weight: $fw-semibold;
-  color: $color-ink;
+  color: $color-ink-strong;
 }
 
 small {
@@ -34,10 +29,6 @@ small {
 code,
 kbd {
   @include numeric($stretch-normal);
-  padding: $sp-1 $sp-6;
-  border: $border-thin solid $color-line-strong;
-  border-radius: $radius-xs;
-  background: $color-surface-raised;
-  font-size: $fs-code;
-  color: $color-ink;
+  font-size: 0.95em;
+  color: $color-ink-strong;
 }

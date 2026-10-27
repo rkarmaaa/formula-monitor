@@ -1,0 +1,70 @@
+@use '../abstracts' as *;
+
+// Sessione: circuito e tipo a sinistra, timer protagonista a destra (in gara il giro)
+.session-clock {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $sp-cq-md;
+  height: 100%;
+  padding: $sp-cq-md;
+  // L'interlinea stretta del numero grande sporge di qualche pixel: resta dentro il blocco
+  overflow: hidden;
+
+  .session-clock-name {
+    @include stack($sp-cq-xs);
+    min-width: 0;
+    font-size: $value-md;
+    font-weight: $fw-semibold;
+    line-height: $lh-heading;
+    color: $color-ink-strong;
+
+    > span {
+      @include ellipsis;
+    }
+  }
+
+  .session-clock-type {
+    @include label($label-block);
+    color: $color-ink-faint;
+  }
+
+  .session-clock-timer,
+  .session-clock-laps {
+    @include stack($sp-cq-xs);
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+
+  .session-clock-label {
+    @include label($label-block);
+    color: $color-ink-faint;
+  }
+
+  .session-clock-value {
+    @include numeric($stretch-semi);
+    font-size: $value-hero;
+    font-weight: $fw-semibold;
+    line-height: $lh-display;
+    letter-spacing: $tracking-tight;
+    color: $color-ink-strong;
+  }
+
+  .session-clock-total {
+    color: $color-ink-ghost;
+  }
+
+  .session-clock-laps {
+    display: none;
+  }
+
+  &[data-race] {
+    .session-clock-timer {
+      display: none;
+    }
+
+    .session-clock-laps {
+      display: flex;
+    }
+  }
+}

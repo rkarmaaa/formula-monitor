@@ -1,5 +1,6 @@
 @use 'sass:list';
 @use 'sass:math';
+@use 'sass:meta';
 @use 'variables' as *;
 @use 'functions' as *;
 
@@ -19,6 +20,11 @@
     }
   } @else if $breakpoint == big-desktop {
     @media only screen and (min-width: $bp-big-desktop) {
+      @content;
+    }
+  } @else if $breakpoint == landscape {
+    // Deroga motivata: il monitor dipende dalle proporzioni dello schermo (9:16 o 16:9), non dalla larghezza
+    @media only screen and (min-aspect-ratio: $ratio-landscape) {
       @content;
     }
   } @else {
@@ -50,12 +56,15 @@
 @mixin type-size($token) {
   @if list.length($token) == 2 {
     @include fluid-type(list.nth($token, 1), list.nth($token, 2));
-  } @else {
+  } @else if meta.type-of($token) == number and math.unit($token) == 'px' {
     font-size: rem($token);
+  } @else {
+    // Valori relativi (em, clamp con cq…): usati così come sono
+    font-size: $token;
   }
 }
 
-// Titoli display: Saira corsivo leggermente condensato, *accento* in rosso segnale
+// Titoli: Geist pesante, interlinea stretta, tracking negativo. L'*accento* passa al grigio.
 @mixin title-display($size: $fs-h2) {
   $lh: $lh-title;
 
@@ -64,53 +73,57 @@
   }
 
   @include type-size($size);
-  font-family: $font-display;
-  font-weight: $fw-title;
-  font-stretch: $stretch-semi;
-  font-style: italic;
+  font-family: $font-body;
+  font-weight: $fw-semibold;
   line-height: $lh;
   letter-spacing: $tracking-title;
-  text-transform: uppercase;
   text-wrap: balance;
-  color: $color-ink;
+  color: $color-ink-strong;
 
   em {
-    font-style: italic;
-    color: $color-primary;
+    font-style: normal;
+    color: $color-ink-faint;
   }
 }
 
-// Etichetta da cruscotto: maiuscolo condensato con tracking ampio
-@mixin racing-label($size: $fs-micro) {
+// Micro-etichetta maiuscola con tracking ampio (etichette, intestazioni di colonna)
+@mixin label($size: $fs-micro) {
   @include type-size($size);
-  font-family: $font-display;
-  font-weight: $fw-semibold;
-  font-stretch: $stretch-condensed;
+  font-family: $font-body;
+  font-weight: $fw-medium;
   line-height: $lh-none;
   letter-spacing: $tracking-micro;
   text-transform: uppercase;
 }
 
-@mixin eyebrow($color: $color-primary) {
-  @include racing-label($fs-12);
+// Etichetta condensata per i blocchi densi della simulazione completa: stessa voce dei numeri (Saira)
+@mixin racing-label($size: $fs-micro) {
+  @include label($size);
+  font-family: $font-display;
+  font-stretch: $stretch-condensed;
+  letter-spacing: $tracking-wide;
+}
+
+// Etichetta preceduta da un trattino orizzontale: firma geometrica del brand
+@mixin eyebrow($color: $color-ink-soft) {
+  @include label($fs-11);
   display: inline-flex;
   align-items: center;
-  gap: $sp-10;
+  gap: $sp-12;
   color: $color;
 
   &::before {
-    @include tick($color);
+    @include rule($tick);
   }
 }
 
-// Trattino inclinato rosso: firma grafica del brand davanti a titoli ed etichette
-@mixin tick($color: $color-primary, $height: $tick-height) {
+// Filo orizzontale di 1px
+@mixin rule($width: 100%, $color: currentColor) {
   content: '';
   flex-shrink: 0;
-  width: $tick-width;
-  height: $height;
+  width: $width;
+  height: $rule;
   background: $color;
-  transform: skewX($skew);
 }
 
 // Numeri da cruscotto: cifre tabellari, nessun salto di larghezza quando cambiano
@@ -149,23 +162,15 @@
   margin-inline: auto;
 }
 
-@mixin section-space($size: md) {
-  @if $size == sm {
-    padding-block: $section-space-sm;
+@mixin section-space {
+  padding-block: $section-space;
 
-    @include respond(phone) {
-      padding-block: $section-space-sm-phone;
-    }
-  } @else {
-    padding-block: $section-space;
+  @include respond(tab-port) {
+    padding-block: $section-space-tab;
+  }
 
-    @include respond(tab-port) {
-      padding-block: $section-space-tab;
-    }
-
-    @include respond(phone) {
-      padding-block: $section-space-phone;
-    }
+  @include respond(phone) {
+    padding-block: $section-space-phone;
   }
 }
 
@@ -187,28 +192,10 @@
   gap: $gap;
 }
 
-@mixin grid-cols($n, $gap: $grid-gap) {
-  display: grid;
-  grid-template-columns: repeat($n, minmax(0, 1fr));
-  gap: $gap;
-}
-
-// ——— Superfici ———
-@mixin glass($blur: 14px) {
-  background: $color-bg-glass;
-  backdrop-filter: saturate(1.4) blur($blur);
-}
-
-// Angolo tagliato in alto a destra, come le grafiche TV del motorsport
-@mixin cut-corner($size: $cut) {
-  clip-path: polygon(0 0, calc(100% - #{$size}) 0, 100% $size, 100% 100%, 0 100%);
-}
-
-// Barra orizzontale riempita da --v (0..1) impostata dal binder
-@mixin meter($color: $color-accent, $height: $bar-thin) {
+// Barra squadrata riempita da --v (0..1) impostata dal binder
+@mixin meter($color: $color-ink-strong, $height: $bar-thin) {
   position: relative;
   height: $height;
-  border-radius: $radius-pill;
   background: $color-line-strong;
   overflow: hidden;
 
@@ -216,7 +203,6 @@
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: inherit;
     background: $color;
     transform-origin: left center;
     transform: scaleX(var(--v, 0));
@@ -234,34 +220,24 @@
 
 @mixin button-base {
   @include focus-ring;
-  @include type-size($fs-button);
+  @include label($fs-button);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: $sp-10;
+  gap: $sp-12;
   min-height: $touch-min;
   padding: 0 $sp-24;
   border: $border-thin solid transparent;
-  border-radius: $radius-sm;
-  font-family: $font-display;
-  font-weight: $fw-bold;
-  font-stretch: $stretch-semi;
+  border-radius: $radius-none;
+  font-weight: $fw-semibold;
   letter-spacing: $tracking-wide;
-  text-transform: uppercase;
-  line-height: $lh-none;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
   transition:
-    transform $dur-fast $ease-out,
-    box-shadow $dur-base $ease-out,
     background-color $dur-base $ease-out,
     color $dur-base $ease-out,
     border-color $dur-base $ease-out;
-
-  &:active {
-    transform: scale($press-scale);
-  }
 
   &:disabled {
     opacity: $opacity-disabled;
@@ -269,51 +245,34 @@
   }
 }
 
-// Bottone icona compatto (barre strumenti)
+// Bottone quadrato con sola icona (barra del monitor)
 @mixin icon-button($size: $touch-min-sm) {
   @include flex-center;
-  @include focus-ring;
+  @include focus-ring(-$focus-width);
   width: $size;
   height: $size;
-  border-radius: $radius-sm;
   color: $color-ink-soft;
   transition:
     background-color $dur-fast $ease-out,
     color $dur-fast $ease-out;
 
   @include hover {
-    background: $color-surface-high;
-    color: $color-ink;
+    background: $color-white-hover;
+    color: $color-ink-strong;
   }
 }
 
 // ——— Reveal (stati guidati da data-reveal + .visible) ———
 @mixin reveal-base {
   opacity: 0;
+  translate: 0 $reveal-distance;
   transition:
     opacity $dur-reveal $ease-out,
-    translate $dur-reveal $ease-out,
-    scale $dur-reveal $ease-out;
+    translate $dur-reveal $ease-out;
   transition-delay: calc(var(--i, 0) * #{$stagger});
 }
 
-@mixin reveal-variant($type: up) {
-  @if $type == up {
-    translate: 0 $reveal-distance;
-  } @else if $type == left {
-    translate: (-$reveal-distance) 0;
-  } @else if $type == right {
-    translate: $reveal-distance 0;
-  } @else if $type == scale {
-    scale: 0.94;
-  } @else if $type == visible {
-    opacity: 1;
-    translate: 0 0;
-    scale: 1;
-  }
-}
-
-@mixin stagger($max: 12) {
+@mixin stagger($max: 8) {
   @for $i from 1 through $max {
     &:nth-child(#{$i}) {
       --i: #{$i - 1};

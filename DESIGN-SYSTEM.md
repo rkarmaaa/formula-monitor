@@ -1,104 +1,135 @@
-# Design system — Formula Monitor "Carbon & Signal"
+# Design system — Formula Monitor "Grafite"
 
-Documento autonomo per ampliare il progetto con la stessa filosofia. Tutti i valori vivono in
-`src/styles/abstracts/_variables.scss`; qui si spiega **quando** usarli. La pagina `/brand/` mostra logo,
-palette e tipografia dal vivo.
+Documento di riferimento per i prossimi aggiornamenti. Tutti i valori vivono in
+`src/styles/abstracts/_variables.scss`, i mixin in `_mixins.scss`; qui si spiega **quando** usarli.
 
 ## 1. Filosofia
 
-Un muretto box, non un videogioco: superfici scure e silenziose, un solo rosso che indica ciò che conta,
-numeri grandi leggibili a un metro di distanza.
+Un monitor da muretto box, non un sito vetrina: nero assoluto, scala di grigi, bianco per le azioni.
+Geometrico, minimale, spigoli vivi.
 
-1. **Il dato prima della decorazione.** Ogni blocco ha un numero protagonista; il resto è contesto in grigio.
-2. **Un rosso per schermata.** `$color-primary` è azione principale o allarme, mai decorazione.
-3. **Colori dei tempi come in TV.** Viola = migliore assoluto, verde = personale, giallo = più lento.
-4. **Cifre tabellari sempre** (`@include numeric`): i valori non devono "ballare" quando cambiano.
-5. **Inclinazione a −12°** come firma: simbolo del logo, trattino delle etichette, corsivo dei titoli.
+1. **Il colore è solo dato.** L'interfaccia è in bianco e nero; i colori compaiono solo per informare:
+   viola (migliore assoluto), verde (migliore personale), mescole, colori dei team, bandiere.
+2. **Spigoli vivi ovunque.** Nessun `border-radius`, nessun angolo tagliato, nessuna maschera o `clip-path`
+   sulle forme. Separatori e bordi sono fili da 1 px.
+3. **Gerarchia con i grigi, non con i box.** Testo principale `$color-ink-strong`, secondario `-soft`,
+   etichette `-faint`, inattivo `-ghost`. Le superfici si distinguono di pochi punti di grigio.
+4. **Bottoni chiari su fondo scuro.** Azione principale = pieno bianco con testo nero (`.button`);
+   secondaria = filo chiaro (`.button.outline`).
+5. **Cifre tabellari sempre** (`@include numeric`): i numeri non devono "ballare" quando cambiano.
+6. **Etichette maiuscole minuscole** (`@include label`) con tracking ampio; un trattino orizzontale
+   (`@include eyebrow`) è la firma grafica davanti agli occhielli.
 
-Vietato: gradienti arcobaleno, glow su tutto, più di un accento caldo per blocco, testo bianco puro su rosso
-per paragrafi lunghi, tema chiaro (il prodotto vive in ambienti bui accanto a uno schermo).
+Vietato: raggi, ombre colorate, gradienti decorativi nell'interfaccia, colori fuori dalla semantica dei dati,
+icone piene (le icone Lucide hanno tratto 1.5 e terminali squadrati).
 
 ## 2. Token
 
 ### Colori
 
-| Token                                                   | Hex                         | Uso                                       |
-| ------------------------------------------------------- | --------------------------- | ----------------------------------------- |
-| `$color-bg` / `$color-bg-alt`                           | #08090C / #0C0E13           | fondo pagina / sezioni alternate, barre   |
-| `$color-surface` / `-raised` / `-high`                  | #11141B / #171B24 / #1E2330 | blocchi / elementi interni / hover e chip |
-| `$color-line` / `-strong`                               | bianco-blu 7% / 14%         | bordi e separatori                        |
-| `$color-ink` / `-soft` / `-faint`                       | #F1F3F7 / #A3ABBA / #6A7285 | testo / secondario / etichette            |
-| `$color-primary` (+ `-deep`, `-tint`, `-line`, `-glow`) | #F23D33                     | azione principale, allarmi, giocatore     |
-| `$color-accent` (+ `-tint`, `-line`)                    | #35C5F0                     | telemetria, focus, ERS, finestra pit      |
-| `$color-best` / `$color-personal` / `$color-slower`     | #B57CFF / #36D27C / #F5C84A | viola / verde / giallo dei tempi          |
-| `$color-warn`                                           | #FF9D3A                     | attenzione (usura, temperature alte)      |
-| `$tyre-soft/medium/hard/inter/wet`                      |                             | mescole, solo su `tyre-chip`              |
-| `$temp-cold/ok/hot/over`                                |                             | scala temperature di gomme, freni, motore |
+| Token                                                        | Valore                  | Uso                                     |
+| ------------------------------------------------------------ | ----------------------- | --------------------------------------- |
+| `$gray-0` … `$gray-1000`                                     | #000 → #FFF in 13 passi | scala base, non usarla direttamente     |
+| `$color-bg` / `$color-bg-alt`                                | #000 / #070707          | fondo pagina / riquadri secondari       |
+| `$color-surface` / `-raised` / `-high`                       | #0D0D0D → #1B1B1B       | intestazioni tabelle, chip, tag         |
+| `$color-line` / `-strong`                                    | bianco 8% / 18%         | fili, separatori, bordi dei bottoni     |
+| `$color-ink-strong` / `-ink` / `-soft` / `-faint` / `-ghost` | #FFF → #575757          | testo, dal più importante all'inattivo  |
+| `$color-primary` / `-deep` / `$color-on-primary`             | #FFF / #C8C8C8 / #000   | bottone principale, hover, testo sopra  |
+| `$color-player`                                              | bianco 10%              | riga del giocatore in classifica        |
+| `$color-best` / `$color-personal`                            | #8F3FFF / #22C55E       | viola (assoluto, fondo pieno) / verde   |
+| `$color-warn` / `$color-danger` / `$color-live`              |                         | bandiere gialle, offline, stato "live"  |
+| `$tyre-soft/medium/hard/inter/wet`                           |                         | mescole (chip in classifica)            |
+| `$map-*`                                                     |                         | colori del canvas della mappa           |
+| `$art-*`                                                     |                         | fili di luce dell'illustrazione in home |
 
 I colori dei team sono **dati** (`src/data/teams.ts`), applicati come custom property `--team`.
 
 ### Tipografia
 
-**Saira** (variabile, assi peso e larghezza) per titoli, numeri ed etichette; **Geist** per testo e interfaccia.
+**Geist** per titoli, testo e interfaccia; **Saira** (asse larghezza) solo per i numeri: tempi, timer,
+classifica (`@include numeric($stretch-condensed)` dove serve densità).
 
-- `@include title-display($fs-*)`: Saira corsivo, larghezza `$stretch-semi`, maiuscolo, `*accento*` in rosso.
-- `@include racing-label`: Saira condensata maiuscola con tracking ampio (etichette dei blocchi).
-- `@include numeric`: cifre tabellari, per ogni valore che cambia.
-- Pagine: scala fluida `$fs-display` 46→104 · `$fs-h1` 38→72 · `$fs-h2` 30→52 · `$fs-h3` 21→26 · `$fs-body` 15→16.
-- **Blocchi**: i valori scalano con il box tramite container query: `$value-xl` (numero protagonista),
-  `$value-lg`, `$value-md`, `$value-sm`, `$value-xs`, `$label-widget`; `$value-list` per elenchi lunghi.
+- `@include title-display($fs-*)`: Geist semibold, interlinea stretta, tracking negativo; `*accento*` → grigio.
+- `@include label($size)`: maiuscolo, tracking ampio (etichette, intestazioni di colonna, stato).
+- `@include racing-label($size)`: come `label` ma in Saira condensata, per i blocchi densi della simulazione.
+- `@include eyebrow`: etichetta preceduta da un trattino orizzontale.
+- Pagine: scala fluida `$fs-display` 44→96 · `$fs-h1` 34→64 · `$fs-h2` 28→44 · `$fs-h3` 18→22 · `$fs-body` 15→16.
+- **Blocchi**: i valori scalano con il box tramite container query: `$value-hero` (timer),
+  `$value-md`, `$label-block`, `$value-list` (righe della classifica, scala con larghezza e altezza).
+  `type-size()` accetta sia token in px sia valori relativi (em, clamp con cq…).
 
-### Spazi, forme, motion
+### Spazi, layout, motion
 
-Spazi `$sp-0`…`$sp-160` (nome in px) e `$sp-cq-xs/sm/md` relativi al blocco · radius `xs sm md lg xl pill round`
-· angolo tagliato `$cut`/`$cut-lg` (`@include cut-corner`) · durate `fast base slow reveal pulse data` ·
-`$dur-data` per le barre che seguono i dati.
+Spazi `$sp-0`…`$sp-128` (nome = px) e `$sp-cq-xs/sm/md` relativi al blocco · `$touch-min` 48 px ·
+contenitori `$container-default/narrow` · durate `fast base slow reveal pulse data`, easing `$ease-out`.
+Colonne della classifica in `em` (`$col-*`, `$row-height`): seguono la dimensione del testo della riga.
+
+### Responsive
+
+`respond(phone | tab-port | tab-land | big-desktop)` per la larghezza (desktop-first).
+`respond(landscape)` è una deroga motivata: il monitor dipende dalle **proporzioni** dello schermo
+(`min-aspect-ratio: 1/1`). Priorità al 9:16, il 16:9 è il caso secondario.
 
 ## 3. Componenti
 
 **Classi root esistenti** (una variante non può avere uno di questi nomi):
-`section` `container` `site-header` `site-footer` `monitor` `icon` `skip-link` `button` `logo` `section-title`
-`bridge-pill` `game-picker` `udp-settings` `command-list` `widget` `tyre-chip` `battle-car` `drawer`
-`panel-dialog` `dev-panel` `toast` `home-hero` `home-steps` `home-features` `guide-flow` `guide-platforms`
-`guide-find-ip` `guide-faq` `guide-cta` `brand-logos` `brand-palette` `brand-type` `brand-rules` `not-found`
-e i blocchi `w-position` `w-lap` `w-delta` `w-cockpit` `w-battle` `w-board` `w-map` `w-tyres` `w-strategy`
-`w-fuel` `w-ers` `w-flags` `w-sectors` `w-inputs` `w-events` `w-drs` `w-aero` `w-session` `w-weather` `w-laps`
-`w-positions` `w-damage` `w-engine` `w-brakes` `w-gforce` `w-trap`.
+`button` `icon` `skip-link` `command-list` `udp-settings` `hero-car` `block` `monitor-bar` `monitor-wait`
+`monitor` `site-footer` `home-hero` `home-tutorial` `not-found` `tyre-chip` `battle-car`, i blocchi base
+`session-clock` `timing-tower` `track-map` e i blocchi completi della simulazione `w-position` `w-lap` `w-delta`
+`w-cockpit` `w-battle` `w-board` `w-tyres` `w-strategy` `w-fuel` `w-ers` `w-flags` `w-sectors` `w-inputs`
+`w-events` `w-drs` `w-aero` `w-weather` `w-laps` `w-positions` `w-damage` `w-engine` `w-brakes` `w-gforce` `w-trap`.
 
-| Componente          | Anatomia                                                                                 | Varianti / stati                                            | Quando                                    |
-| ------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------- |
-| `ui/Button`         | `button` › icona, `button-label`, `button-arrow`                                         | `primary` `outline` `ghost`; `sm` `md` `lg`; `aria-pressed` | ogni azione                               |
-| `brand/Logo`        | `logo` › `logo-mark`, `logo-word`                                                        | `full` `mark`; `md` `lg`; `mono`                            | header, footer, barra                     |
-| `monitor/Widget`    | `widget` › `widget-head` (`widget-title`, `widget-meta`, `widget-action`), `widget-body` | `hero` `primary` `secondary` `detail`                       | cornice di ogni blocco                    |
-| `monitor/TyreChip`  | `tyre-chip`                                                                              | `data-compound` soft…wet                                    | ogni mescola                              |
-| `monitor/BattleCar` | `battle-car` › label, driver, gap, trend, catch, tyre                                    | `ahead` `behind`; `data-drs`                                | blocco Battaglia                          |
-| `setup/GamePicker`  | `game-picker` › `game-option`                                                            | `compact`                                                   | avvio, guida, dialog del monitor          |
-| `setup/UdpSettings` | `udp-settings` › tabella                                                                 | `detailed`                                                  | avvio (compatta), guida (con motivazioni) |
+I blocchi completi (`src/components/widgets/`, partial in `src/styles/widgets/`) usano gli stessi token: niente
+raggi né bagliori, telemetria in bianco; restano colorati solo i dati (temperature, mescole, bandiere, tempi).
+I loro token dedicati (`$value-xl/lg/sm/xs`, `$cq-*`, `$temp-*`, `$col-*`…) sono nella sezione "Blocchi della
+simulazione completa" di `_variables.scss`.
 
-## 4. Blocchi del monitor
+| Componente           | Anatomia                                                         | Varianti / stati                         |
+| -------------------- | ---------------------------------------------------------------- | ---------------------------------------- |
+| `ui/Button`          | `button` › icona, `button-label`, `button-arrow`                 | `primary` `outline` `ghost`; `sm` `lg`   |
+| `home/HeroCar`       | `hero-car` › `hero-car-photo` (foto reale) + sfumature `::after` | B/N e scurita con `$hero-photo-*`        |
+| `setup/CommandList`  | `command-list` › riga, codice, bottone copia                     | `live="url"` = URL dal bridge            |
+| `setup/UdpSettings`  | `udp-settings` › tabella completa (opzione, valore, note)        | su telefono ogni riga diventa una scheda |
+| `monitor/MonitorBar` | `monitor-bar` › dominio, stato, sessione, schermo intero, esci   | `data-state` live/paused/waiting/…       |
+| `blocks/Block`       | `block` › `block-head` (`block-title`), `block-body` (container) | `data-block` session/timing/map          |
 
-Ogni blocco è un componente in `src/components/widgets/` con una root `w-*` e il suo partial in
-`src/styles/widgets/`. Il corpo del blocco è un container (`container-type: size`): dimensioni dei valori,
-colonne e dettagli secondari si adattano con `@container` (soglie `$cq-*` in larghezza, `$cqh-*` in altezza).
+## 4. Monitor
 
-Per aggiungerne uno: voce nel catalogo `src/data/widgets.ts` (tier, categoria, icona, misure), testi in
-`t.widgets`, componente con gli attributi del binder, partial `w-nome`, registrazione in `WidgetTemplates.astro`
-e in `main.scss`. Serve JS solo per canvas o stato locale (`src/scripts/widgets/`).
+- **Attesa** (`data-view="wait"`): titolo "In attesa…", una riga di spiegazione, diagnosi
+  (`data-wait-detail`: PC non raggiungibile, nessun dato UDP, formato sbagliato…) e il bottone Tutorial.
+- **Cruscotto** (`data-view="board"`) appena arriva il pacchetto Session; torna all'attesa dopo 15 s senza dati.
+- Layout 9:16: sessione · mappa · classifica impilate. 16:9: classifica a sinistra, sessione + mappa a destra.
+  Le aree sono in `layout/_monitor.scss` (`grid-template-areas`): un blocco nuovo = un'area in entrambi i layout.
+
+### Aggiungere un blocco
+
+1. Componente in `src/components/blocks/` dentro `<Block id="…" title="…">`, con una root propria.
+2. Partial in `src/styles/blocks/` registrato in `main.scss`; testi in `t.monitor.blocks`.
+3. Area in `layout/_monitor.scss` per 9:16 e 16:9.
+4. Dati derivati in `src/lib/telemetry/view.ts`; serve JS solo per canvas (`src/scripts/blocks/`).
 
 ### Attributi del binder
 
-`data-text="percorso|formatter:arg"` · `data-var="--v:percorso|unit"` · `data-attr="data-tone:percorso|tone:tyre"`
-· `data-list="percorso"` con `<template>` e opzionali `data-key`, `data-limit`, `data-flip`. Percorsi relativi
-all'elemento corrente della lista; `@` riparte dalla vista. Formatter in `src/scripts/monitor/formatters.ts`.
+`data-text="percorso|formatter:arg"` · `data-var="--v:percorso|formatter"` · `data-attr="data-x:percorso|formatter"`
+· `data-list="percorso"` con `<template>` e opzionali `data-key`, `data-limit`, `data-flip`.
+Percorsi relativi all'elemento corrente della lista; `@` riparte dalla vista. Formatter in
+`src/scripts/monitor/formatters.ts`.
 
-## 5. Mappa
+### Classifica (`timing-tower`)
 
-Preset definiti come custom property `--map-*` in `_map.scss` (letti dal canvas): `broadcast` (pista larga con
-bordo e settori a filo), `minimal`, `neon` (bagliore), `blueprint` (griglia tecnica). Gialli e zone DRS sono
-sempre del colore semantico, indipendentemente dal preset.
+Settori del giro in corso appena chiusi a piena luminosità (`data-live`), quelli del giro precedente attenuati.
+`data-tone`: `best` = fondo viola pieno (solo il tempo più basso della sessione, anche se appena fatto),
+`personal` = testo verde, `invalid` = barrato, `slower` = grigio. Riga del giocatore: fondo `$color-player`
+e posizione in negativo (bianco pieno).
 
-## 6. Motion
+### Mappa (`track-map`)
 
-Pagine: `data-reveal` (`up` `fade` `left` `right` `scale`) e `data-reveal-group`. Monitor: solo transizioni
-brevi sui dati (`$dur-data`), ingresso righe (`slide-in`), FLIP della classifica sui sorpassi, lampeggio per
-safety car e carburante critico. Con `prefers-reduced-motion` restano solo i cambi di valore.
+Disegnata su canvas, colori dalle custom property `--map-*`. Tracciato grigio, tacche bianche (traguardo) e
+grigie (settori), DRS tratteggiato, auto come quadrati nel colore del team, giocatore più grande e bordato
+di bianco, etichetta solo per giocatore e P1. Sempre orientata a nord come il circuito reale.
+
+## 5. Motion
+
+Home: ingresso lento dell'auto dal buio (`emerge`), reveal discreto del tutorial (`data-reveal`).
+Monitor: solo transizioni brevi sui dati, FLIP della classifica ai sorpassi, puntini di "In attesa…" e
+pallino "live". Con `prefers-reduced-motion` restano solo i cambi di valore.

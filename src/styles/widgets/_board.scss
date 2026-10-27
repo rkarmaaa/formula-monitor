@@ -53,13 +53,12 @@
       top: 18%;
       bottom: 18%;
       width: $border-heavy;
-      border-radius: $radius-pill;
       background: var(--team);
     }
 
     &[data-player] {
-      background: $color-primary-tint;
-      box-shadow: inset 0 0 0 $border-thin $color-primary-line;
+      background: $color-player;
+      box-shadow: inset 0 0 0 $border-thin $color-line-strong;
     }
 
     &[data-out] {
@@ -107,12 +106,11 @@
   .w-board-tag {
     display: none;
     padding: $sp-1 $sp-4;
-    border-radius: $radius-xs;
     background: $color-surface-high;
     color: $color-ink;
 
     &.pit {
-      background: $color-accent;
+      background: $color-ink-strong;
       color: $color-bg;
     }
   }

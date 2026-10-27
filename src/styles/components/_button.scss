@@ -1,16 +1,14 @@
 @use '../abstracts' as *;
 
-// Bottone: primary (rosso segnale), outline (filo), ghost (superficie). Angolo tagliato di firma.
+// Bottone: primary (pieno bianco), outline (filo chiaro), ghost (solo testo). Spigoli vivi.
 .button {
   @include button-base;
-  @include cut-corner($cut);
   background: $color-primary;
-  color: $color-white;
-  box-shadow: $shadow-button;
+  color: $color-on-primary;
 
   .icon {
-    width: $icon-md;
-    height: $icon-md;
+    width: $icon-sm;
+    height: $icon-sm;
   }
 
   .button-arrow {
@@ -19,7 +17,6 @@
 
   @include hover {
     background: $color-primary-deep;
-    box-shadow: $shadow-button-hover;
 
     .button-arrow {
       transform: translateX($arrow-shift);
@@ -29,49 +26,31 @@
   &.outline {
     background: transparent;
     border-color: $color-line-strong;
-    color: $color-ink;
-    box-shadow: none;
+    color: $color-ink-strong;
 
     @include hover {
-      background: $color-surface-raised;
-      border-color: $color-ink-faint;
+      background: $color-white-hover;
+      border-color: $color-ink-strong;
     }
   }
 
   &.ghost {
-    background: $color-surface-raised;
-    color: $color-ink;
-    box-shadow: none;
+    background: transparent;
+    color: $color-ink-soft;
 
     @include hover {
-      background: $color-surface-high;
+      color: $color-ink-strong;
     }
-  }
-
-  &[aria-pressed='true'] {
-    background: $color-accent-tint;
-    border-color: $color-accent-line;
-    color: $color-accent;
   }
 
   &.sm {
-    @include type-size($fs-13);
-    @include cut-corner($sp-6);
     min-height: $touch-min-sm;
-    padding: 0 $sp-14;
-    gap: $sp-8;
-
-    .icon {
-      width: $icon-sm;
-      height: $icon-sm;
-    }
+    padding: 0 $sp-16;
   }
 
   &.lg {
-    @include type-size($fs-17);
-    @include cut-corner($cut-lg);
-    min-height: $sp-56;
-    padding: 0 $sp-32;
+    min-height: $sp-52;
+    padding: 0 $sp-28;
   }
 
   @include reduced-motion {

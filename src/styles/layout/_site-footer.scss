@@ -1,41 +1,41 @@
 @use '../abstracts' as *;
 
-// Footer: marchio, specifiche e disclaimer sui marchi F1/EA
+// Piè di pagina minimo: una riga di crediti e avvertenze legali
 .site-footer {
-  padding-block: $sp-56;
+  @include container;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: $sp-8 $sp-24;
+  padding-block: $sp-24;
   border-top: $border-thin solid $color-line;
-  background: $color-bg;
-
-  .site-footer-inner {
-    @include container($container-wide);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: $sp-40;
-
-    @include respond(tab-port) {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
+  font-size: $fs-12;
+  color: $color-ink-faint;
 
   .site-footer-brand {
-    @include stack($sp-14);
-  }
-
-  .site-footer-tagline,
-  .site-footer-legal {
-    @include text-muted;
-    @include type-size($fs-14);
-    max-width: $measure-short;
+    color: $color-ink-soft;
   }
 
   .site-footer-legal {
-    @include stack($sp-8);
-    max-width: none;
-    color: $color-ink-faint;
+    flex: 1 1 $measure-short;
+  }
 
-    a {
-      color: $color-ink-soft;
-      @include focus-ring;
+  .site-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $sp-8 $sp-20;
+  }
+
+  .site-footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $sp-6;
+    @include focus-ring;
+    color: $color-ink-soft;
+    text-underline-offset: $underline-offset;
+
+    @include hover {
+      color: $color-ink-strong;
     }
   }
 }

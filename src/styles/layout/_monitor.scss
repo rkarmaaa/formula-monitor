@@ -1,267 +1,112 @@
 @use '../abstracts' as *;
 
-// Guscio del monitor: barra comandi + stage 9:16 che ospita la griglia 12×24 dei blocchi.
-// Su schermi verticali più stretti di 9:16 lo stage occupa tutto; altrove resta in proporzione.
+// Monitor a tutto schermo: contenuto sopra, barra in basso. In 9:16 i blocchi sono impilati
+// (sessione, mappa, classifica); oltre 1:1 la classifica va a sinistra e sessione + mappa a destra.
 .monitor {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
   height: 100dvh;
   overflow: hidden;
   background: $color-bg;
 
-  .monitor-bar {
-    display: flex;
-    align-items: center;
-    gap: $sp-12;
-    height: $monitor-bar-height;
-    padding: 0 $sp-12;
-    padding-left: max(#{$sp-12}, env(safe-area-inset-left));
-    padding-right: max(#{$sp-12}, env(safe-area-inset-right));
-    border-bottom: $border-thin solid $color-line;
-    background: $color-bg-alt;
-
-    .logo {
-      flex-shrink: 0;
-    }
-  }
-
-  .monitor-status {
-    @include racing-label($fs-12);
-    display: inline-flex;
-    align-items: center;
-    gap: $sp-8;
-    padding: $sp-6 $sp-10;
-    border-radius: $radius-pill;
-    background: $color-surface-raised;
-    color: $color-ink-soft;
-    white-space: nowrap;
-
-    .monitor-status-dot {
-      position: relative;
-      width: $dot-size;
-      height: $dot-size;
-      border-radius: $radius-round;
-      background: $color-ink-faint;
-
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: inherit;
-      }
-    }
-
-    &[data-state='live'] .monitor-status-dot,
-    &[data-state='demo'] .monitor-status-dot {
-      background: $color-personal;
-
-      &::after {
-        animation: pulse $dur-pulse $ease-out infinite;
-      }
-    }
-
-    &[data-state='demo'] {
-      color: $color-accent;
-
-      .monitor-status-dot {
-        background: $color-accent;
-      }
-    }
-
-    &[data-state='waiting'] .monitor-status-dot {
-      background: $color-slower;
-    }
-
-    &[data-state='offline'] .monitor-status-dot {
-      background: $color-primary;
-    }
-
-    @include reduced-motion {
-      .monitor-status-dot::after {
-        animation: none;
-      }
-    }
-  }
-
-  .monitor-summary {
-    @include racing-label($fs-12);
-    @include ellipsis;
-    display: flex;
-    gap: $sp-8;
-    min-width: 0;
-    color: $color-ink-faint;
-
-    .monitor-summary-track {
-      color: $color-ink;
-    }
-
-    @include respond(phone) {
-      display: none;
-    }
-  }
-
-  .monitor-actions {
-    display: flex;
-    align-items: center;
-    gap: $sp-6;
-    margin-left: auto;
-
-    @include respond(phone) {
-      .button .button-label {
-        @include visually-hidden;
-      }
-    }
-  }
-
-  .monitor-game {
-    @include racing-label($fs-11);
-    @include focus-ring;
-    min-height: $touch-min-sm;
-    padding: 0 $sp-10;
-    border: $border-thin solid $color-line-strong;
-    border-radius: $radius-sm;
-    color: $color-ink-soft;
-
-    @include hover {
-      color: $color-ink;
-      border-color: $color-ink-faint;
-    }
-
-    @include respond(phone) {
-      display: none;
-    }
-  }
-
-  .monitor-icon {
-    @include icon-button;
-
-    .icon {
-      width: $icon-md;
-      height: $icon-md;
-    }
-  }
-
-  .monitor-add {
-    display: none;
-    color: $color-accent;
-  }
-
-  &[data-editing] .monitor-add {
-    display: flex;
-  }
-
-  .monitor-banner {
-    display: flex;
-    align-items: center;
-    gap: $sp-10;
-    padding: $sp-8 $sp-16;
-    background: $color-warn-tint;
-    border-bottom: $border-thin solid $color-warn;
-    color: $color-ink;
-    @include type-size($fs-14);
-
-    .icon {
-      color: $color-warn;
-    }
-
-    &[hidden] {
-      display: none;
-    }
-  }
-
-  .monitor-banner-action {
-    @include racing-label($fs-12);
-    @include focus-ring;
-    margin-left: auto;
-    padding: $sp-6 $sp-12;
-    border-radius: $radius-sm;
-    background: $color-warn;
-    color: $color-bg;
-  }
-
   .monitor-main {
     position: relative;
-    flex: 1;
     min-height: 0;
-    display: flex;
-    justify-content: center;
-    container-type: size;
+    outline: none;
   }
 
   .monitor-heading {
     @include visually-hidden;
   }
 
-  .monitor-stage {
-    position: relative;
-    width: min(100cqw, calc(100cqh * #{$monitor-ratio}));
-    height: 100cqh;
-  }
-
-  .monitor-empty {
-    @include stack($sp-16);
-    position: absolute;
-    inset: 0;
-    z-index: $z-raised;
-    align-items: center;
-    justify-content: center;
-    padding: $sp-32;
-    text-align: center;
-    background: $color-ink-veil;
-    backdrop-filter: blur($blur-overlay);
-
-    &[hidden] {
-      display: none;
-    }
-  }
-
-  .monitor-empty-title {
-    @include title-display($fs-h3);
-  }
-
-  .monitor-empty-text {
-    @include text-muted;
-    max-width: $measure-short;
-  }
-
-  .monitor-empty-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: $sp-12;
-  }
-
-  // Gridstack: sfondo a celle visibile solo durante la personalizzazione
-  .grid-stack {
+  .monitor-board {
+    display: grid;
+    grid-template-areas: 'session' 'map' 'timing';
+    grid-template-rows: minmax(0, 10fr) minmax(0, 30fr) minmax(0, 60fr);
+    gap: $board-gap;
     height: 100%;
-  }
+    background: $color-line;
 
-  .grid-stack-item-content {
-    overflow: visible;
-  }
+    @include respond(landscape) {
+      grid-template-areas: 'timing session' 'timing map';
+      grid-template-columns: minmax(0, 60fr) minmax(0, 40fr);
+      grid-template-rows: minmax(0, 22fr) minmax(0, 78fr);
+    }
 
-  .grid-stack-placeholder > .placeholder-content {
-    border: $border-bold dashed $color-accent-line;
-    border-radius: $widget-radius;
-    background: $color-accent-tint;
-  }
+    > [data-block='session'] {
+      grid-area: session;
+    }
 
-  &[data-editing] {
-    .grid-stack {
-      background-image:
-        linear-gradient($color-line $border-thin, transparent $border-thin),
-        linear-gradient(90deg, $color-line $border-thin, transparent $border-thin);
-      background-size: calc(100% / #{$grid-columns}) calc(100% / #{$grid-rows});
+    > [data-block='map'] {
+      grid-area: map;
+    }
+
+    > [data-block='timing'] {
+      grid-area: timing;
     }
   }
 
-  // Anteprima nella pagina di avvio e schermo intero: solo i blocchi
-  .preview &,
-  .fullscreen & {
-    .monitor-bar,
-    .monitor-banner {
-      display: none;
+  &[data-view='wait'] .monitor-board,
+  &[data-view='wait'] .monitor-all,
+  &[data-view='board'] .monitor-wait {
+    display: none;
+  }
+
+  // Simulazione: il primo schermo resta il cruscotto base, sotto si scorre su tutti gli altri blocchi
+  &[data-demo] .monitor-main {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .monitor-all {
+    border-top: $border-thin solid $color-line-strong;
+  }
+
+  .monitor-all-title {
+    @include label($fs-10);
+    display: flex;
+    align-items: center;
+    gap: $sp-12;
+    height: $block-head-height * 2;
+    padding-inline: $sp-10;
+    color: $color-ink-soft;
+
+    &::before {
+      @include rule($tick);
     }
+  }
+
+  // Griglia 12 × 24 come quella originale del 9:16: ogni blocco prende la sua misura dal catalogo.
+  // In 16:9 le colonne raddoppiano, così due "schermi verticali" stanno affiancati.
+  .monitor-all-grid {
+    display: grid;
+    grid-template-columns: repeat($grid-columns, minmax(0, 1fr));
+    grid-auto-rows: calc((100dvh - #{$monitor-bar-height}) / #{$grid-rows});
+    grid-auto-flow: row dense;
+    gap: $board-gap;
+    background: $color-line;
+
+    @include respond(landscape) {
+      grid-template-columns: repeat($grid-columns * 2, minmax(0, 1fr));
+    }
+
+    > .block {
+      grid-column: span var(--span-w, 6);
+      grid-row: span var(--span-h, 3);
+
+      @include respond(phone) {
+        grid-column: span var(--span-wp, 6);
+      }
+
+      // Respiro interno dei blocchi completi (quelli base gestiscono da sé il proprio)
+      .block-body {
+        padding: 0 $sp-cq-sm $sp-cq-xs;
+      }
+    }
+  }
+
+  // In attesa la barra non mostra la sessione precedente
+  &[data-view='wait'] .monitor-bar-session {
+    visibility: hidden;
   }
 }

@@ -10,7 +10,7 @@ import type {
   SessionHistory,
 } from '../f1/schema.ts';
 import { liveDelta, msOf, type EventRecord, type RaceState } from './state.ts';
-import type { TrackOutline } from './track.ts';
+import { referenceFor, type Reference, type TrackOutline } from './track.ts';
 
 // Vista per i widget: dati grezzi per auto (nomi come da specifica) + campi derivati pronti da mostrare.
 // Ricostruita al massimo una volta per frame, solo se lo stato è cambiato.
@@ -48,6 +48,12 @@ export interface CarView {
   retired: boolean;
   fastestLap: boolean;
   publicTelemetry: boolean;
+  inGarage: boolean;
+  bestLapTone: TimeTone;
+  // Settori del giro in corso (o del precedente) con il tono rispetto ai migliori della sessione
+  sectors: SectorView[];
+  // Distacco dal primo: sul giro migliore in qualifica/prove, sul traguardo in gara
+  gapMs: number;
 }
 
 export interface Battle {
@@ -66,7 +72,7 @@ export interface EventView extends EventRecord {
 }
 
 // Colori dei tempi come in TV: viola = migliore assoluto, verde = personale, giallo = più lento
-export type TimeTone = 'best' | 'personal' | 'slower' | 'none';
+export type TimeTone = 'best' | 'personal' | 'slower' | 'invalid' | 'none';
 
 export interface SectorView {
   ms: number;
@@ -121,6 +127,8 @@ export interface RaceView {
   trackLength: number;
   sectorStarts: number[];
   track?: TrackOutline;
+  reference?: Reference;
+  bestLapMs: number;
 }
 
 const RACE_SESSIONS = new Set([15, 16, 17]);
@@ -204,7 +212,30 @@ function buildCar(state: RaceState, index: number): CarView {
     retired: (lap?.resultStatus ?? 2) >= 4,
     fastestLap: state.fastestLap?.carIndex === index,
     publicTelemetry: index === state.playerIndex || participant?.yourTelemetry === 1,
+    inGarage: lap?.driverStatus === 0,
+    bestLapTone: 'none',
+    sectors: [],
+    gapMs: 0,
   };
+}
+
+// Settori del giro in corso appena chiusi; quelli non ancora percorsi mostrano il giro precedente.
+// Il tono si assegna dopo, quando si conoscono i migliori assoluti (vedi buildView).
+function carSectors(car: CarView): (SectorView & { invalid: boolean })[] {
+  const lap = car.lap;
+  if (!lap) return [0, 1, 2].map(() => ({ ms: 0, tone: 'none', live: false, invalid: false }));
+  const current = [
+    msOf(lap.sector1TimeMinutesPart, lap.sector1TimeMSPart),
+    msOf(lap.sector2TimeMinutesPart, lap.sector2TimeMSPart),
+  ];
+  const previous = sectorTimes(car.history, lap.currentLapNum - 1);
+  const previousValid = ((car.history?.lapHistoryData[lap.currentLapNum - 2]?.lapValidBitFlags ?? 1) & 0x01) === 1;
+  return [0, 1, 2].map((i) => {
+    const live = lap.sector > i && (current[i] ?? 0) > 0;
+    const ms = live ? current[i]! : (previous[i] ?? 0);
+    const invalid = live ? lap.currentLapInvalid === 1 : !previousValid;
+    return { ms, live, invalid, tone: 'none' as TimeTone };
+  });
 }
 
 // Trend del distacco relativo negli ultimi giri (ms/giro): scarta i salti da pit stop o incidenti
@@ -243,8 +274,9 @@ function battle(
   };
 }
 
+// Nessun riferimento ancora (0) = il tempo è per forza il migliore
 const toneOf = (ms: number, personal: number, overall: number): TimeTone =>
-  ms <= 0 ? 'none' : overall > 0 && ms <= overall ? 'best' : personal > 0 && ms <= personal ? 'personal' : 'slower';
+  ms <= 0 ? 'none' : overall <= 0 || ms <= overall ? 'best' : personal <= 0 || ms <= personal ? 'personal' : 'slower';
 
 // Settori del giro: quelli già percorsi sono "live", gli altri mostrano il giro precedente
 function playerSectors(player: CarView | undefined, overall: number[]): SectorView[] {
@@ -323,12 +355,29 @@ export function buildView(state: RaceState): RaceView {
   const lapsLeft = Math.max(0, totalLaps - lap + 1);
   const sectorStarts = [0, session?.sector2LapDistanceStart ?? 0, session?.sector3LapDistanceStart ?? 0];
   const lapFraction = trackLength && player?.lap ? Math.max(0, player.lap.lapDistance) / trackLength : 0;
+  // Migliori assoluti: dallo storico dei giri validi e dai settori validi appena chiusi (lo storico arriva dopo)
+  const isRace = RACE_SESSIONS.has(session?.sessionType ?? 0);
+  const sectors = cars.map(carSectors);
   const bestSectorsMs = [0, 1, 2].map((i) =>
-    cars.reduce((best, car) => {
-      const value = car.bestSectorsMs[i] ?? 0;
-      return value > 0 && (best === 0 || value < best) ? value : best;
+    cars.reduce((best, car, k) => {
+      const shown = sectors[k]![i]!;
+      const candidates = [car.bestSectorsMs[i] ?? 0, shown.invalid ? 0 : shown.ms];
+      return candidates.reduce((min, value) => (value > 0 && (min === 0 || value < min) ? value : min), best);
     }, 0),
   );
+  const bestLapMs = cars.reduce(
+    (best, car) => (car.bestLapMs > 0 && (best === 0 || car.bestLapMs < best) ? car.bestLapMs : best),
+    0,
+  );
+  cars.forEach((car, k) => {
+    car.sectors = sectors[k]!.map(({ ms, live, invalid }, i) => ({
+      ms,
+      live,
+      tone: ms > 0 && invalid ? 'invalid' : toneOf(ms, car.bestSectorsMs[i] ?? 0, bestSectorsMs[i] ?? 0),
+    }));
+    car.bestLapTone = car.bestLapMs > 0 && car.bestLapMs <= bestLapMs ? 'best' : 'none';
+    car.gapMs = isRace ? car.gapLeaderMs : car.bestLapMs > 0 && bestLapMs > 0 ? car.bestLapMs - bestLapMs : 0;
+  });
   const byIndex = (index: number | undefined) => cars.find((car) => car.index === index);
   const remainingFraction = Math.max(0, lapsLeft - lapFraction);
   const fastestMs =
@@ -359,7 +408,7 @@ export function buildView(state: RaceState): RaceView {
       lapsLeft,
       progress: totalLaps ? Math.min(1, (lap - 1 + lapFraction) / totalLaps) : 0,
       timeLeft: session?.sessionTimeLeft ?? 0,
-      isRace: RACE_SESSIONS.has(session?.sessionType ?? 0),
+      isRace,
       fuelDeltaLaps: player?.status && totalLaps ? player.status.fuelRemainingLaps - remainingFraction : undefined,
       lightsOn: state.startLights,
       lightsSlots: [1, 2, 3, 4, 5].map((n) => state.startLights >= n),
@@ -401,5 +450,7 @@ export function buildView(state: RaceState): RaceView {
     trackLength,
     sectorStarts,
     track: state.track,
+    reference: referenceFor(session?.trackId),
+    bestLapMs,
   };
 }

@@ -1,0 +1,199 @@
+@use '../abstracts' as *;
+
+// Classifica live: una riga per pilota, colonne in em che seguono il testo (scala con il blocco).
+// Viola = migliore assoluto (pieno), verde = migliore personale, settori del giro precedente attenuati.
+.timing-tower {
+  @include numeric($stretch-condensed);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-size: $value-list;
+  line-height: $lh-none;
+
+  .timing-tower-head,
+  .timing-tower-row {
+    display: grid;
+    grid-template-columns:
+      $col-pos minmax($col-driver, 1fr) $col-time $col-gap repeat(3, $col-sector)
+      $col-tyre;
+    align-items: center;
+    column-gap: $sp-1;
+    flex: 0 0 $row-height;
+    padding-right: $sp-cq-sm;
+  }
+
+  // Stessa dimensione del testo delle righe (le colonne sono in em): solo le etichette sono più piccole
+  .timing-tower-head {
+    color: $color-ink-faint;
+    border-bottom: $border-thin solid $color-line;
+
+    > span {
+      @include label($fs-head);
+      letter-spacing: $tracking-wide;
+      color: $color-ink-faint;
+    }
+
+    .timing-tower-sector,
+    .timing-tower-best,
+    .timing-tower-gap {
+      background: none;
+    }
+  }
+
+  .timing-tower-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .timing-tower-row {
+    position: relative;
+    border-bottom: $border-thin solid $color-line;
+    color: $color-ink;
+
+    &[data-player] {
+      background: $color-player;
+
+      .timing-tower-pos {
+        background: $color-primary;
+        color: $color-on-primary;
+      }
+    }
+
+    &[data-garage],
+    &[data-out] {
+      color: $color-ink-ghost;
+    }
+
+    &[data-pit] .timing-tower-tag.pit,
+    &[data-out] .timing-tower-tag.out {
+      display: inline-flex;
+    }
+  }
+
+  .timing-tower-pos {
+    @include flex-center;
+    align-self: stretch;
+    font-weight: $fw-semibold;
+  }
+
+  .timing-tower-driver {
+    display: flex;
+    align-items: center;
+    gap: $driver-gap;
+    min-width: 0;
+    height: 100%;
+    padding-left: $driver-pad;
+    border-left: $col-stripe solid var(--team, $color-ink-ghost);
+  }
+
+  .timing-tower-head .timing-tower-driver {
+    border-left-color: transparent;
+  }
+
+  .timing-tower-code {
+    font-weight: $fw-semibold;
+    letter-spacing: $tracking-wide;
+  }
+
+  .timing-tower-tag {
+    @include label($fs-tag);
+    display: none;
+    padding: $tag-pad;
+    background: $color-surface-high;
+    color: $color-ink-soft;
+  }
+
+  .timing-tower-best,
+  .timing-tower-gap,
+  .timing-tower-sector {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    align-self: stretch;
+    padding-inline: $cell-pad;
+    white-space: nowrap;
+  }
+
+  .timing-tower-gap {
+    color: $color-ink-soft;
+  }
+
+  .timing-tower-sector {
+    color: $color-ink-faint;
+
+    &[data-live] {
+      color: $color-ink;
+    }
+
+    &[data-tone='personal'] {
+      color: $color-personal;
+    }
+
+    &[data-tone='invalid'] {
+      color: $color-ink-ghost;
+      text-decoration: line-through;
+    }
+  }
+
+  .timing-tower-best,
+  .timing-tower-sector {
+    &[data-tone='best'] {
+      background: $color-best;
+      color: $color-white;
+    }
+  }
+
+  .timing-tower-tyre {
+    @include flex-center;
+    justify-self: end;
+    width: $chip;
+    height: $chip;
+    border: $border-thin solid currentColor;
+    font-family: $font-body;
+    font-size: $fs-chip;
+    font-weight: $fw-bold;
+    color: $color-ink-faint;
+
+    &:empty {
+      border: 0;
+    }
+
+    &[data-compound='soft'] {
+      color: $tyre-soft;
+    }
+
+    &[data-compound='medium'] {
+      color: $tyre-medium;
+    }
+
+    &[data-compound='hard'] {
+      color: $tyre-hard;
+    }
+
+    &[data-compound='inter'] {
+      color: $tyre-inter;
+    }
+
+    &[data-compound='wet'] {
+      color: $tyre-wet;
+    }
+  }
+
+  // Intestazione del distacco: "Distacco" in qualifica, "Intervallo" in gara
+  .timing-tower-racing {
+    display: none;
+  }
+
+  &[data-race] {
+    .timing-tower-quali {
+      display: none;
+    }
+
+    .timing-tower-racing {
+      display: inline;
+    }
+  }
+}

@@ -5,7 +5,6 @@ import { Font } from 'astro:assets';
 import SeoHead from '@components/global/SeoHead.astro';
 import SkipLink from '@components/global/SkipLink.astro';
 import { t } from '@i18n/index';
-import { defaultGameId, games } from '@data/games';
 
 interface Props {
   title: string;
@@ -14,24 +13,18 @@ interface Props {
 }
 
 const { class: className, ...seo } = Astro.props;
-const gameIds = games.map((game) => game.id);
 ---
 
 <!doctype html>
-<html lang="it" data-game={defaultGameId}>
+<html lang="it">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#08090c" />
+    <meta name="theme-color" content="#000000" />
     <meta name="color-scheme" content="dark" />
     <meta name="generator" content={Astro.generator} />
-    <script is:inline define:vars={{ gameIds }}>
-      // Versione di gioco salvata applicata prima del primo paint: niente sfarfallio dei valori
+    <script is:inline>
       document.documentElement.classList.add('js');
-      try {
-        const saved = localStorage.getItem('fm:game');
-        if (gameIds.includes(saved)) document.documentElement.dataset.game = saved;
-      } catch {}
     </script>
     <link rel="icon" href={href('favicon.svg')} type="image/svg+xml" />
     <link rel="manifest" href={href('manifest.webmanifest')} />

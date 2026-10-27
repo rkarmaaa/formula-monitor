@@ -1,30 +1,22 @@
 @use '../abstracts' as *;
 
-// Hero di avvio: testo + anteprima live del monitor dentro un telefono verticale
+// Hero a tutto schermo: titolo e due azioni in alto, l'auto che emerge dal basso
 .home-hero {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100svh;
+  padding: $hero-top $gutter $sp-64;
   overflow: hidden;
-  padding-block: $sp-80 $sp-96;
-  background: radial-gradient(ellipse at 85% 10%, $color-primary-tint, transparent 55%), $speed-lines, $color-bg;
+  text-align: center;
+  isolation: isolate;
 
-  @include respond(phone) {
-    padding-block: $sp-48 $sp-64;
-  }
-
-  .home-hero-inner {
-    @include container($container-wide);
-    display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  .home-hero-content {
+    @include stack($sp-20);
+    position: relative;
+    z-index: $z-raised;
     align-items: center;
-    gap: $sp-64;
-
-    @include respond(tab-port) {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  .home-hero-copy {
-    @include stack($sp-24);
   }
 
   .home-hero-eyebrow {
@@ -36,43 +28,21 @@
     max-width: 14ch;
   }
 
-  .home-hero-lead {
-    @include type-size($fs-lead);
-    @include text-muted;
-    max-width: $measure-short;
-  }
-
   .home-hero-actions {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: $sp-12;
     margin-top: $sp-8;
   }
 
-  .home-hero-device {
-    justify-self: center;
-    width: min(100%, #{$device-width});
-    aspect-ratio: $monitor-ratio;
-    padding: $sp-10;
+  .home-hero-scroll {
+    @include icon-button($touch-min);
+    position: absolute;
+    bottom: $sp-16;
+    left: 50%;
+    z-index: $z-raised;
+    translate: -50% 0;
     border: $border-thin solid $color-line-strong;
-    border-radius: $radius-xl;
-    background: $color-black;
-    box-shadow:
-      $shadow-lift,
-      0 0 0 $sp-6 $color-surface;
-    rotate: $tilt-device;
-
-    @include respond(tab-port) {
-      display: none;
-    }
-  }
-
-  .home-hero-screen {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    border-radius: $radius-lg;
-    pointer-events: none;
   }
 }

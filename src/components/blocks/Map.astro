@@ -1,0 +1,16 @@
+---
+import Block from './Block.astro';
+import { t } from '@i18n/index';
+
+// Mappa del circuito: canvas disegnato da scripts/blocks/map.ts
+const b = t.monitor.blocks.map;
+---
+
+<Block id="map" title={b.title}>
+  <div class="track-map">
+    <canvas class="track-map-canvas" data-map-canvas></canvas>
+    <p class="track-map-status" data-map-status hidden>
+      {b.unknown}
+    </p>
+  </div>
+</Block>

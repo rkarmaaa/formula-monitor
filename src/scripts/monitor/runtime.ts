@@ -9,6 +9,7 @@ import { readJson, writeJson } from '../prefs';
 type Listener = (view: RaceView) => void;
 
 const TRACK_SAVE_COVERAGE = 0.9;
+const STALE_FRAME_MS = 250;
 
 export interface Runtime {
   push(packet: Packet, format: UdpFormat): void;
@@ -46,7 +47,9 @@ export function createRuntime(): Runtime {
     }
   };
 
-  const frame = () => {
+  let lastTick = 0;
+  const tick = () => {
+    lastTick = performance.now();
     syncTrack();
     if (state.version !== rendered) {
       rendered = state.version;
@@ -54,9 +57,16 @@ export function createRuntime(): Runtime {
       listeners.forEach((listener) => listener(view));
       frames++;
     }
+  };
+  const frame = () => {
+    tick();
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
+  // Ripiego se il browser sospende i frame (finestra coperta, sorgente browser di OBS): 4 aggiornamenti al secondo
+  window.setInterval(() => {
+    if (performance.now() - lastTick > STALE_FRAME_MS) tick();
+  }, STALE_FRAME_MS);
 
   window.setInterval(() => {
     stats.fps = frames;

@@ -33,7 +33,8 @@ export function decodePacket(input: ArrayBuffer | ArrayBufferView): DecodeResult
   const kind = KINDS[packetId];
   const codec = kind && codecOf(format, kind);
   if (!kind || !codec) return { ok: false, reason: 'kind', format, packetId };
-  if (view.byteLength !== codec.size) return { ok: false, reason: 'size', format, packetId };
+  // Pacchetti più lunghi del previsto (patch del gioco che aggiungono campi in coda) restano leggibili
+  if (view.byteLength < codec.size) return { ok: false, reason: 'size', format, packetId };
 
   return { ok: true, format, packet: { kind, data: codec.read(view, 0) } as Packet };
 }

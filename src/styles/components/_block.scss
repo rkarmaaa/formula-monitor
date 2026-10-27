@@ -1,0 +1,37 @@
+@use '../abstracts' as *;
+
+// Cornice dei blocchi del monitor: etichetta minima in alto, corpo container per le misure relative
+.block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: $color-bg;
+  overflow: hidden;
+
+  .block-head {
+    @include flex-between;
+    flex-shrink: 0;
+    height: $block-head-height;
+    padding-inline: $sp-10;
+    border-bottom: $border-thin solid $color-line;
+  }
+
+  .block-title {
+    @include label($fs-10);
+    color: $color-ink-faint;
+  }
+
+  // Dato secondario accanto al titolo (es. meteo attuale)
+  .block-meta {
+    @include label($fs-10);
+    color: $color-ink-soft;
+  }
+
+  .block-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    container-type: size;
+  }
+}

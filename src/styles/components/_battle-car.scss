@@ -17,7 +17,6 @@
   min-height: 0;
   padding: $sp-cq-sm $sp-cq-md;
   border-left: $border-heavy solid var(--team, #{$color-ink-faint});
-  border-radius: $radius-sm;
   background: $color-surface-raised;
   container-type: size;
 
@@ -80,7 +79,7 @@
     grid-area: catch;
     font-size: $value-xs;
     font-weight: $fw-semibold;
-    color: $color-accent;
+    color: $color-ink-strong;
 
     &[hidden] {
       display: none;
@@ -108,7 +107,6 @@
     right: $sp-cq-sm;
     display: none;
     padding: $sp-2 $sp-6;
-    border-radius: $radius-xs;
     background: $color-personal;
     color: $color-bg;
     font-size: $label-widget;

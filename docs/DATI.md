@@ -1,8 +1,13 @@
 # Dati mostrabili a schermo
 
-Tutto ciò che la telemetria UDP di F1 25 rende disponibile durante una gara, raggruppato per tema.
-**Blocco** = dove lo mostra oggi Formula Monitor. ★ = dato che l'HUD del gioco non mostra o mostra solo nei
-menu: è la ragione d'essere del monitor ed è stato messo in priorità nel layout di default.
+Tutto ciò che la telemetria UDP di F1 25 rende disponibile durante una sessione, raggruppato per tema.
+★ = dato che l'HUD del gioco non mostra o mostra solo nei menu.
+
+**Blocchi attuali** (redesign "Grafite", ottobre 2026): **Sessione** (circuito, tipo, tempo rimanente o giro),
+**Classifica** (posizione, pilota, giro migliore, distacco/intervallo, S1-S2-S3 con viola e verde, mescola) e
+**Mappa** (forma reale del circuito, auto, settori, DRS, gialle). Nelle tabelle che seguono la colonna
+**Blocco** indica il blocco completo che mostra il dato: oggi sono tutti visibili nella **simulazione
+sviluppatore** (`/monitor/?demo`) e sono i candidati da portare nel monitor reale, uno alla volta.
 
 ## Gara e classifica
 

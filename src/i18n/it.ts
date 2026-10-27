@@ -1,141 +1,80 @@
-// Testi dell'interfaccia. `*parola*` = accento rosso nei titoli. `{nome}` = segnaposto.
+// Testi dell'interfaccia. `*parola*` = accento (grigio) nei titoli. `{nome}` = segnaposto.
 export default {
   common: {
     skip: 'Vai al contenuto',
     brand: 'Formula Monitor',
-    tagline: 'Telemetria live di F1 25, pensata per lo schermo verticale.',
-    nav: { home: 'Avvio', monitor: 'Monitor', guide: 'Guida setup', brand: 'Brand' },
-    navLabel: 'Navigazione principale',
-    openMonitor: 'Apri il monitor',
-    demo: 'Prova la demo',
     footer: {
       disclaimer:
         'Progetto indipendente, non affiliato né approvato da Formula 1, FIA, Electronic Arts o Codemasters. F1® è un marchio di Formula One Licensing BV.',
-      spec: 'Dati secondo le specifiche UDP ufficiali di F1 25 (formati 2025 e 2026).',
       source: 'Codice sorgente',
+      simulation: 'Simulazione sviluppatore',
+      simulationHint: 'Sessione simulata nel browser con tutti i blocchi, senza gioco',
     },
-    bridge: {
-      connected: 'Formula Monitor attivo',
-      waiting: 'Bridge non raggiungibile',
-      hint: 'Avvia Formula Monitor sul PC per vedere qui il suo indirizzo.',
-      ipLabel: 'IP del PC',
-      copy: 'Copia',
-      copied: 'Copiato',
-    },
-  },
-
-  games: {
-    legend: 'Versione del gioco',
-    'f1-25': {
-      name: 'F1 25',
-      badge: 'Formato 2025',
-      detail: 'Stagione 2025 · 20 auto · DRS',
-    },
-    'f1-25-2026': {
-      name: 'F1 25 · Season Pack 2026',
-      badge: 'Formato 2026',
-      detail: 'Regolamento 2026 · 22 auto · aero attiva e Overtake',
-    },
+    copy: 'Copia',
+    copied: 'Copiato',
   },
 
   home: {
     title: 'Formula Monitor — telemetria live per F1 25',
     description:
-      'Dashboard in tempo reale per F1 25 su PS5, Xbox e PC: distacchi con trend, gomme degli avversari, finestra pit, mappa e molto altro, su uno schermo verticale.',
-    eyebrow: 'Telemetria UDP · PS5 · Xbox · PC',
-    heading: 'Il tuo muretto box, *in verticale*',
-    lead: 'Collega F1 25 a Formula Monitor e trasforma telefono, tablet o un secondo monitor in un cruscotto da gara: dati che l’HUD del gioco non ti mostra, organizzati come preferisci.',
-    startTitle: 'Avvio in *quattro passi*',
-    startLead: 'Scegli la versione del gioco: istruzioni e valori si adattano automaticamente.',
-    steps: {
-      game: { title: 'Scegli la versione', text: 'Il formato UDP cambia tra F1 25 e il Season Pack 2026.' },
-      run: {
-        title: 'Avvia Formula Monitor sul PC',
-        text: 'Una volta sola: installa Node.js 22 o superiore, poi dalla cartella del progetto:',
-      },
-      game2: { title: 'Configura la telemetria nel gioco', text: 'Opzioni di gioco → Impostazioni → Telemetria UDP:' },
-      open: {
-        title: 'Apri il monitor sullo schermo verticale',
-        text: 'Dal telefono, dal tablet o da un secondo monitor collegato alla stessa rete apri:',
-      },
+      'Cruscotto in tempo reale per F1 25 su PS5, Xbox e PC: timer, classifica con settori e mappa, su qualsiasi schermo della tua rete.',
+    hero: {
+      eyebrow: 'Telemetria live · F1 25',
+      heading: 'Il muretto box, *sul tuo schermo.*',
+      start: 'Avvia',
+      tutorial: 'Tutorial',
+      scroll: 'Scorri per il tutorial',
     },
-    featuresTitle: 'Quello che *l’HUD non dice*',
-    features: [
-      {
-        icon: 'lucide:swords',
-        title: 'Battaglia con trend',
-        text: 'Distacco da chi ti precede e ti segue, quanto guadagni o perdi a giro e fra quanti giri lo raggiungi.',
-      },
-      {
-        icon: 'lucide:list-ordered',
-        title: 'Strategia degli avversari',
-        text: 'Mescola ed età delle gomme, soste, penalità e avvisi per track limits di ogni pilota.',
-      },
-      {
-        icon: 'lucide:timer',
-        title: 'Delta live',
-        text: 'Il giro corrente confrontato metro per metro con il tuo miglior giro valido.',
-      },
-      {
-        icon: 'lucide:route',
-        title: 'Finestra pit',
-        text: 'Giro ideale e ultimo per la sosta, posizione prevista al rientro, margine di carburante.',
-      },
-      {
-        icon: 'lucide:circle-dot',
-        title: 'Gomme e freni in profondità',
-        text: 'Usura, temperatura di superficie e carcassa, blistering, pressioni e temperature freni.',
-      },
-      {
-        icon: 'lucide:layout-dashboard',
-        title: 'Tutto personalizzabile',
-        text: 'Sposta, ridimensiona, aggiungi o togli i blocchi; la mappa ha preset e livelli attivabili.',
-      },
-    ],
-  },
-
-  setup: {
-    title: 'Guida setup — Formula Monitor',
-    description:
-      'Come collegare F1 25 (PS5, Xbox, PC) a Formula Monitor: impostazioni UDP del gioco, rete, firewall e risoluzione problemi.',
-    eyebrow: 'Guida setup',
-    heading: 'Collega il gioco *in cinque minuti*',
-    lead: 'Il gioco invia la telemetria via UDP a un computer della tua rete. Formula Monitor la riceve e la mostra in un browser, anche su un altro dispositivo.',
-    howTitle: 'Come *funziona*',
-    how: [
-      {
-        title: 'Il gioco trasmette',
-        text: 'PS5, Xbox o PC inviano fino a 60 pacchetti al secondo verso un indirizzo IP e una porta.',
-      },
-      { title: 'Il PC riceve', text: 'Formula Monitor ascolta la porta UDP e inoltra i dati via WebSocket.' },
-      {
-        title: 'Lo schermo mostra',
-        text: 'Qualsiasi browser della rete apre il monitor: telefono, tablet o secondo monitor.',
-      },
-    ],
-    gameTitle: 'Impostazioni *nel gioco*',
-    gameLead:
-      'Dal menu principale apri Opzioni di gioco (△ / Y) → Impostazioni → Impostazioni telemetria UDP, in fondo alla lista.',
-    settingsCaption: 'Valori da inserire nella schermata Telemetria UDP',
-    columns: { option: 'Opzione nel gioco', value: 'Valore', why: 'Perché' },
+    tutorial: {
+      eyebrow: 'Tutorial',
+      heading: 'Tre passi, *cinque minuti.*',
+      lead: 'Il gioco invia la telemetria a un computer della tua rete; Formula Monitor la riceve e la mostra in un browser.',
+      steps: [
+        {
+          title: 'Avvia Formula Monitor sul PC',
+          text: 'Serve Node.js 22.18 o superiore. Dalla cartella del progetto, una volta sola:',
+        },
+        {
+          title: 'Configura il gioco',
+          text: 'Opzioni di gioco → Impostazioni → Impostazioni telemetria UDP, in fondo alla lista.',
+        },
+        {
+          title: 'Apri il monitor',
+          text: 'Da telefono, tablet o secondo monitor sulla stessa rete apri questo indirizzo e premi Avvia. Il monitor resta in attesa finché non entri in una sessione.',
+        },
+      ],
+      troubleTitle: 'Se resta in attesa',
+      trouble: [
+        'Controlla che UDP Telemetry sia On e che IP e porta coincidano con quelli qui sopra.',
+        'Console e PC devono stare sulla stessa rete: le reti “ospiti” spesso non si vedono tra loro.',
+        'Su Windows consenti Node.js nel firewall per le reti private (porta UDP 20777 in ingresso).',
+        'Con un’altra app di telemetria attiva, usa UDP Broadcast Mode: On, così ascoltano entrambe.',
+      ],
+    },
+    settingsCaption: 'Valori da inserire nella schermata Telemetria UDP del gioco',
+    columns: { option: 'Opzione nel gioco', value: 'Valore', why: 'Note' },
     settings: {
       telemetry: { option: 'UDP Telemetry', value: 'On', why: 'Attiva l’invio dei dati.' },
       broadcast: {
         option: 'UDP Broadcast Mode',
         value: 'Off',
-        why: 'Invio diretto al PC. Attivalo solo per servire più dispositivi della rete: in quel caso l’IP non conta.',
+        why: 'Invio diretto al PC. On solo per servire più app o dispositivi: in quel caso l’IP non conta.',
       },
       ip: {
         option: 'UDP IP Address',
-        why: 'L’IP del PC che esegue Formula Monitor. 127.0.0.1 se giochi sullo stesso PC.',
+        why: 'L’IP del PC con Formula Monitor. 127.0.0.1 se giochi sullo stesso PC.',
       },
       port: { option: 'UDP Port', value: '20777', why: 'La porta su cui Formula Monitor è in ascolto.' },
       rate: { option: 'UDP Send Rate', value: '60 Hz', why: 'Più fluido. Su Wi-Fi instabile prova 30 Hz.' },
-      format: { option: 'UDP Format', why: 'Deve corrispondere alla versione scelta qui sopra.' },
+      format: {
+        option: 'UDP Format',
+        value: '2025',
+        why: 'Con il Season Pack 2026 scegli 2026. Il formato viene riconosciuto da solo; 2024 e precedenti non sono supportati.',
+      },
       telemetryPublic: {
         option: 'Your Telemetry',
         value: 'Public',
-        why: 'Solo online: rende visibili agli altri i dati della tua auto. I tuoi li vedi sempre.',
+        why: 'Solo online: rende visibili i dati della tua auto agli altri. I tuoi li vedi sempre.',
       },
       names: {
         option: 'Show online ID / gamertags',
@@ -144,173 +83,55 @@ export default {
       },
     },
     ipPlaceholder: 'IP del tuo PC',
-    formatNote: {
-      'f1-25': 'Con F1 25 il formato 2025 dà accesso a tutti i dati, 2024 e 2023 sono solo per app vecchie.',
-      'f1-25-2026':
-        'Con il Season Pack usa il formato 2026: con il 2025 il gioco omette aero attiva, Overtake e i limiti ERS, e le auto 2026 risultano “F1 Generic”.',
-    },
-    platformsTitle: 'Rete e *piattaforme*',
-    platforms: [
-      {
-        icon: 'lucide:monitor',
-        title: 'PC (stesso computer)',
-        text: 'IP 127.0.0.1 e porta 20777. Al primo avvio Windows chiede il permesso per Node.js: consenti l’accesso alle reti private.',
-      },
-      {
-        icon: 'lucide:gamepad-2',
-        title: 'PS5 e Xbox',
-        text: 'Console e PC devono essere sulla stessa rete (stesso router). Inserisci l’IP del PC mostrato da Formula Monitor; meglio il cavo per la console.',
-      },
-      {
-        icon: 'lucide:smartphone',
-        title: 'Schermo verticale',
-        text: 'Apri l’indirizzo del monitor dal browser del telefono o del tablet, aggiungilo alla schermata Home e usa Schermo intero: poi disattiva lo spegnimento automatico dello schermo per tutta la gara.',
-      },
-    ],
-    findIpTitle: 'Trovare l’IP del PC a mano',
-    findIp: [
-      'Windows: Prompt dei comandi → ipconfig → “Indirizzo IPv4” della scheda in uso.',
-      'macOS: Impostazioni di Sistema → Rete → dettagli della connessione.',
-      'Linux: ip -4 addr, oppure hostname -I.',
-    ],
-    faqTitle: 'Risoluzione *problemi*',
-    faq: [
-      {
-        q: 'Il monitor dice “In attesa del gioco”',
-        a: 'Controlla che UDP Telemetry sia On, che IP e porta coincidano e che console e PC siano sulla stessa rete. Su Windows consenti Node.js nel firewall per le reti private (porta UDP 20777 in ingresso). Gli ospiti di reti “guest” spesso non si vedono tra loro.',
-      },
-      {
-        q: 'Compare “Formato non riconosciuto”',
-        a: 'Il gioco invia un formato diverso da quello scelto (per esempio 2024). Imposta UDP Format su 2025 o 2026 come indicato sopra; il monitor decodifica comunque entrambi.',
-      },
-      {
-        q: 'Carburante, gomme o danni degli avversari sono a zero',
-        a: 'In multiplayer questi dati arrivano solo dai giocatori con “Your Telemetry: Public”. Contro l’IA sono sempre disponibili.',
-      },
-      {
-        q: 'Uso già un’altra app di telemetria',
-        a: 'Attiva UDP Broadcast Mode: il gioco trasmette a tutta la rete e più app possono ascoltare la stessa porta. In alternativa inoltra i pacchetti dall’altra app verso la porta 20777.',
-      },
-      {
-        q: 'Posso provarlo senza il gioco?',
-        a: 'Sì. La modalità Demo simula una gara completa direttamente nel browser. Per provare anche la rete, npm run mock invia al bridge pacchetti UDP identici a quelli del gioco.',
-      },
-    ],
-    ctaTitle: 'Tutto pronto?',
-    ctaText: 'Apri il monitor: appena arrivano i primi pacchetti i blocchi si accendono.',
-  },
-
-  brand: {
-    title: 'Brand — Formula Monitor',
-    description: 'Identità visiva di Formula Monitor: logo, palette, tipografia e regole d’uso.',
-    eyebrow: 'Brand identity',
-    heading: 'Carbonio, segnale, *velocità*',
-    lead: 'Un’estetica da muretto box: superfici scure e silenziose, un solo rosso che indica ciò che conta, numeri grandi e leggibili a colpo d’occhio.',
-    logoTitle: 'Il *logo*',
-    logoText:
-      'Il simbolo è uno schermo verticale inclinato come il corsivo delle grafiche F1. Dentro, una traccia di telemetria disegna una M e finisce in un punto rosso: il segnale live della tua auto.',
-    logoVariants: { full: 'Logotipo completo', mark: 'Simbolo', mono: 'Monocromatico' },
-    paletteTitle: 'La *palette*',
-    paletteText:
-      'Colori per ruolo: il rosso è riservato agli allarmi e all’azione principale, il ciano alla telemetria, viola e verde seguono la convenzione dei tempi F1.',
-    palette: [
-      { name: 'Carbon', role: 'Sfondo', value: '#08090C' },
-      { name: 'Pit Wall', role: 'Superfici', value: '#11141B' },
-      { name: 'Signal Red', role: 'Azione, allarmi', value: '#F23D33' },
-      { name: 'Telemetry Cyan', role: 'Dati live, focus', value: '#35C5F0' },
-      { name: 'Purple Sector', role: 'Migliore assoluto', value: '#B57CFF' },
-      { name: 'Personal Best', role: 'Migliore personale', value: '#36D27C' },
-      { name: 'Caution', role: 'Più lento, avvisi', value: '#F5C84A' },
-      { name: 'Paper', role: 'Testo', value: '#F1F3F7' },
-    ],
-    typeTitle: 'Tipografia',
-    type: [
-      { name: 'Saira', role: 'Titoli, numeri da cruscotto, etichette', sample: 'P1 · 1:21.437 · 312 KM/H' },
-      {
-        name: 'Geist',
-        role: 'Testi e interfaccia',
-        sample: 'Gomme medie, 14 giri, finestra pit tra il giro 21 e il 24.',
-      },
-    ],
-    rulesTitle: 'Regole d’uso',
-    rules: [
-      'Il rosso indica una sola cosa per schermata: l’azione principale o un allarme.',
-      'I numeri usano sempre cifre tabellari: non saltano quando cambiano.',
-      'Spazio di rispetto attorno al logo pari all’altezza del punto rosso × 2.',
-      'Il simbolo resta inclinato di 12°: non raddrizzarlo né ruotarlo.',
-    ],
+    urlPlaceholder: 'http://IP-del-PC:20780/monitor/',
   },
 
   monitor: {
     title: 'Monitor — Formula Monitor',
     description: 'Il cruscotto live di Formula Monitor.',
-    toolbar: 'Comandi del monitor',
-    status: {
-      demo: 'Demo',
-      live: 'Live',
-      waiting: 'In attesa del gioco',
-      offline: 'Bridge non raggiungibile',
-      connecting: 'Connessione…',
-    },
-    actions: {
-      edit: 'Personalizza',
-      done: 'Fine',
-      blocks: 'Aggiungi blocchi',
-      demoOn: 'Avvia demo',
-      demoOff: 'Esci dalla demo',
-      fullscreen: 'Schermo intero',
-      guide: 'Guida setup',
-      game: 'Cambia versione',
-      dev: 'Pannello DEV',
-      settings: 'Opzioni del blocco',
-      remove: 'Rimuovi blocco',
-    },
-    empty: {
-      title: 'In attesa dei *dati di gara*',
-      text: 'Avvia una sessione in F1 25 con la telemetria UDP attiva. Nel frattempo puoi esplorare il monitor con una gara simulata.',
-    },
-    formatMismatch: 'Il gioco invia il formato {got}, ma hai scelto {game}.',
-    formatSwitch: 'Passa a {game}',
-    formatUnknown: 'Formato UDP {got} non riconosciuto: nel gioco imposta UDP Format su 2025 o 2026.',
-    bridgeError: 'Bridge: {error}. Chiudi l’altra app che usa la porta o avvia con --udp e un’altra porta.',
-    drawer: {
-      title: 'Blocchi',
-      lead: 'Trascina i blocchi dalla barra del titolo e ridimensionali dall’angolo. Le modifiche si salvano da sole.',
-      add: 'Aggiungi',
-      added: 'Sul monitor',
-      exclusive: 'Non nell’HUD',
-      reset: 'Ripristina layout',
-      close: 'Chiudi',
-      full: 'Spazio esaurito: riduci o rimuovi un blocco per aggiungerne altri.',
-      categories: { race: 'Gara', car: 'Vettura', strategy: 'Strategia', track: 'Pista e meteo' },
-    },
-    dev: {
-      title: 'DEV',
-      fps: 'FPS',
-      packets: 'pacchetti/s',
-      source: 'Sorgente',
-      speed: 'Velocità simulazione',
-      commands: { 'safety-car': 'VSC', penalty: '+5 s', pit: 'Box', retire: 'Ritiro', restart: 'Riavvia' },
-    },
-    mapOptions: {
-      title: 'Opzioni mappa',
-      preset: 'Stile',
-      presets: { broadcast: 'Broadcast', minimal: 'Minimal', neon: 'Neon', blueprint: 'Blueprint' },
-      labels: 'Etichette',
-      labelModes: { code: 'Sigla', position: 'Posizione', none: 'Nessuna' },
-      layers: 'Livelli',
-      layerNames: {
-        sectors: 'Colori dei settori',
-        drs: 'Zone DRS / aero',
-        startLine: 'Linea del traguardo',
-        trail: 'Scia della tua auto',
-        rivalsOnly: 'Solo auto vicine',
-        follow: 'Segui la tua auto',
+    wait: {
+      title: 'In attesa',
+      text: 'Aspetto l’inizio della sessione. Entra in pista in F1 25: i dati compariranno qui da soli.',
+      tutorial: 'Tutorial',
+      detail: {
+        connecting: 'Connessione al PC…',
+        offline: 'Formula Monitor non risponde sul PC: avvialo con npm start.',
+        listening: 'Collegato. Nessun dato dal gioco sulla porta UDP {port}.',
+        format: 'Il gioco invia il formato {format}: imposta UDP Format su 2025 (o 2026 con il Season Pack).',
+        error: 'Errore del PC: {error}',
+        session: 'Dati in arrivo, aspetto la sessione…',
       },
-      rotate: 'Orientamento',
-      auto: 'Auto',
-      close: 'Chiudi',
-      learning: 'Disegno il tracciato…',
+    },
+    status: {
+      connecting: 'Connessione',
+      offline: 'Offline',
+      waiting: 'In attesa',
+      live: 'Live',
+      paused: 'In pausa',
+      demo: 'Demo',
+    },
+    bar: {
+      label: 'Comandi del monitor',
+      fullscreen: 'Schermo intero',
+      exit: 'Esci dal monitor',
+    },
+    all: { title: 'Simulazione · tutti i blocchi' },
+    blocks: {
+      session: { title: 'Sessione', left: 'Tempo rimanente', lap: 'Giro' },
+      timing: {
+        title: 'Classifica',
+        pos: 'Pos',
+        driver: 'Pilota',
+        best: 'Migliore',
+        gap: 'Distacco',
+        interval: 'Intervallo',
+        sectors: ['S1', 'S2', 'S3'],
+        tyre: 'Gomma',
+        pit: 'Box',
+        out: 'Out',
+        laps: 'G',
+      },
+      map: { title: 'Circuito', unknown: 'Tracciato in apprendimento: si completa mentre le auto girano.' },
     },
   },
 
@@ -503,13 +324,13 @@ export default {
     },
     speedtrap: { title: 'Speed trap', description: 'Le velocità massime della sessione.', you: 'Tu' },
   },
-
   notFound: {
     title: 'Pagina non trovata — Formula Monitor',
     description: 'La pagina richiesta non esiste.',
     eyebrow: 'Errore 404',
-    heading: 'Fuori *pista*',
-    lead: 'Questa pagina non esiste. Rientra dalla corsia box.',
+    heading: 'Fuori *pista.*',
+    lead: 'Questa pagina non esiste.',
+    home: 'Torna all’inizio',
   },
 
   wheels: ['Post. sx', 'Post. dx', 'Ant. sx', 'Ant. dx'],

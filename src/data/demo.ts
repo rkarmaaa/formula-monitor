@@ -1,3 +1,5 @@
+import { circuits } from './circuits.ts';
+
 // Dati del simulatore DEV: griglia (ID driver/team/nazionalità dalle appendici UDP) e circuito.
 export interface DemoDriver {
   driverId: number;
@@ -40,39 +42,17 @@ export const demoGrid2026Extra: DemoDriver[] = [
 
 export const demoPlayerDriverId = 7;
 
-// Circuito: punti di controllo (metri) di una spline chiusa in senso orario, scalata alla lunghezza reale
+// Circuito: la forma reale di Monza ruotata e specchiata come farebbe il sistema di coordinate del gioco,
+// così la demo prova anche l'allineamento della mappa (lib/telemetry/track.ts)
+const MONZA = 11;
+const ROTATION = 0.6;
+const flat = circuits[MONZA] ?? [];
+
 export const demoTrack = {
-  trackId: 11,
+  trackId: MONZA,
   length: 5793,
-  control: [
-    [0, -350],
-    [0, 300],
-    [0, 900],
-    [10, 1010],
-    [55, 1040],
-    [40, 1110],
-    [60, 1200],
-    [180, 1520],
-    [380, 1730],
-    [620, 1790],
-    [740, 1775],
-    [770, 1735],
-    [820, 1745],
-    [980, 1690],
-    [1070, 1590],
-    [1100, 1460],
-    [1075, 1340],
-    [1000, 1000],
-    [905, 610],
-    [880, 470],
-    [850, 430],
-    [868, 360],
-    [835, 250],
-    [790, -150],
-    [740, -560],
-    [660, -760],
-    [480, -830],
-    [280, -760],
-    [110, -590],
-  ] as [number, number][],
+  control: Array.from({ length: flat.length / 2 }, (_, i): [number, number] => {
+    const [x, y] = [flat[i * 2]!, flat[i * 2 + 1]!];
+    return [x * Math.cos(ROTATION) - y * Math.sin(ROTATION), -(x * Math.sin(ROTATION) + y * Math.cos(ROTATION))];
+  }),
 };

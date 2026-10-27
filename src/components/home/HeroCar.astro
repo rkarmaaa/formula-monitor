@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets';
+import photo from '@assets/hero-car.jpg';
+
+// Muso di una monoposto vista di fronte (foto reale), in bianco e nero e in penombra:
+// filtri e sfumature vivono nel partial `hero-car`. Per cambiarla basta sostituire src/assets/hero-car.jpg.
+// Foto: McLaren MP4/9 di Nathan Vaganay su Pexels (licenza Pexels).
+---
+
+<div class="hero-car" aria-hidden="true">
+  <Image
+    class="hero-car-photo"
+    src={photo}
+    alt=""
+    widths={[480, 800, 1200, 1600]}
+    sizes="(max-width: 600px) 110vw, 70svh"
+    loading="eager"
+    fetchpriority="high"
+  />
+</div>

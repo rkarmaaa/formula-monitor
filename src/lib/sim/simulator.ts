@@ -8,8 +8,11 @@ import { buildTrack, sampleAt, type Track } from './track.ts';
 // (nel browser, senza bridge) e al mock UDP (`npm run mock`) per provare tutta la catena.
 export type SimCommand = 'safety-car' | 'penalty' | 'pit' | 'retire' | 'restart';
 
+export type SimSession = 'race' | 'qualifying';
+
 export interface SimOptions {
   format: UdpFormat;
+  session?: SimSession;
   laps?: number;
   rate?: number;
   seed?: number;
@@ -39,6 +42,8 @@ const PIT_EXIT = 340;
 const CHECKPOINT = 25;
 const VSC_DURATION = 48;
 const RESTART_DELAY = 15;
+const QUALI_DURATION = 18 * 60; // Q1 da 18 minuti
+const QUALI_SPACING = 220; // metri tra un'auto e l'altra all'uscita dai box
 const POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
 const COMPOUNDS: Record<Compound, { actual: number; wear: number; pace: number; heat: number }> = {
   16: { actual: 17, wear: 3.1, pace: 1.006, heat: 5 },
@@ -134,7 +139,9 @@ const gearTops = [24, 34, 44, 54, 63, 72, 81, 93];
 export function createSimulator(options: SimOptions): Simulator {
   const { format } = options;
   const rate = options.rate ?? 30;
-  const totalLaps = options.laps ?? 18;
+  // Qualifica: giri lanciati a ripetizione fino allo scadere del tempo, classifica sul giro migliore
+  const quali = options.session === 'qualifying';
+  const totalLaps = quali ? 99 : (options.laps ?? 18);
   const { codecs, maxCars } = schemas[format];
   const track: Track = buildTrack(demoTrack.control, demoTrack.length);
   const L = track.length;
@@ -246,6 +253,19 @@ export function createSimulator(options: SimOptions): Simulator {
     player.pitLap = Math.round(totalLaps * 0.45);
     const unlucky = cars.filter((car) => car !== player)[Math.floor(random() * (cars.length - 1))]!;
     unlucky.retireLap = Math.round(totalLaps * (0.3 + random() * 0.4));
+    if (quali) {
+      // In fila all'uscita dai box, primo giro di lancio non valido, niente soste né ritiri
+      [...cars]
+        .sort((a, b) => a.grid - b.grid)
+        .forEach((car, i) => {
+          car.distance = -60 - i * QUALI_SPACING;
+          car.lapInvalid = true;
+          car.pitLap = 0;
+          car.retireLap = 0;
+          car.tyreAge = 0;
+          car.compound = 16;
+        });
+    }
 
     t = 0;
     frame = 0;
@@ -256,7 +276,7 @@ export function createSimulator(options: SimOptions): Simulator {
     finishedAt = 0;
     finishers = 0;
     checkered = false;
-    vscLap = Math.round(totalLaps * (0.4 + random() * 0.25));
+    vscLap = quali ? 0 : Math.round(totalLaps * (0.4 + random() * 0.25));
     vscUntil = 0;
     vscEnding = false;
     drsEnabled = false;
@@ -264,8 +284,9 @@ export function createSimulator(options: SimOptions): Simulator {
     topSpeed = 0;
     lapPositions = [];
     leaderLap = 0;
-    collided = false;
+    collided = quali;
     overtakes = new Map();
+    if (quali) phase = 'race';
     Object.keys(next).forEach((key) => (next[key as keyof typeof next] = 0));
     emitEvent({ code: 'SSTA', details: {} });
   }
@@ -590,8 +611,16 @@ export function createSimulator(options: SimOptions): Simulator {
     return Math.max(0, Math.round((car.checkpoints[k]! - ahead.checkpoints[k]!) * 1000));
   }
 
+  const bestLap = (car: SimCar) =>
+    car.laps.reduce((best, lap) => (lap.valid && lap.time < best ? lap.time : best), Infinity);
+
   function rank() {
     const previous = cars.map((car) => car.position);
+    if (quali) {
+      const order = [...cars].sort((a, b) => bestLap(a) - bestLap(b) || a.grid - b.grid);
+      order.forEach((car, i) => (car.position = i + 1));
+      return;
+    }
     const sorted = [...cars].sort((a, b) => {
       if (a.status === 7 || b.status === 7)
         return (a.status === 7 ? 1 : 0) - (b.status === 7 ? 1 : 0) || b.distance - a.distance;
@@ -631,11 +660,20 @@ export function createSimulator(options: SimOptions): Simulator {
         emitEvent({ code: 'LGOT', details: {} });
       }
     }
+    if (quali && phase === 'race' && t >= QUALI_DURATION) {
+      phase = 'finished';
+      finishedAt = t;
+      emitEvent({ code: 'CHQF', details: {} });
+      emitEvent({ code: 'SEND', details: {} });
+    }
     if (phase === 'finished' && t - finishedAt > RESTART_DELAY) {
       setup();
       return;
     }
-    const order = [...cars].sort((a, b) => a.position - b.position);
+    // In qualifica l'auto "davanti" è quella fisicamente davanti in pista, non in classifica
+    const order = quali
+      ? [...cars].sort((a, b) => b.distance - a.distance)
+      : [...cars].sort((a, b) => a.position - b.position);
     order.forEach((car, i) => drive(car, order[i - 1], dt));
     rank();
 
@@ -891,13 +929,13 @@ export function createSimulator(options: SimOptions): Simulator {
       weather: 1,
       trackTemperature: 34,
       airTemperature: 25,
-      totalLaps,
+      totalLaps: quali ? 0 : totalLaps,
       trackLength: L,
-      sessionType: 15,
+      sessionType: quali ? 5 : 15,
       trackId: demoTrack.trackId,
       formula: is2026 ? 13 : 0,
-      sessionTimeLeft: Math.max(0, Math.round(7200 - t)),
-      sessionDuration: 7200,
+      sessionTimeLeft: Math.max(0, Math.round((quali ? QUALI_DURATION : 7200) - t)),
+      sessionDuration: quali ? QUALI_DURATION : 7200,
       pitSpeedLimit: 80,
       numMarshalZones: 18,
       safetyCarStatus: yellow ? 2 : 0,
@@ -929,7 +967,7 @@ export function createSimulator(options: SimOptions): Simulator {
     });
     forecast.forEach(([offset, weather, trackTemp, air, rain], i) =>
       Object.assign(data.weatherForecastSamples[i]!, {
-        sessionType: 15,
+        sessionType: quali ? 5 : 15,
         timeOffset: offset,
         weather,
         trackTemperature: trackTemp,

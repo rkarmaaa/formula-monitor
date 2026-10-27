@@ -1,0 +1,97 @@
+@use '../abstracts' as *;
+
+// Barra del monitor, in basso: indirizzo, stato, sessione e due comandi essenziali
+.monitor-bar {
+  display: flex;
+  align-items: center;
+  gap: $sp-16;
+  height: $monitor-bar-height;
+  padding-left: $sp-16;
+  border-top: $border-thin solid $color-line;
+  background: $color-bg;
+
+  .monitor-bar-domain {
+    @include label($fs-11);
+    @include ellipsis;
+    @include focus-ring;
+    flex-shrink: 1;
+    min-width: 0;
+    color: $color-ink-strong;
+    letter-spacing: $tracking-wide;
+    text-decoration: none;
+  }
+
+  .monitor-bar-status {
+    @include label($fs-10);
+    display: flex;
+    align-items: center;
+    gap: $sp-8;
+    flex-shrink: 0;
+    color: $color-ink-soft;
+
+    &[data-state='live'] .monitor-bar-dot {
+      background: $color-live;
+      animation: pulse $dur-pulse $ease-in-out infinite;
+    }
+
+    &[data-state='demo'] .monitor-bar-dot {
+      background: $color-best;
+    }
+
+    &[data-state='paused'] .monitor-bar-dot {
+      background: $color-warn;
+    }
+
+    &[data-state='offline'] .monitor-bar-dot {
+      background: $color-danger;
+    }
+
+    @include reduced-motion {
+      .monitor-bar-dot {
+        animation: none;
+      }
+    }
+  }
+
+  .monitor-bar-dot {
+    width: $dot-size;
+    height: $dot-size;
+    background: $color-ink-ghost;
+  }
+
+  .monitor-bar-session {
+    @include ellipsis;
+    flex: 1;
+    min-width: 0;
+    font-size: $fs-12;
+    color: $color-ink-faint;
+
+    span + span::before {
+      content: ' · ';
+    }
+
+    @include respond(phone) {
+      display: none;
+    }
+  }
+
+  .monitor-bar-actions {
+    display: flex;
+    margin-left: auto;
+    border-left: $border-thin solid $color-line;
+  }
+
+  .monitor-bar-button {
+    @include icon-button($monitor-bar-height);
+    border-left: $border-thin solid $color-line;
+
+    &:first-child {
+      border-left: 0;
+    }
+
+    .icon {
+      width: $icon-sm;
+      height: $icon-sm;
+    }
+  }
+}

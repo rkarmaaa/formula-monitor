@@ -2,16 +2,15 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: $anchor-offset;
   background: $color-bg;
   color-scheme: dark;
-  scrollbar-color: $color-line-strong $color-bg;
+  scrollbar-color: $color-ink-ghost $color-bg;
 
   @include reduced-motion {
     scroll-behavior: auto;
   }
 
-  // Contenuti specifici di una versione di gioco: visibili solo se è quella scelta
+  // Blocchi di una sola versione del gioco: nascosti se il formato rilevato è l'altro
   @each $game in $games {
     &[data-game='#{$game}'] [data-game-only]:not([data-game-only='#{$game}']) {
       display: none;
@@ -27,6 +26,7 @@ body {
   color: $color-ink;
   background: $color-bg;
   overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
 }
 
 main {
@@ -35,7 +35,7 @@ main {
 
 ::selection {
   background: $color-primary;
-  color: $color-white;
+  color: $color-on-primary;
 }
 
 :focus-visible {

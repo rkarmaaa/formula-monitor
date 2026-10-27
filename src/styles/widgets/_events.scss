@@ -34,7 +34,7 @@
     }
 
     &[data-tone='overtake'] {
-      --tone: #{$color-accent};
+      --tone: #{$color-ink-strong};
     }
 
     &[data-tone='penalty'] {

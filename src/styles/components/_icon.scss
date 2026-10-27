@@ -1,7 +1,6 @@
 @use '../abstracts' as *;
 
-// Icone lineari (Lucide): tratto sottile, colore ereditato. I path originali dei symbol
-// vivono dentro .icon, quindi la regola vale anche per le istanze <use>.
+// Icone lineari (Lucide): tratto sottile, colore ereditato, terminali squadrati
 .icon {
   flex-shrink: 0;
   width: $icon-inline;
@@ -9,5 +8,7 @@
 
   * {
     stroke-width: $icon-stroke;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
   }
 }

@@ -1,7 +1,5 @@
-import { defaultGameId, isGameId, type GameId } from '@data/games';
-
-// Preferenze del singolo dispositivo (versione di gioco, layout, opzioni dei blocchi).
-// localStorage può essere bloccato (navigazione privata): ogni accesso è protetto.
+// Preferenze del singolo dispositivo (tracciati appresi). localStorage può essere bloccato
+// (navigazione privata): ogni accesso è protetto.
 const read = (key: string) => {
   try {
     return localStorage.getItem(key);
@@ -18,18 +16,6 @@ const write = (key: string, value: string | null) => {
     /* preferenza non salvata: il monitor funziona lo stesso */
   }
 };
-
-export const hasGame = () => isGameId(read('fm:game'));
-
-export function getGame(): GameId {
-  const saved = read('fm:game');
-  return isGameId(saved) ? saved : defaultGameId;
-}
-
-export function setGame(id: GameId) {
-  write('fm:game', id);
-  document.documentElement.dataset.game = id;
-}
 
 export function readJson<T>(key: string, fallback: T): T {
   try {

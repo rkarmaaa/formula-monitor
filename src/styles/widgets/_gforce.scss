@@ -13,7 +13,6 @@
     height: $dial-size;
     aspect-ratio: 1;
     border: $border-thin solid $color-line-strong;
-    border-radius: $radius-round;
     background:
       radial-gradient(circle, transparent 49%, $color-line 49% 51%, transparent 51%),
       linear-gradient($color-line, $color-line) center / 100% $border-thin no-repeat,
@@ -27,9 +26,7 @@
     width: $dot-size;
     height: $dot-size;
     margin: calc(#{$dot-size} / -2);
-    border-radius: $radius-round;
     background: $color-primary;
-    box-shadow: $glow-primary;
     transform: translate(calc(var(--x, 0) * #{$dial-travel}), calc(var(--y, 0) * -1 * #{$dial-travel}));
     transition: transform $dur-data linear;
   }

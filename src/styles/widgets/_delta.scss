@@ -31,7 +31,6 @@
     position: relative;
     grid-column: 1 / -1;
     height: $bar-medium;
-    border-radius: $radius-pill;
     background: $color-line-strong;
 
     &::before {
@@ -49,7 +48,6 @@
     position: absolute;
     inset: 0 0 0 50%;
     width: 50%;
-    border-radius: inherit;
     background: var(--tone);
     transform-origin: left center;
     transform: scaleX(var(--d, 0));

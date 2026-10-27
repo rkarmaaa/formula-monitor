@@ -1,0 +1,33 @@
+@use '../abstracts' as *;
+
+// Mappa del circuito: i colori del canvas arrivano da qui come custom property
+.track-map {
+  --map-track: #{$map-track};
+  --map-edge: #{$map-track-edge};
+  --map-sector: #{$map-sector};
+  --map-drs: #{$map-drs};
+  --map-yellow: #{$color-warn};
+  --map-player: #{$map-player};
+  --map-label: #{$map-label};
+  --map-label-bg: #{$map-label-bg};
+  --map-start: #{$map-start};
+  position: absolute;
+  inset: 0;
+
+  .track-map-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    font-family: $font-body;
+  }
+
+  .track-map-status {
+    @include flex-center;
+    position: absolute;
+    inset: 0;
+    padding: $sp-24;
+    text-align: center;
+    font-size: $label-block;
+    color: $color-ink-faint;
+  }
+}

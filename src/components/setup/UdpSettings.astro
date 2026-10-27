@@ -1,59 +1,47 @@
 ---
-import { games, ports } from '@data/games';
+import { ports } from '@data/games';
 import { t } from '@i18n/index';
 
-// Tabella dei valori da inserire nel gioco: IP dal bridge live, formato dalla versione scelta
-interface Props {
-  detailed?: boolean;
-}
-
-const { detailed = false } = Astro.props;
-const s = t.setup.settings;
+// Tabella completa dei valori da inserire nel gioco: IP dal bridge live, nessuna riga nascosta
+const s = t.home.settings;
 const rows = [
-  { ...s.telemetry },
-  { ...s.broadcast },
-  { option: s.ip.option, why: s.ip.why, ip: true },
+  s.telemetry,
+  s.broadcast,
+  { option: s.ip.option, why: s.ip.why, value: undefined },
   { ...s.port, value: String(ports.udp) },
-  { ...s.rate },
-  { option: s.format.option, why: s.format.why, format: true },
-  ...(detailed ? [s.telemetryPublic, s.names] : []),
+  s.rate,
+  s.format,
+  s.telemetryPublic,
+  s.names,
 ];
 ---
 
 <div class="udp-settings">
   <table class="udp-settings-table">
-    <caption class="udp-settings-caption">{t.setup.settingsCaption}</caption>
+    <caption class="udp-settings-caption">{t.home.settingsCaption}</caption>
     <thead>
       <tr>
-        <th scope="col">{t.setup.columns.option}</th>
-        <th scope="col">{t.setup.columns.value}</th>
-        {detailed && <th scope="col">{t.setup.columns.why}</th>}
+        <th scope="col">{t.home.columns.option}</th>
+        <th scope="col">{t.home.columns.value}</th>
+        <th scope="col" class="udp-settings-why">
+          {t.home.columns.why}
+        </th>
       </tr>
     </thead>
     <tbody>
       {rows.map((row) => (
         <tr>
-          <th scope="row">
-            <code>{row.option}</code>
-          </th>
+          <th scope="row">{row.option}</th>
           <td class="udp-settings-value">
-            {'ip' in row && (
+            {row.value ?? (
               <span data-bridge-ip data-empty>
-                {t.setup.ipPlaceholder}
+                {t.home.ipPlaceholder}
               </span>
             )}
-            {'format' in row && games.map((game) => <span data-game-only={game.id}>{game.udpFormat}</span>)}
-            {'value' in row && row.value}
           </td>
-          {detailed && <td class="udp-settings-why">{row.why}</td>}
+          <td class="udp-settings-why">{row.why}</td>
         </tr>
       ))}
     </tbody>
   </table>
-  {detailed &&
-    games.map((game) => (
-      <p class="udp-settings-note" data-game-only={game.id}>
-        {t.setup.formatNote[game.id]}
-      </p>
-    ))}
 </div>

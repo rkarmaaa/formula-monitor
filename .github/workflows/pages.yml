@@ -1,6 +1,6 @@
 name: GitHub Pages
 
-# Versione online: guida, brand e monitor in demo. Il monitor si collega al bridge locale
+# Versione online: home, tutorial e monitor. Il monitor si collega al bridge locale
 # (npm start su questo PC, porta 20780) quando è in esecuzione.
 # Avvio manuale: Pages su repository privato richiede GitHub Pro (o repository pubblico)
 on:

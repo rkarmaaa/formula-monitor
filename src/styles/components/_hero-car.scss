@@ -1,0 +1,42 @@
+@use '../abstracts' as *;
+
+// Foto dell'auto nella home: bianco e nero, scurita, sfuma nel nero su tutti i lati (sfumature sovrapposte,
+// nessuna maschera). In 9:16 occupa la larghezza, in 16:9 resta una colonna centrale alta.
+.hero-car {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: $z-deco;
+  width: min(#{$hero-photo-width}, 100%);
+  aspect-ratio: $hero-photo-ratio;
+  max-height: $hero-photo-max;
+  // Centratura con transform: la proprietà translate resta libera per l'animazione di ingresso
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: emerge $dur-reveal * 2 $ease-out both;
+
+  @include respond(phone) {
+    width: $hero-photo-width-phone;
+  }
+
+  .hero-car-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    filter: $hero-photo-filter;
+  }
+
+  // Penombra: dal nero dei bordi verso il centro illuminato
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $hero-photo-shade;
+  }
+
+  @include reduced-motion {
+    animation: none;
+  }
+}

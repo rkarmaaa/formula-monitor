@@ -2,61 +2,46 @@
 import { href } from '@lib/paths';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Button from '@components/ui/Button.astro';
-import Icon from '@components/ui/Icon.astro';
 import MonitorBar from '@components/monitor/MonitorBar.astro';
-import Drawer from '@components/monitor/Drawer.astro';
-import MapDialog from '@components/monitor/MapDialog.astro';
-import DevPanel from '@components/monitor/DevPanel.astro';
-import WidgetTemplates from '@components/monitor/WidgetTemplates.astro';
-import GamePicker from '@components/setup/GamePicker.astro';
-import { accent } from '@lib/text';
+import AllBlocks from '@components/monitor/AllBlocks.astro';
+import Session from '@components/blocks/Session.astro';
+import Timing from '@components/blocks/Timing.astro';
+import Map from '@components/blocks/Map.astro';
 import { t } from '@i18n/index';
 
 const m = t.monitor;
+const dots = ['.', '.', '.'];
 ---
 
 <BaseLayout title={m.title} description={m.description} class="monitor-page">
-  <div class="monitor" data-monitor>
-    <MonitorBar />
-    <div class="monitor-banner" data-banner hidden role="alert">
-      <Icon name="lucide:triangle-alert" />
-      <span data-banner-text></span>
-      <button class="monitor-banner-action" type="button" data-banner-action hidden></button>
-    </div>
+  <div class="monitor" data-monitor data-view="wait">
     <main class="monitor-main" id="main" tabindex="-1">
       <h1 class="monitor-heading">{m.title}</h1>
-      <div class="monitor-stage" data-stage>
-        <div class="grid-stack" data-grid></div>
-        <div class="monitor-empty" data-empty hidden>
-          <h2 class="monitor-empty-title" set:html={accent(m.empty.title)} />
-          <p class="monitor-empty-text">{m.empty.text}</p>
-          <div class="monitor-empty-actions">
-            <Button icon="lucide:play" data-action="demo">
-              {m.actions.demoOn}
-            </Button>
-            <Button href={href('guida/')} variant="outline" icon="lucide:circle-help">
-              {m.actions.guide}
-            </Button>
-          </div>
-        </div>
+      <section class="monitor-wait" data-wait aria-live="polite">
+        <p class="monitor-wait-title">
+          {m.wait.title}
+          <span class="monitor-wait-dots" aria-hidden="true">
+            {dots.map((dot) => (
+              <span>{dot}</span>
+            ))}
+          </span>
+        </p>
+        <p class="monitor-wait-text">{m.wait.text}</p>
+        <p class="monitor-wait-detail" data-wait-detail>
+          {m.wait.detail.connecting}
+        </p>
+        <Button href={`${href('')}#tutorial`} variant="outline">
+          {m.wait.tutorial}
+        </Button>
+      </section>
+      <div class="monitor-board" data-board>
+        <Session />
+        <Map />
+        <Timing />
       </div>
+      <AllBlocks />
     </main>
-    <Drawer />
-    <MapDialog />
-    <dialog class="panel-dialog" data-game-dialog aria-label={t.games.legend}>
-      <div class="panel-dialog-form">
-        <header class="panel-dialog-head">
-          <h2 class="panel-dialog-title">{t.games.legend}</h2>
-          <button class="panel-dialog-close" type="button" data-dialog-close aria-label={m.mapOptions.close}>
-            <Icon name="lucide:x" />
-          </button>
-        </header>
-        <GamePicker compact />
-      </div>
-    </dialog>
-    <DevPanel />
-    <p class="toast" data-toast role="status" aria-live="polite" hidden></p>
-    <WidgetTemplates />
+    <MonitorBar />
   </div>
 </BaseLayout>
 

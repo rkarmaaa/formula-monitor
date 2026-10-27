@@ -1,0 +1,27 @@
+---
+// Cornice comune dei blocchi del monitor: etichetta in alto e corpo che scala col box (container query).
+// `span` = misura nella griglia della simulazione completa, `game` = blocco di una sola versione del gioco.
+interface Props {
+  id: string;
+  title: string;
+  span?: { w: number; h: number };
+  game?: string;
+}
+
+const { id, title, span, game } = Astro.props;
+const PHONE_MIN_SPAN = 6;
+// Su telefono i blocchi stretti prendono almeno metà riga (--span-wp)
+const style = span
+  ? `--span-w: ${span.w}; --span-wp: ${Math.max(span.w, PHONE_MIN_SPAN)}; --span-h: ${span.h}`
+  : undefined;
+---
+
+<article class="block" data-block={id} data-game-only={game} aria-label={title} style={style}>
+  <header class="block-head">
+    <h2 class="block-title">{title}</h2>
+    <slot name="meta" />
+  </header>
+  <div class="block-body">
+    <slot />
+  </div>
+</article>

@@ -154,7 +154,7 @@ function learnTrack(state: RaceState, motion: PacketData<'motion'>) {
   const { session, lapData } = state;
   if (!session?.trackLength || !lapData) return;
   const key = `${state.format}:${session.trackId}:${session.trackLength}`;
-  if (state.track?.key !== key) state.track = createOutline(key, session.trackLength);
+  if (state.track?.key !== key) state.track = createOutline(key, session.trackLength, session.trackId);
   learnOutline(state.track, motion, lapData, state.telemetry);
 }
 

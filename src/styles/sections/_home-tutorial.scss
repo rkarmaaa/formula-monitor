@@ -1,0 +1,103 @@
+@use '../abstracts' as *;
+
+// Tutorial: tre passi numerati su una griglia a filo, tabella del gioco completa, cosa fare se resta in attesa
+.home-tutorial {
+  @include container;
+  @include section-space;
+
+  .home-tutorial-head {
+    @include stack($stack-title);
+    max-width: $measure;
+    margin-bottom: $sp-40;
+  }
+
+  .home-tutorial-eyebrow {
+    @include eyebrow;
+  }
+
+  .home-tutorial-title {
+    @include title-display($fs-h1);
+  }
+
+  .home-tutorial-lead {
+    @include type-size($fs-lead);
+    color: $color-ink-soft;
+  }
+
+  .home-tutorial-steps {
+    border-top: $border-thin solid $color-line-strong;
+  }
+
+  .home-tutorial-step {
+    display: grid;
+    grid-template-columns: $step-index minmax(0, 1fr);
+    gap: $sp-24;
+    padding-block: $sp-32;
+    border-bottom: $border-thin solid $color-line;
+
+    // Su telefono il numero resta piccolo, accanto al titolo
+    @include respond(phone) {
+      grid-template-columns: $sp-32 minmax(0, 1fr);
+      gap: $sp-8;
+      padding-block: $sp-24;
+    }
+  }
+
+  .home-tutorial-num {
+    @include numeric($stretch-condensed);
+    @include type-size($fs-h1);
+    font-weight: $fw-semibold;
+    line-height: $lh-none;
+    color: $color-ink-ghost;
+
+    @include respond(phone) {
+      @include type-size($fs-20);
+      line-height: $lh-heading;
+    }
+  }
+
+  .home-tutorial-body {
+    @include stack($sp-12);
+  }
+
+  .home-tutorial-step-title {
+    @include title-display($fs-h3);
+  }
+
+  .home-tutorial-text {
+    max-width: $measure;
+    color: $color-ink-soft;
+  }
+
+  .home-tutorial-actions {
+    margin-top: $sp-8;
+  }
+
+  .home-tutorial-trouble {
+    @include stack($sp-12);
+    margin-top: $sp-40;
+    padding: $card-padding;
+    border: $border-thin solid $color-line;
+    background: $color-bg-alt;
+
+    @include respond(phone) {
+      padding: $card-padding-phone;
+    }
+  }
+
+  .home-tutorial-list {
+    @include stack($sp-8);
+    color: $color-ink-soft;
+
+    li {
+      display: flex;
+      gap: $sp-12;
+
+      &::before {
+        @include rule($sp-12);
+        margin-top: $bullet-offset;
+        background: $color-ink-ghost;
+      }
+    }
+  }
+}

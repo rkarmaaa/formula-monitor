@@ -1,15 +1,12 @@
 @use '../abstracts' as *;
 
-// Tabella delle impostazioni UDP: nome opzione come nel gioco, valore evidenziato, motivazione
+// Tabella completa delle impostazioni UDP del gioco: opzione, valore in evidenza, note
 .udp-settings {
-  @include stack($sp-12);
+  border: $border-thin solid $color-line;
+  overflow-x: auto;
 
   .udp-settings-table {
     width: 100%;
-    border: $border-thin solid $color-line;
-    border-radius: $radius-md;
-    background: $color-surface;
-    overflow: hidden;
 
     th,
     td {
@@ -24,24 +21,47 @@
     }
 
     thead th {
-      @include racing-label($fs-11);
+      @include label($fs-10);
+      padding-block: $sp-10;
       color: $color-ink-faint;
-      background: $color-surface-raised;
+      background: $color-surface;
     }
 
     tbody th {
-      font-weight: $fw-regular;
+      font-weight: $fw-medium;
+      color: $color-ink-strong;
       white-space: nowrap;
     }
 
+    // Su telefono ogni riga diventa una scheda: opzione e valore affiancati, note sotto
     @include respond(phone) {
+      thead {
+        display: none;
+      }
+
+      tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        border-bottom: $border-thin solid $color-line;
+      }
+
+      tr:last-child {
+        border-bottom: 0;
+      }
+
       th,
       td {
-        padding: $sp-10 $sp-12;
+        padding: $sp-10 $sp-12 0;
+        border-bottom: 0;
       }
 
       tbody th {
         white-space: normal;
+      }
+
+      .udp-settings-why {
+        grid-column: 1 / -1;
+        padding-block: $sp-6 $sp-12;
       }
     }
   }
@@ -53,8 +73,8 @@
   .udp-settings-value {
     @include numeric;
     @include type-size($fs-18);
-    font-weight: $fw-bold;
-    color: $color-accent;
+    font-weight: $fw-semibold;
+    color: $color-ink-strong;
     white-space: nowrap;
 
     [data-empty] {
@@ -66,21 +86,9 @@
   }
 
   .udp-settings-why {
-    @include text-muted;
     @include type-size($fs-14);
-    min-width: $cq-sm;
-
-    @include respond(tab-port) {
-      min-width: 0;
-    }
-  }
-
-  .udp-settings-note {
-    @include type-size($fs-14);
-    padding: $sp-12 $sp-16;
-    border-left: $border-heavy solid $color-accent;
-    border-radius: $radius-xs;
-    background: $color-accent-tint;
-    color: $color-ink;
+    max-width: $measure-short;
+    color: $color-ink-soft;
+    line-height: $lh-ui;
   }
 }

@@ -168,7 +168,7 @@ export const widgets = [
     tier: 'detail',
     category: 'car',
     icon: 'lucide:cog',
-    size: { w: 4, h: 4 },
+    size: { w: 4, h: 5 },
     min: { w: 3, h: 3 },
     exclusive: true,
   },
