@@ -1,0 +1,43 @@
+@use '../abstracts' as *;
+
+// Stati iniziali solo con JS attivo (classe .js su <html>): senza JS tutto è visibile
+.js {
+  [data-reveal] {
+    @include reveal-base;
+    @include reveal-variant(up);
+
+    &[data-reveal='fade'] {
+      translate: none;
+    }
+
+    &[data-reveal='left'] {
+      @include reveal-variant(left);
+    }
+
+    &[data-reveal='right'] {
+      @include reveal-variant(right);
+    }
+
+    &[data-reveal='scale'] {
+      translate: none;
+      @include reveal-variant(scale);
+    }
+
+    &.visible {
+      @include reveal-variant(visible);
+    }
+  }
+
+  [data-reveal-group] > * {
+    @include stagger;
+  }
+
+  @include reduced-motion {
+    [data-reveal] {
+      translate: none;
+      scale: none;
+      transition: opacity $dur-fast linear;
+      transition-delay: initial;
+    }
+  }
+}

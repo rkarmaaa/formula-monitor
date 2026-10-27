@@ -1,0 +1,17 @@
+@use '../abstracts' as *;
+
+// Link "Vai al contenuto" visibile solo al focus
+.skip-link {
+  @include button-base;
+  position: fixed;
+  top: $sp-12;
+  left: $sp-12;
+  z-index: $z-toast;
+  background: $color-ink;
+  color: $color-bg;
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    transform: none;
+  }
+}

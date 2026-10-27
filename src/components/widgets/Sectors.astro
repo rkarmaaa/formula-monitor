@@ -1,0 +1,24 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.sectors;
+---
+
+<Widget id="sectors">
+  <ol class="w-sectors">
+    {[0, 1, 2].map((i) => (
+      <li
+        class="w-sector"
+        data-attr={`data-tone:playerSectors.${i}.tone; data-live:playerSectors.${i}.live|bool; data-current:player.lap.sector|eq:${i}`}
+      >
+        <span class="w-sector-name">S{i + 1}</span>
+        <span class="w-sector-time" data-text={`playerSectors.${i}.ms|lapTime`} />
+        <span class="w-sector-refs">
+          <span title={w.best} data-text={`player.bestSectorsMs.${i}|lapTime`} />
+          <span class="w-sector-overall" title={w.overall} data-text={`bestSectorsMs.${i}|lapTime`} />
+        </span>
+      </li>
+    ))}
+  </ol>
+</Widget>

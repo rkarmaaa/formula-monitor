@@ -1,0 +1,59 @@
+@use '../abstracts' as *;
+
+// Quattro passi di avvio, ognuno con il suo strumento (selettore, comandi, tabella, URL)
+.home-steps {
+  @include stack($sp-16);
+
+  .home-step {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: $sp-24;
+    padding: $sp-28;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-lg;
+    background: $color-surface;
+
+    @include respond(phone) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: $sp-12;
+      padding: $sp-20;
+    }
+  }
+
+  .home-step-num {
+    @include numeric($stretch-condensed);
+    @include type-size($fs-32);
+    font-weight: $fw-black;
+    font-style: italic;
+    line-height: $lh-none;
+    color: $color-primary;
+  }
+
+  .home-step-body {
+    @include stack($sp-14);
+    min-width: 0;
+
+    .button {
+      align-self: flex-start;
+    }
+  }
+
+  .home-step-title {
+    @include title-display($fs-h3);
+  }
+
+  .home-step-text {
+    @include text-muted;
+  }
+
+  .home-step-link {
+    @include racing-label($fs-12);
+    @include focus-ring;
+    display: inline-flex;
+    align-items: center;
+    gap: $sp-6;
+    align-self: flex-start;
+    color: $color-accent;
+    text-decoration: none;
+  }
+}

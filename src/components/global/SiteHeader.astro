@@ -1,0 +1,40 @@
+---
+import Logo from '@components/brand/Logo.astro';
+import Button from '@components/ui/Button.astro';
+import BridgePill from '@components/setup/BridgePill.astro';
+import { t } from '@i18n/index';
+
+interface Props {
+  current: 'home' | 'guide' | 'brand';
+}
+
+const { current } = Astro.props;
+const links = [
+  { id: 'home', href: '/', label: t.common.nav.home },
+  { id: 'guide', href: '/guida/', label: t.common.nav.guide },
+  { id: 'brand', href: '/brand/', label: t.common.nav.brand },
+] as const;
+---
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <Logo href="/" />
+    <nav class="site-nav" aria-label={t.common.navLabel}>
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class:list={['site-nav-link', { active: link.id === current }]}
+          aria-current={link.id === current ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+    <div class="site-header-actions">
+      <BridgePill />
+      <Button href="/monitor/" size="sm" icon="lucide:layout-dashboard">
+        {t.common.nav.monitor}
+      </Button>
+    </div>
+  </div>
+</header>

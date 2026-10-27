@@ -1,0 +1,75 @@
+@use '../abstracts' as *;
+
+// Mappa: il canvas legge i colori del preset da queste custom property
+.w-map {
+  --map-track: #{$color-surface-high};
+  --map-edge: #{$color-line-strong};
+  --map-s1: #{$color-primary};
+  --map-s2: #{$color-accent};
+  --map-s3: #{$color-slower};
+  --map-drs: #{$color-personal};
+  --map-yellow: #{$color-slower};
+  --map-player: #{$color-white};
+  --map-label: #{$color-ink};
+  --map-label-bg: #{$color-ink-veil};
+  --map-glow: transparent;
+  --map-grid: transparent;
+  --map-start: #{$color-white};
+  position: relative;
+  height: 100%;
+  border-radius: $radius-sm;
+  font-family: $font-display;
+
+  &[data-preset='minimal'] {
+    --map-track: #{$color-ink-faint};
+    --map-edge: transparent;
+    --map-s1: #{$color-ink-soft};
+    --map-s2: #{$color-ink-soft};
+    --map-s3: #{$color-ink-soft};
+    --map-player: #{$color-primary};
+    --map-label: #{$color-ink-soft};
+    --map-label-bg: transparent;
+  }
+
+  &[data-preset='neon'] {
+    --map-track: #{$color-accent-line};
+    --map-s1: #{$color-best};
+    --map-s2: #{$color-accent};
+    --map-s3: #{$color-personal};
+    --map-glow: #{$color-accent};
+    --map-label-bg: transparent;
+    background: $color-black;
+  }
+
+  &[data-preset='blueprint'] {
+    --map-track: #{$color-ink};
+    --map-edge: transparent;
+    --map-s1: #{$color-ink};
+    --map-s2: #{$color-ink};
+    --map-s3: #{$color-ink};
+    --map-grid: #{$color-accent-tint};
+    --map-label: #{$color-accent};
+    --map-label-bg: transparent;
+    --map-player: #{$color-accent};
+    background: $color-bg;
+  }
+
+  .w-map-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .w-map-status {
+    @include racing-label;
+    position: absolute;
+    left: $sp-cq-sm;
+    bottom: $sp-cq-sm;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}

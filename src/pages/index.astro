@@ -1,0 +1,108 @@
+---
+import SiteLayout from '@layouts/SiteLayout.astro';
+import Section from '@components/ui/Section.astro';
+import SectionTitle from '@components/ui/SectionTitle.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import GamePicker from '@components/setup/GamePicker.astro';
+import UdpSettings from '@components/setup/UdpSettings.astro';
+import CommandList from '@components/setup/CommandList.astro';
+import { accent } from '@lib/text';
+import { ports } from '@data/games';
+import { t } from '@i18n/index';
+
+const h = t.home;
+const steps = h.steps;
+---
+
+<SiteLayout title={h.title} description={h.description} page="home">
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="home-hero-inner">
+      <div class="home-hero-copy">
+        <p class="home-hero-eyebrow" data-reveal="fade">
+          {h.eyebrow}
+        </p>
+        <h1 class="home-hero-title" id="home-title" data-reveal set:html={accent(h.heading)} />
+        <p class="home-hero-lead" data-reveal>
+          {h.lead}
+        </p>
+        <div class="home-hero-actions" data-reveal>
+          <Button href="/monitor/" size="lg" icon="lucide:layout-dashboard" arrow>
+            {t.common.openMonitor}
+          </Button>
+          <Button href="/monitor/?demo" size="lg" variant="outline" icon="lucide:play">
+            {t.common.demo}
+          </Button>
+        </div>
+      </div>
+      <div class="home-hero-device" data-reveal="scale" aria-hidden="true">
+        <iframe class="home-hero-screen" src="/monitor/?demo&preview" title="" tabindex="-1" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <Section id="avvio" labelledby="start-title" tone="alt">
+    <SectionTitle id="start-title" title={h.startTitle} lead={h.startLead} />
+    <ol class="home-steps">
+      <li class="home-step" data-reveal>
+        <span class="home-step-num" aria-hidden="true">
+          1
+        </span>
+        <div class="home-step-body">
+          <h3 class="home-step-title">{steps.game.title}</h3>
+          <p class="home-step-text">{steps.game.text}</p>
+          <GamePicker />
+        </div>
+      </li>
+      <li class="home-step" data-reveal>
+        <span class="home-step-num" aria-hidden="true">
+          2
+        </span>
+        <div class="home-step-body">
+          <h3 class="home-step-title">{steps.run.title}</h3>
+          <p class="home-step-text">{steps.run.text}</p>
+          <CommandList lines={['npm install', 'npm run build', 'npm start']} />
+        </div>
+      </li>
+      <li class="home-step" data-reveal>
+        <span class="home-step-num" aria-hidden="true">
+          3
+        </span>
+        <div class="home-step-body">
+          <h3 class="home-step-title">{steps.game2.title}</h3>
+          <p class="home-step-text">{steps.game2.text}</p>
+          <UdpSettings />
+          <a class="home-step-link" href="/guida/">
+            {t.common.nav.guide} <Icon name="lucide:arrow-right" />
+          </a>
+        </div>
+      </li>
+      <li class="home-step" data-reveal>
+        <span class="home-step-num" aria-hidden="true">
+          4
+        </span>
+        <div class="home-step-body">
+          <h3 class="home-step-title">{steps.open.title}</h3>
+          <p class="home-step-text">{steps.open.text}</p>
+          <CommandList lines={[`http://IP:${ports.http}/monitor/`]} live="url" />
+          <Button href="/monitor/" icon="lucide:layout-dashboard" arrow>
+            {t.common.openMonitor}
+          </Button>
+        </div>
+      </li>
+    </ol>
+  </Section>
+
+  <Section labelledby="features-title">
+    <SectionTitle id="features-title" title={h.featuresTitle} />
+    <ul class="home-features" data-reveal-group>
+      {h.features.map((feature) => (
+        <li class="home-feature" data-reveal>
+          <Icon name={feature.icon} class="home-feature-icon" />
+          <h3 class="home-feature-title">{feature.title}</h3>
+          <p class="home-feature-text">{feature.text}</p>
+        </li>
+      ))}
+    </ul>
+  </Section>
+</SiteLayout>

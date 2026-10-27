@@ -1,0 +1,27 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.aero;
+---
+
+<Widget id="aero">
+  <div
+    class="w-aero"
+    data-attr="data-straight:player.telemetry2.activeAeroMode|eq:1; data-overtake:player.telemetry2.overtakeActive|bool; data-ready:player.telemetry2.overtakeAvailable|bool"
+  >
+    <div class="w-aero-mode">
+      <span class="w-aero-option corner">{w.corner}</span>
+      <span class="w-aero-option straight">{w.straight}</span>
+    </div>
+    <div class="w-aero-overtake">
+      <p class="w-aero-label">{w.overtake}</p>
+      <p class="w-aero-state">
+        <span class="w-aero-active">{w.active}</span>
+        <span class="w-aero-ready">{w.ready}</span>
+        <span class="w-aero-off">{w.off}</span>
+      </p>
+      <span class="w-aero-distance" data-text="player.telemetry2.overtakeActivationDistance|distanceIn:aero"></span>
+    </div>
+  </div>
+</Widget>

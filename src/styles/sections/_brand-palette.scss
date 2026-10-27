@@ -1,0 +1,40 @@
+@use '../abstracts' as *;
+
+// Campioni colore: il colore arriva da --swatch (dato della palette, non token di stile)
+.brand-palette {
+  @include grid-cols(4);
+
+  @include respond(tab-port) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brand-swatch {
+    display: grid;
+    gap: $sp-4;
+    padding: $sp-12;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-lg;
+    background: $color-surface;
+  }
+
+  .brand-swatch-chip {
+    height: $swatch-size;
+    margin-bottom: $sp-8;
+    border: $border-thin solid $color-line-strong;
+    border-radius: $radius-md;
+    background: var(--swatch);
+  }
+
+  .brand-swatch-name {
+    font-weight: $fw-semibold;
+  }
+
+  .brand-swatch-role {
+    @include text-muted;
+    @include type-size($fs-13);
+  }
+
+  .brand-swatch-value {
+    justify-self: start;
+  }
+}

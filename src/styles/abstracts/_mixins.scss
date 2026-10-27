@@ -1,0 +1,322 @@
+@use 'sass:list';
+@use 'sass:math';
+@use 'variables' as *;
+@use 'functions' as *;
+
+// ——— Responsive (desktop-first: phone ≤600, tab-port ≤900, tab-land ≤1200, big-desktop ≥1800) ———
+@mixin respond($breakpoint) {
+  @if $breakpoint == phone {
+    @media only screen and (max-width: $bp-phone) {
+      @content;
+    }
+  } @else if $breakpoint == tab-port {
+    @media only screen and (max-width: $bp-tab-port) {
+      @content;
+    }
+  } @else if $breakpoint == tab-land {
+    @media only screen and (max-width: $bp-tab-land) {
+      @content;
+    }
+  } @else if $breakpoint == big-desktop {
+    @media only screen and (min-width: $bp-big-desktop) {
+      @content;
+    }
+  } @else {
+    @error 'Breakpoint sconosciuto: #{$breakpoint}';
+  }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+// ——— Tipografia ———
+@mixin fluid-type($min, $max) {
+  $slope: math.div($max - $min, $fluid-to - $fluid-from);
+  $base: $min - $slope * $fluid-from;
+  font-size: clamp(#{rem($min)}, #{rem($base)} + #{math.div(math.round($slope * 10000), 100)}vw, #{rem($max)});
+}
+
+@mixin type-size($token) {
+  @if list.length($token) == 2 {
+    @include fluid-type(list.nth($token, 1), list.nth($token, 2));
+  } @else {
+    font-size: rem($token);
+  }
+}
+
+// Titoli display: Saira corsivo leggermente condensato, *accento* in rosso segnale
+@mixin title-display($size: $fs-h2) {
+  $lh: $lh-title;
+
+  @if $size == $fs-display {
+    $lh: $lh-display;
+  }
+
+  @include type-size($size);
+  font-family: $font-display;
+  font-weight: $fw-title;
+  font-stretch: $stretch-semi;
+  font-style: italic;
+  line-height: $lh;
+  letter-spacing: $tracking-title;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: $color-ink;
+
+  em {
+    font-style: italic;
+    color: $color-primary;
+  }
+}
+
+// Etichetta da cruscotto: maiuscolo condensato con tracking ampio
+@mixin racing-label($size: $fs-micro) {
+  @include type-size($size);
+  font-family: $font-display;
+  font-weight: $fw-semibold;
+  font-stretch: $stretch-condensed;
+  line-height: $lh-none;
+  letter-spacing: $tracking-micro;
+  text-transform: uppercase;
+}
+
+@mixin eyebrow($color: $color-primary) {
+  @include racing-label($fs-12);
+  display: inline-flex;
+  align-items: center;
+  gap: $sp-10;
+  color: $color;
+
+  &::before {
+    @include tick($color);
+  }
+}
+
+// Trattino inclinato rosso: firma grafica del brand davanti a titoli ed etichette
+@mixin tick($color: $color-primary, $height: $tick-height) {
+  content: '';
+  flex-shrink: 0;
+  width: $tick-width;
+  height: $height;
+  background: $color;
+  transform: skewX($skew);
+}
+
+// Numeri da cruscotto: cifre tabellari, nessun salto di larghezza quando cambiano
+@mixin numeric($stretch: $stretch-semi) {
+  font-family: $font-display;
+  font-stretch: $stretch;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+@mixin text-muted {
+  color: $color-ink-soft;
+}
+
+@mixin ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ——— Layout ———
+@mixin container($max: $container-default) {
+  width: min(calc(100% - 2 * #{$gutter}), #{$max});
+  margin-inline: auto;
+}
+
+@mixin section-space($size: md) {
+  @if $size == sm {
+    padding-block: $section-space-sm;
+
+    @include respond(phone) {
+      padding-block: $section-space-sm-phone;
+    }
+  } @else {
+    padding-block: $section-space;
+
+    @include respond(tab-port) {
+      padding-block: $section-space-tab;
+    }
+
+    @include respond(phone) {
+      padding-block: $section-space-phone;
+    }
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin stack($gap: $sp-16) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin grid-cols($n, $gap: $grid-gap) {
+  display: grid;
+  grid-template-columns: repeat($n, minmax(0, 1fr));
+  gap: $gap;
+}
+
+// ——— Superfici ———
+@mixin glass($blur: 14px) {
+  background: $color-bg-glass;
+  backdrop-filter: saturate(1.4) blur($blur);
+}
+
+// Angolo tagliato in alto a destra, come le grafiche TV del motorsport
+@mixin cut-corner($size: $cut) {
+  clip-path: polygon(0 0, calc(100% - #{$size}) 0, 100% $size, 100% 100%, 0 100%);
+}
+
+// Barra orizzontale riempita da --v (0..1) impostata dal binder
+@mixin meter($color: $color-accent, $height: $bar-thin) {
+  position: relative;
+  height: $height;
+  border-radius: $radius-pill;
+  background: $color-line-strong;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: $color;
+    transform-origin: left center;
+    transform: scaleX(var(--v, 0));
+    transition: transform $dur-data linear;
+  }
+}
+
+// ——— Interazione ———
+@mixin focus-ring($offset: $focus-offset) {
+  &:focus-visible {
+    outline: $focus-width solid $focus-color;
+    outline-offset: $offset;
+  }
+}
+
+@mixin button-base {
+  @include focus-ring;
+  @include type-size($fs-button);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $sp-10;
+  min-height: $touch-min;
+  padding: 0 $sp-24;
+  border: $border-thin solid transparent;
+  border-radius: $radius-sm;
+  font-family: $font-display;
+  font-weight: $fw-bold;
+  font-stretch: $stretch-semi;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  line-height: $lh-none;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform $dur-fast $ease-out,
+    box-shadow $dur-base $ease-out,
+    background-color $dur-base $ease-out,
+    color $dur-base $ease-out,
+    border-color $dur-base $ease-out;
+
+  &:active {
+    transform: scale($press-scale);
+  }
+
+  &:disabled {
+    opacity: $opacity-disabled;
+    cursor: not-allowed;
+  }
+}
+
+// Bottone icona compatto (barre strumenti)
+@mixin icon-button($size: $touch-min-sm) {
+  @include flex-center;
+  @include focus-ring;
+  width: $size;
+  height: $size;
+  border-radius: $radius-sm;
+  color: $color-ink-soft;
+  transition:
+    background-color $dur-fast $ease-out,
+    color $dur-fast $ease-out;
+
+  @include hover {
+    background: $color-surface-high;
+    color: $color-ink;
+  }
+}
+
+// ——— Reveal (stati guidati da data-reveal + .visible) ———
+@mixin reveal-base {
+  opacity: 0;
+  transition:
+    opacity $dur-reveal $ease-out,
+    translate $dur-reveal $ease-out,
+    scale $dur-reveal $ease-out;
+  transition-delay: calc(var(--i, 0) * #{$stagger});
+}
+
+@mixin reveal-variant($type: up) {
+  @if $type == up {
+    translate: 0 $reveal-distance;
+  } @else if $type == left {
+    translate: (-$reveal-distance) 0;
+  } @else if $type == right {
+    translate: $reveal-distance 0;
+  } @else if $type == scale {
+    scale: 0.94;
+  } @else if $type == visible {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+@mixin stagger($max: 12) {
+  @for $i from 1 through $max {
+    &:nth-child(#{$i}) {
+      --i: #{$i - 1};
+    }
+  }
+}

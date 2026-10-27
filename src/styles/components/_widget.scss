@@ -1,0 +1,104 @@
+@use '../abstracts' as *;
+
+// Cornice dei blocchi. Il corpo è un container: i valori interni scalano col box (cqmin).
+// Importanza: hero (trattino rosso, valori grandi) · primary · secondary · detail (più sobrio).
+.widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: $border-thin solid $color-line;
+  border-radius: $widget-radius;
+  background: $color-surface;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+
+  .widget-head {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: $sp-6;
+    height: $widget-head-height;
+    padding: 0 $sp-6 0 $sp-10;
+    color: $color-ink-faint;
+    user-select: none;
+  }
+
+  .widget-icon {
+    width: $icon-xs;
+    height: $icon-xs;
+  }
+
+  .widget-title {
+    @include racing-label($fs-10);
+    @include ellipsis;
+    flex: 1;
+    min-width: 0;
+    color: inherit;
+    font-style: normal;
+  }
+
+  // Informazione breve nell'intestazione (es. meteo attuale)
+  .widget-meta {
+    @include racing-label($fs-10);
+    @include ellipsis;
+    color: $color-ink-soft;
+  }
+
+  .widget-action {
+    @include icon-button($sp-24);
+    display: none;
+
+    .icon {
+      width: $icon-xs;
+      height: $icon-xs;
+    }
+  }
+
+  .widget-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    padding: $sp-cq-sm;
+    padding-top: 0;
+    container-type: size;
+  }
+
+  &.hero {
+    .widget-head {
+      color: $color-ink-soft;
+
+      &::before {
+        @include tick;
+        order: -1;
+        margin-right: $sp-2;
+      }
+    }
+
+    .widget-icon {
+      display: none;
+    }
+  }
+
+  &.detail {
+    background: $color-bg-alt;
+  }
+
+  // Opzioni sempre raggiungibili; rimozione e trascinamento solo in Personalizza
+  [data-widget-settings] {
+    display: flex;
+  }
+
+  [data-editing] & {
+    border-style: dashed;
+    border-color: $color-line-strong;
+
+    .widget-head {
+      cursor: grab;
+      background: $color-surface-raised;
+    }
+
+    .widget-action.remove {
+      display: flex;
+    }
+  }
+}

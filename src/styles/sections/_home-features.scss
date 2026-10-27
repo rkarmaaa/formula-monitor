@@ -1,0 +1,38 @@
+@use '../abstracts' as *;
+
+// Punti di forza: i dati che l'HUD del gioco non mostra
+.home-features {
+  @include grid-cols(3);
+
+  @include respond(tab-land) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include respond(phone) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-feature {
+    @include stack($sp-10);
+    @include cut-corner($cut-lg);
+    padding: $card-padding;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-lg;
+    background: $color-surface;
+  }
+
+  .home-feature-icon {
+    width: $icon-xl;
+    height: $icon-xl;
+    color: $color-primary;
+  }
+
+  .home-feature-title {
+    @include title-display($fs-h4);
+  }
+
+  .home-feature-text {
+    @include text-muted;
+    @include type-size($fs-15);
+  }
+}

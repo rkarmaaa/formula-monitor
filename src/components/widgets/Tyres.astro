@@ -1,0 +1,48 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import TyreChip from '@components/monitor/TyreChip.astro';
+import { t } from '@i18n/index';
+
+// Ruote disposte come sulla vettura: anteriori in alto (indici UDP 2, 3), posteriori in basso (0, 1)
+const w = t.widgets.tyres;
+const order = [2, 3, 0, 1];
+---
+
+<Widget id="tyres">
+  <div class="w-tyres">
+    {order.map((i) => (
+      <div
+        class="w-tyre"
+        data-attr={`data-temp:player.telemetry.tyresSurfaceTemperature.${i}|tone:tyre; data-wear:player.damage.tyresWear.${i}|tone:wear`}
+        data-var={`--life:player.damage.tyresWear.${i}|ratio:100`}
+      >
+        <span class="w-tyre-body" aria-hidden="true" />
+        <span class="w-tyre-info">
+          <span class="w-tyre-label">{t.wheels[i]}</span>
+          <span class="w-tyre-wear" data-text={`player.damage.tyresWear.${i}|pct`} />
+          <span class="w-tyre-temps">
+            <span title={w.surface} data-text={`player.telemetry.tyresSurfaceTemperature.${i}|temp`} />
+            <span
+              class="w-tyre-inner"
+              title={w.inner}
+              data-text={`player.telemetry.tyresInnerTemperature.${i}|temp`}
+              data-attr={`data-temp:player.telemetry.tyresInnerTemperature.${i}|tone:inner`}
+            />
+          </span>
+          <span class="w-tyre-extra">
+            <span data-text={`player.telemetry.tyresPressure.${i}|fixed:1`} /> psi
+            <span class="w-tyre-blister" data-attr={`hidden:player.damage.tyreBlisters.${i}|not`}>
+              {w.blisters} <span data-text={`player.damage.tyreBlisters.${i}|pct`} />
+            </span>
+          </span>
+        </span>
+      </div>
+    ))}
+    <p class="w-tyres-center">
+      <TyreChip path="player.status.visualTyreCompound" />
+      <span class="w-tyres-age">
+        <b data-text="player.status.tyresAgeLaps"></b> {w.laps}
+      </span>
+    </p>
+  </div>
+</Widget>

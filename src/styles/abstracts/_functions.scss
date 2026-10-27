@@ -1,0 +1,6 @@
+@use 'sass:math';
+
+// px → rem (base 16), usato dalla tipografia fluida
+@function rem($px, $base: 16px) {
+  @return math.div($px, $base) * 1rem;
+}

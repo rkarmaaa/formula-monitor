@@ -1,0 +1,75 @@
+@use '../abstracts' as *;
+
+// Settori: tre celle con il colore TV del tempo; il settore in corso è sottolineato
+.w-sectors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $sp-cq-xs;
+  height: 100%;
+
+  .w-sector {
+    --tone: #{$color-ink-faint};
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: $sp-cq-xs;
+    padding: $sp-cq-xs $sp-cq-sm;
+    border-radius: $radius-xs;
+    background: $color-surface-raised;
+    border-bottom: $border-heavy solid var(--tone);
+
+    &[data-tone='best'] {
+      --tone: #{$color-best};
+    }
+
+    &[data-tone='personal'] {
+      --tone: #{$color-personal};
+    }
+
+    &[data-tone='slower'] {
+      --tone: #{$color-slower};
+    }
+
+    &:not([data-live]) .w-sector-time {
+      opacity: $opacity-muted;
+    }
+
+    &[data-current] {
+      box-shadow: inset 0 0 0 $border-thin $color-line-strong;
+    }
+  }
+
+  .w-sector-name {
+    @include racing-label;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+  }
+
+  .w-sector-time {
+    @include numeric;
+    font-size: $value-sm;
+    font-weight: $fw-bold;
+    line-height: $lh-none;
+    color: var(--tone);
+  }
+
+  .w-sector-refs {
+    @include numeric;
+    display: flex;
+    justify-content: space-between;
+    gap: $sp-cq-xs;
+    font-size: $label-widget;
+    color: $color-personal;
+  }
+
+  .w-sector-overall {
+    color: $color-best;
+  }
+
+  @container (max-height: #{$cqh-xs}) {
+    .w-sector-refs {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,47 @@
+@use '../abstracts' as *;
+
+// Sessione: circuito in grande, tipo di sessione e fatti essenziali
+.w-session {
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  gap: $sp-cq-xs;
+  height: 100%;
+
+  .w-session-track {
+    @include title-display;
+    @include ellipsis;
+    font-size: $value-sm;
+  }
+
+  .w-session-type {
+    @include racing-label;
+    @include ellipsis;
+    font-size: $label-widget;
+    color: $color-primary;
+  }
+
+  .w-session-weather {
+    color: $color-ink-soft;
+  }
+
+  .w-session-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $sp-cq-sm;
+    margin-top: $sp-cq-xs;
+
+    dt {
+      @include racing-label;
+      @include ellipsis;
+      font-size: $label-widget;
+      color: $color-ink-faint;
+    }
+
+    dd {
+      @include numeric;
+      font-size: $value-xs;
+      font-weight: $fw-semibold;
+    }
+  }
+}

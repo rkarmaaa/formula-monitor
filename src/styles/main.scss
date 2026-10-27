@@ -1,0 +1,81 @@
+// Unico entry degli stili: l'ordine conta (base → layout → componenti → blocchi → pagine → animazioni)
+
+// Base
+@use 'base/reset';
+@use 'base/fonts';
+@use 'base/base';
+@use 'base/typography';
+
+// Layout
+@use 'layout/container';
+@use 'layout/section';
+@use 'layout/site-header';
+@use 'layout/site-footer';
+@use 'layout/monitor';
+
+// Componenti
+@use 'components/icon';
+@use 'components/skip-link';
+@use 'components/button';
+@use 'components/logo';
+@use 'components/section-title';
+@use 'components/bridge-pill';
+@use 'components/game-picker';
+@use 'components/udp-settings';
+@use 'components/command-list';
+@use 'components/widget';
+@use 'components/tyre-chip';
+@use 'components/battle-car';
+@use 'components/drawer';
+@use 'components/panel-dialog';
+@use 'components/dev-panel';
+@use 'components/toast';
+
+// Blocchi del monitor
+@use 'widgets/position';
+@use 'widgets/lap';
+@use 'widgets/delta';
+@use 'widgets/cockpit';
+@use 'widgets/battle';
+@use 'widgets/board';
+@use 'widgets/map';
+@use 'widgets/tyres';
+@use 'widgets/strategy';
+@use 'widgets/fuel';
+@use 'widgets/ers';
+@use 'widgets/flags';
+@use 'widgets/sectors';
+@use 'widgets/inputs';
+@use 'widgets/events';
+@use 'widgets/drs';
+@use 'widgets/aero';
+@use 'widgets/session';
+@use 'widgets/weather';
+@use 'widgets/laps';
+@use 'widgets/positions';
+@use 'widgets/damage';
+@use 'widgets/engine';
+@use 'widgets/brakes';
+@use 'widgets/gforce';
+@use 'widgets/trap';
+
+// Sezioni delle pagine informative
+@use 'sections/home-hero';
+@use 'sections/home-steps';
+@use 'sections/home-features';
+@use 'sections/guide-flow';
+@use 'sections/guide-platforms';
+@use 'sections/guide-find-ip';
+@use 'sections/guide-faq';
+@use 'sections/guide-cta';
+@use 'sections/brand-logos';
+@use 'sections/brand-palette';
+@use 'sections/brand-type';
+@use 'sections/brand-rules';
+
+// Pagine
+@use 'pages/not-found';
+
+// Animazioni
+@use 'animations/keyframes';
+@use 'animations/reveal';

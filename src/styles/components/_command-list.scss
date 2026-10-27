@@ -1,0 +1,41 @@
+@use '../abstracts' as *;
+
+// Righe di terminale con prompt e bottone copia
+.command-list {
+  @include stack($sp-6);
+
+  .command-list-line {
+    display: flex;
+    align-items: center;
+    gap: $sp-8;
+    padding: $sp-4 $sp-4 $sp-4 $sp-14;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-sm;
+    background: $color-black;
+
+    &::before {
+      content: '›';
+      color: $color-primary;
+      font-weight: $fw-bold;
+    }
+  }
+
+  .command-list-code {
+    @include ellipsis;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: $color-ink;
+  }
+
+  .command-list-copy {
+    @include icon-button($touch-min-sm);
+    flex-shrink: 0;
+
+    &[data-copied] {
+      color: $color-personal;
+    }
+  }
+}

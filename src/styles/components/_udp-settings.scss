@@ -1,0 +1,86 @@
+@use '../abstracts' as *;
+
+// Tabella delle impostazioni UDP: nome opzione come nel gioco, valore evidenziato, motivazione
+.udp-settings {
+  @include stack($sp-12);
+
+  .udp-settings-table {
+    width: 100%;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-md;
+    background: $color-surface;
+    overflow: hidden;
+
+    th,
+    td {
+      padding: $sp-12 $sp-16;
+      border-bottom: $border-thin solid $color-line;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    tr:last-child > * {
+      border-bottom: 0;
+    }
+
+    thead th {
+      @include racing-label($fs-11);
+      color: $color-ink-faint;
+      background: $color-surface-raised;
+    }
+
+    tbody th {
+      font-weight: $fw-regular;
+      white-space: nowrap;
+    }
+
+    @include respond(phone) {
+      th,
+      td {
+        padding: $sp-10 $sp-12;
+      }
+
+      tbody th {
+        white-space: normal;
+      }
+    }
+  }
+
+  .udp-settings-caption {
+    @include visually-hidden;
+  }
+
+  .udp-settings-value {
+    @include numeric;
+    @include type-size($fs-18);
+    font-weight: $fw-bold;
+    color: $color-accent;
+    white-space: nowrap;
+
+    [data-empty] {
+      @include type-size($fs-14);
+      font-family: $font-body;
+      font-weight: $fw-regular;
+      color: $color-ink-faint;
+    }
+  }
+
+  .udp-settings-why {
+    @include text-muted;
+    @include type-size($fs-14);
+    min-width: $cq-sm;
+
+    @include respond(tab-port) {
+      min-width: 0;
+    }
+  }
+
+  .udp-settings-note {
+    @include type-size($fs-14);
+    padding: $sp-12 $sp-16;
+    border-left: $border-heavy solid $color-accent;
+    border-radius: $radius-xs;
+    background: $color-accent-tint;
+    color: $color-ink;
+  }
+}

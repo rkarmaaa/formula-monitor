@@ -1,0 +1,69 @@
+---
+import type { WidgetId } from '@data/widgets';
+import { widgets } from '@data/widgets';
+import Position from '@components/widgets/Position.astro';
+import Lap from '@components/widgets/Lap.astro';
+import Delta from '@components/widgets/Delta.astro';
+import Cockpit from '@components/widgets/Cockpit.astro';
+import Battle from '@components/widgets/Battle.astro';
+import Leaderboard from '@components/widgets/Leaderboard.astro';
+import Map from '@components/widgets/Map.astro';
+import Tyres from '@components/widgets/Tyres.astro';
+import Strategy from '@components/widgets/Strategy.astro';
+import Fuel from '@components/widgets/Fuel.astro';
+import Ers from '@components/widgets/Ers.astro';
+import Flags from '@components/widgets/Flags.astro';
+import Sectors from '@components/widgets/Sectors.astro';
+import Inputs from '@components/widgets/Inputs.astro';
+import Events from '@components/widgets/Events.astro';
+import Drs from '@components/widgets/Drs.astro';
+import Aero from '@components/widgets/Aero.astro';
+import Session from '@components/widgets/Session.astro';
+import Weather from '@components/widgets/Weather.astro';
+import Laps from '@components/widgets/Laps.astro';
+import Positions from '@components/widgets/Positions.astro';
+import Damage from '@components/widgets/Damage.astro';
+import Engine from '@components/widgets/Engine.astro';
+import Brakes from '@components/widgets/Brakes.astro';
+import Gforce from '@components/widgets/Gforce.astro';
+import Speedtrap from '@components/widgets/Speedtrap.astro';
+
+// Tutti i blocchi pre-renderizzati come <template>: la griglia li clona quando servono
+const bodies: Record<WidgetId, typeof Position> = {
+  position: Position,
+  lap: Lap,
+  delta: Delta,
+  cockpit: Cockpit,
+  battle: Battle,
+  leaderboard: Leaderboard,
+  map: Map,
+  tyres: Tyres,
+  strategy: Strategy,
+  fuel: Fuel,
+  ers: Ers,
+  flags: Flags,
+  sectors: Sectors,
+  inputs: Inputs,
+  events: Events,
+  drs: Drs,
+  aero: Aero,
+  session: Session,
+  weather: Weather,
+  laps: Laps,
+  positions: Positions,
+  damage: Damage,
+  engine: Engine,
+  brakes: Brakes,
+  gforce: Gforce,
+  speedtrap: Speedtrap,
+};
+---
+
+{widgets.map(({ id }) => {
+  const Body = bodies[id];
+  return (
+    <template data-widget-template={id}>
+      <Body />
+    </template>
+  );
+})}

@@ -1,0 +1,79 @@
+@use '../abstracts' as *;
+
+// Selettore versione: due card radio, quella scelta con bordo rosso e badge del formato
+.game-picker {
+  @include stack($sp-12);
+
+  .game-picker-legend {
+    @include racing-label($fs-12);
+    margin-bottom: $sp-12;
+    color: $color-ink-faint;
+  }
+
+  .game-picker-options {
+    @include grid-cols(2, $sp-12);
+
+    @include respond(phone) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .game-option {
+    @include stack($sp-6);
+    @include cut-corner($cut);
+    position: relative;
+    padding: $sp-18 $sp-20;
+    border: $border-thin solid $color-line-strong;
+    border-radius: $radius-md;
+    background: $color-surface;
+    cursor: pointer;
+    transition:
+      border-color $dur-fast $ease-out,
+      background-color $dur-fast $ease-out;
+
+    @include hover {
+      border-color: $color-ink-faint;
+    }
+
+    &:has(:checked) {
+      border-color: $color-primary;
+      background: $color-primary-tint;
+
+      .game-option-badge {
+        background: $color-primary;
+        color: $color-white;
+      }
+    }
+
+    &:has(:focus-visible) {
+      outline: $focus-width solid $focus-color;
+      outline-offset: $focus-offset;
+    }
+  }
+
+  .game-option-input {
+    @include visually-hidden;
+  }
+
+  .game-option-badge {
+    @include racing-label($fs-11);
+    align-self: flex-start;
+    padding: $sp-4 $sp-8;
+    border-radius: $radius-xs;
+    background: $color-surface-high;
+    color: $color-ink-soft;
+  }
+
+  .game-option-name {
+    @include title-display($fs-h4);
+  }
+
+  .game-option-detail {
+    @include text-muted;
+    @include type-size($fs-14);
+  }
+
+  &.compact .game-option {
+    padding: $sp-14 $sp-16;
+  }
+}

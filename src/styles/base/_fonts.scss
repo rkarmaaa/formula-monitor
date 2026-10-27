@@ -1,0 +1,10 @@
+@use '../abstracts' as *;
+
+// @font-face generati dall'API Fonts di Astro (astro.config.ts): qui solo le impostazioni OpenType
+html {
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1;
+}

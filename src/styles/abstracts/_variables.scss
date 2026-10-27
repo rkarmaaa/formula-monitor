@@ -1,0 +1,328 @@
+@use 'sass:list';
+
+// =====================================================================
+// TOKEN DEL DESIGN SYSTEM — FORMULA MONITOR "Carbon & Signal"
+// Carbonio profondo, rosso segnale più caldo del rosso F1, accento ciano telemetria.
+// Ogni valore usato nei partial deve venire da qui.
+// =====================================================================
+
+// ——— Palette (ruoli) ———
+$color-bg: #08090c;
+$color-bg-alt: #0c0e13;
+$color-surface: #11141b;
+$color-surface-raised: #171b24;
+$color-surface-high: #1e2330;
+$color-line: rgba(214, 224, 245, 0.07);
+$color-line-strong: rgba(214, 224, 245, 0.14);
+$color-ink: #f1f3f7;
+$color-ink-soft: #a3abba;
+$color-ink-faint: #6a7285;
+$color-primary: #f23d33;
+$color-primary-deep: #c42b23;
+$color-primary-tint: rgba(242, 61, 51, 0.14);
+$color-primary-line: rgba(242, 61, 51, 0.45);
+$color-primary-glow: rgba(242, 61, 51, 0.35);
+$color-accent: #35c5f0;
+$color-accent-tint: rgba(53, 197, 240, 0.14);
+$color-accent-line: rgba(53, 197, 240, 0.4);
+$color-white: #ffffff;
+$color-black: #000000;
+
+// Semantica dati (convenzione cronometraggio F1: viola = migliore assoluto, verde = personale)
+$color-best: #b57cff;
+$color-personal: #36d27c;
+$color-slower: #f5c84a;
+$color-warn: #ff9d3a;
+$color-personal-tint: rgba(54, 210, 124, 0.14);
+$color-warn-tint: rgba(255, 157, 58, 0.14);
+
+// Mescole e temperature
+$tyre-soft: #ff4d42;
+$tyre-medium: #ffd23f;
+$tyre-hard: #eef1f6;
+$tyre-inter: #3bc96b;
+$tyre-wet: #3a8ff7;
+$temp-cold: #4aa8ff;
+$temp-ok: $color-personal;
+$temp-hot: $color-warn;
+$temp-over: $color-primary;
+
+// Trasparenze derivate
+$color-bg-glass: rgba(8, 9, 12, 0.82);
+$color-ink-veil: rgba(8, 9, 12, 0.72);
+$color-white-line: rgba(255, 255, 255, 0.18);
+$color-track-strong: rgba(214, 224, 245, 0.32);
+
+// ——— Font ———
+$font-display: var(--font-display);
+$font-body: var(--font-body);
+
+$fw-light: 300;
+$fw-regular: 400;
+$fw-medium: 500;
+$fw-semibold: 600;
+$fw-bold: 700;
+$fw-heavy: 800;
+$fw-black: 900;
+$fw-title: $fw-bold;
+
+// Larghezze di Saira (asse wdth): condensato per etichette e numeri da cruscotto
+$stretch-condensed: 78%;
+$stretch-semi: 88%;
+$stretch-normal: 100%;
+
+$fs-10: 10px;
+$fs-11: 11px;
+$fs-12: 12px;
+$fs-13: 13px;
+$fs-14: 14px;
+$fs-15: 15px;
+$fs-16: 16px;
+$fs-17: 17px;
+$fs-18: 18px;
+$fs-20: 20px;
+$fs-22: 22px;
+$fs-24: 24px;
+$fs-28: 28px;
+$fs-32: 32px;
+
+$fs-display: 46px 104px;
+$fs-h1: 38px 72px;
+$fs-h2: 30px 52px;
+$fs-h3: 21px 26px;
+$fs-h4: 17px 20px;
+$fs-lead: 17px 20px;
+$fs-body: 15px 16px;
+$fs-small: $fs-14;
+$fs-micro: $fs-11;
+$fs-button: $fs-15;
+
+// Valori dei widget: scalano con il box del widget (container query), non con la pagina
+$value-xl: clamp(2.25rem, 46cqmin, 14rem);
+$value-lg: clamp(1.5rem, 24cqmin, 6.5rem);
+$value-md: clamp(1.125rem, 13cqmin, 3.25rem);
+$value-sm: clamp(0.875rem, 8cqmin, 1.75rem);
+$value-xs: clamp(0.6875rem, 5.5cqmin, 1rem);
+$label-widget: clamp(0.5625rem, 3.6cqmin, 0.75rem);
+// Righe di elenchi lunghi (classifica): scalano anche con l'altezza per far stare tutte le auto
+$value-list: clamp(0.5625rem, min(5.5cqw, 3.3cqh), 1rem);
+
+$lh-none: 1;
+$lh-display: 0.95;
+$lh-title: 1.05;
+$lh-heading: 1.2;
+$lh-snug: 1.35;
+$lh-ui: 1.4;
+$lh-body: 1.6;
+
+$tracking-tight: -0.03em;
+$tracking-title: -0.015em;
+$tracking-normal: 0;
+$tracking-wide: 0.06em;
+$tracking-micro: 0.16em;
+
+$measure-short: 46ch;
+$fluid-from: 360px;
+$fluid-to: 1280px;
+
+// ——— Spazi (nome = px, valore in rem) ———
+$sp-0: 0;
+$sp-1: 0.0625rem; // 1px
+$sp-2: 0.125rem; // 2px
+$sp-3: 0.1875rem; // 3px
+$sp-4: 0.25rem; // 4px
+$sp-6: 0.375rem; // 6px
+$sp-8: 0.5rem; // 8px
+$sp-10: 0.625rem; // 10px
+$sp-12: 0.75rem; // 12px
+$sp-14: 0.875rem; // 14px
+$sp-16: 1rem; // 16px
+$sp-18: 1.125rem; // 18px
+$sp-20: 1.25rem; // 20px
+$sp-24: 1.5rem; // 24px
+$sp-28: 1.75rem; // 28px
+$sp-32: 2rem; // 32px
+$sp-36: 2.25rem; // 36px
+$sp-40: 2.5rem; // 40px
+$sp-44: 2.75rem; // 44px
+$sp-48: 3rem; // 48px
+$sp-56: 3.5rem; // 56px
+$sp-64: 4rem; // 64px
+$sp-72: 4.5rem; // 72px
+$sp-80: 5rem; // 80px
+$sp-96: 6rem; // 96px
+$sp-112: 7rem; // 112px
+$sp-128: 8rem; // 128px
+$sp-160: 10rem; // 160px
+
+// Spazi relativi al widget (container query)
+$sp-cq-xs: clamp(0.125rem, 1.2cqmin, 0.375rem);
+$sp-cq-sm: clamp(0.25rem, 2.5cqmin, 0.75rem);
+$sp-cq-md: clamp(0.375rem, 4cqmin, 1.25rem);
+
+$section-space: $sp-112;
+$section-space-tab: $sp-80;
+$section-space-phone: $sp-56;
+$section-space-sm: $sp-72;
+$section-space-sm-phone: $sp-48;
+$stack-title: $sp-16;
+$stack-block: $sp-40;
+$card-padding: $sp-24;
+
+// ——— Layout ———
+$container-default: 1200px;
+$container-narrow: 760px;
+$container-wide: 1400px;
+$gutter: clamp(16px, 5vw, 48px);
+$grid-gap: clamp(12px, 2vw, 24px);
+$header-height: 68px;
+$header-height-phone: 60px;
+$touch-min: 48px;
+$touch-min-sm: 44px;
+$scroll-offset: $sp-24;
+$anchor-offset: calc(#{$header-height} + #{$scroll-offset});
+
+// Monitor: barra comandi, griglia 12×24 e cassetto dei widget
+$monitor-bar-height: 52px;
+$monitor-ratio: list.slash(9, 16);
+$grid-columns: 12;
+$grid-rows: 24;
+$drawer-width: 360px;
+$drawer-height-phone: 62dvh;
+$widget-head-height: 24px;
+$widget-radius: 10px;
+
+// Soglie delle container query dei blocchi (larghezza del corpo del widget)
+$cq-xs: 11rem;
+$cq-sm: 16rem;
+$cq-md: 24rem;
+$cq-lg: 32rem;
+$cq-tiny: 9rem;
+$cqh-xs: 3.5rem;
+$cqh-sm: 4.5rem;
+$cqh-md: 7rem;
+
+// Colonne delle tabelle dei blocchi (in em: seguono la dimensione del testo della riga)
+$col-gap: 5.2em;
+$col-gap-sm: 4.8em;
+$col-tyre: 3.6em;
+$col-tyre-sm: 3.4em;
+$col-stops: 2em;
+$col-time: 5.4em;
+$col-lap: 2.6em;
+$col-chip: 1.6em;
+$col-label: 4.2em;
+$col-value: 2.8em;
+$row-max: 2.4em;
+$fs-code: 0.92em;
+
+// Strumenti dei blocchi
+$rev-leds: 15;
+$rev-sharpness: 8;
+$dial-size: 90cqh;
+$dial-travel: 45cqh;
+$steer-travel: 40cqw;
+$rotate-open: 45deg;
+$games: f1-25, f1-25-2026;
+
+$bp-phone: 37.5em; // 600px
+$bp-tab-port: 56.25em; // 900px
+$bp-tab-land: 75em; // 1200px
+$bp-big-desktop: 112.5em; // 1800px
+
+// ——— Dimensioni ricorrenti ———
+$icon-stroke: 1.75;
+$icon-xs: 14px;
+$icon-sm: 16px;
+$icon-md: 20px;
+$icon-lg: 24px;
+$icon-xl: 32px;
+$logo-mark: 36px;
+$logo-mark-lg: 96px;
+$dot-size: 8px;
+$chip-height: 32px;
+$tick-width: 4px;
+$tick-height: 12px;
+$bar-thin: 4px;
+$bar-medium: 8px;
+$swatch-size: 120px;
+$device-width: 22rem;
+$dev-panel-width: 22rem;
+$chip-size: 1.7em;
+$chip-ring: 0.18em;
+$chip-text: 0.8em;
+$icon-inline: 1em;
+$icon-inline-lg: 1.6em;
+$dialog-width: 30rem;
+
+// ——— Forme ———
+$radius-xs: 3px;
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-pill: 999px;
+$radius-round: 50%;
+$cut: 10px;
+$cut-lg: 18px;
+
+$border-thin: 1px;
+$border-bold: 2px;
+$border-heavy: 3px;
+
+$shadow-card:
+  0 1px 0 rgba(255, 255, 255, 0.03) inset,
+  0 12px 28px -18px rgba(0, 0, 0, 0.8);
+$shadow-lift: 0 22px 44px -22px rgba(0, 0, 0, 0.9);
+$shadow-drawer: -24px 0 60px -20px rgba(0, 0, 0, 0.85);
+$shadow-button:
+  inset 0 1px 0 $color-white-line,
+  0 10px 24px -12px $color-primary-glow;
+$shadow-button-hover:
+  inset 0 1px 0 $color-white-line,
+  0 16px 30px -12px $color-primary-glow;
+$glow-primary: 0 0 18px $color-primary-glow;
+
+$opacity-muted: 0.6;
+$opacity-disabled: 0.4;
+$opacity-ghost: 0.16;
+$opacity-fill: 0.35;
+$opacity-pulse: 0.7;
+$mix-tint: 16%;
+$mix-heat: 60%;
+$blur-overlay: 6px;
+$blur-dialog: 4px;
+
+$focus-width: 2px;
+$focus-offset: 3px;
+$focus-color: $color-accent;
+
+// ——— Livelli ———
+$z-deco: 0;
+$z-base: 1;
+$z-raised: 2;
+$z-sticky: 50;
+$z-header: 100;
+$z-drawer: 200;
+$z-overlay: 250;
+$z-modal: 300;
+$z-toast: 400;
+
+// ——— Motion ———
+$dur-fast: 160ms;
+$dur-base: 280ms;
+$dur-slow: 560ms;
+$dur-reveal: 800ms;
+$dur-pulse: 1600ms;
+$dur-data: 120ms;
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+$reveal-distance: 28px;
+$stagger: 70ms;
+$press-scale: 0.97;
+$skew: -12deg;
+$tilt-device: 2deg;
+$arrow-shift: 4px;
+
+// Righe di velocità del brand (sfondo hero)
+$speed-lines: repeating-linear-gradient(105deg, transparent 0 22px, rgba(214, 224, 245, 0.025) 22px 23px);

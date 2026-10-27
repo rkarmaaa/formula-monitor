@@ -1,0 +1,85 @@
+@use '../abstracts' as *;
+
+// Storico giri: tempi e settori con i colori TV; giri non validi barrati
+.w-laps {
+  --cols: #{$col-lap} minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)) #{$col-chip};
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  font-size: $value-xs;
+
+  .w-laps-head,
+  .w-laps-row {
+    display: grid;
+    grid-template-columns: var(--cols);
+    align-items: center;
+    gap: $sp-cq-sm;
+  }
+
+  .w-laps-head {
+    @include racing-label;
+    padding-bottom: $sp-cq-xs;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+
+    > span {
+      @include ellipsis;
+    }
+  }
+
+  .w-laps-list {
+    @include stack($sp-1);
+  }
+
+  .w-laps-row {
+    @include numeric;
+    padding: $sp-cq-xs 0;
+    border-bottom: $border-thin solid $color-line;
+
+    &.enter {
+      animation: slide-in $dur-base $ease-out;
+    }
+
+    &[data-invalid] .w-laps-time {
+      color: $color-primary;
+      text-decoration: line-through;
+    }
+
+    .tyre-chip {
+      font-size: $label-widget;
+    }
+  }
+
+  .w-laps-num {
+    color: $color-ink-faint;
+  }
+
+  .w-laps-time {
+    font-weight: $fw-bold;
+  }
+
+  .w-laps-time,
+  .w-laps-sector {
+    &[data-tone='best'] {
+      color: $color-best;
+    }
+
+    &[data-tone='personal'] {
+      color: $color-personal;
+    }
+
+    &[data-tone='slower'] {
+      color: $color-slower;
+    }
+  }
+
+  @container (max-width: #{$cq-md}) {
+    --cols: #{$col-lap} minmax(0, 1fr) #{$col-chip};
+
+    .w-laps-head span:nth-child(n + 3):nth-child(-n + 5),
+    .w-laps-sector {
+      display: none;
+    }
+  }
+}

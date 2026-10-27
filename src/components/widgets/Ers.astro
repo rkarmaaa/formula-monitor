@@ -1,0 +1,29 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.ers;
+---
+
+<Widget id="ers">
+  <div class="w-ers" data-attr="data-tone:player.ersPct|tone:ers; data-mode:player.status.ersDeployMode">
+    <p class="w-ers-main">
+      <span class="w-ers-value" data-text="player.ersPct|pct">
+        —
+      </span>
+      <span class="w-ers-mode" data-text="player.status.ersDeployMode|ersMode"></span>
+    </p>
+    <div class="w-ers-meter" data-var="--v:player.ersPct|ratio:100"></div>
+    <p class="w-ers-meta">
+      <span>
+        {w.deployed} <b data-text="player.status.ersDeployedThisLap|mj"></b>
+      </span>
+      <span>
+        {w.harvested} <b data-text="player.status.ersHarvestedThisLapMGUK|mj"></b>
+      </span>
+      <span data-game-only="f1-25-2026">
+        {w.limit} <b data-text="player.status.ersHarvestLimitPerLap|mj"></b>
+      </span>
+    </p>
+  </div>
+</Widget>

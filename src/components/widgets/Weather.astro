@@ -1,0 +1,42 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import Icon from '@components/ui/Icon.astro';
+import { t } from '@i18n/index';
+
+// Un'icona per tipo di meteo UDP (0 sereno → 5 temporale): il CSS mostra quella di data-weather
+const w = t.widgets.weather;
+const icons = [
+  'lucide:sun',
+  'lucide:cloud-sun',
+  'lucide:cloud',
+  'lucide:cloud-drizzle',
+  'lucide:cloud-rain',
+  'lucide:cloud-lightning',
+];
+---
+
+<Widget id="weather">
+  <ol class="w-weather" data-list="forecast" data-limit="8">
+    <template>
+      <li class="w-weather-sample" data-attr="data-weather:weather; data-rain:rainPercentage|gt:40">
+        <span class="w-weather-time">
+          +<span data-text="timeOffset"></span>′
+        </span>
+        <span class="w-weather-icon">
+          {icons.map((icon, i) => (
+            <span class="w-weather-glyph" data-glyph={i}>
+              <Icon name={icon} />
+            </span>
+          ))}
+        </span>
+        <span class="w-weather-rain">
+          <span data-text="rainPercentage|pct"></span>
+        </span>
+        <span class="w-weather-temp" data-text="trackTemperature|temp"></span>
+      </li>
+    </template>
+  </ol>
+  <p class="widget-meta" slot="meta" data-text="session.weather|weather">
+    {w.now}
+  </p>
+</Widget>

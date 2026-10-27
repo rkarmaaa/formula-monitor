@@ -1,0 +1,22 @@
+@use '../abstracts' as *;
+
+// Box "trova l'IP a mano" con i comandi per sistema operativo
+.guide-find-ip {
+  @include stack($sp-12);
+  max-width: $container-narrow;
+  padding: $card-padding;
+  border-left: $border-heavy solid $color-accent;
+  border-radius: $radius-sm;
+  background: $color-surface;
+
+  .guide-find-ip-title {
+    @include title-display($fs-h4);
+  }
+
+  .guide-find-ip-list {
+    @include stack($sp-6);
+    @include text-muted;
+    @include type-size($fs-15);
+    list-style: disc inside;
+  }
+}

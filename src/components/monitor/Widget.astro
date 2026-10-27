@@ -1,0 +1,34 @@
+---
+import Icon from '@components/ui/Icon.astro';
+import { widgetById, type WidgetId } from '@data/widgets';
+import { t } from '@i18n/index';
+
+// Cornice comune dei blocchi: intestazione (maniglia di trascinamento) + corpo che scala col box
+interface Props {
+  id: WidgetId;
+  settings?: boolean;
+}
+
+const { id, settings = false } = Astro.props;
+const def = widgetById(id)!;
+const copy = t.widgets[id];
+---
+
+<article class:list={['widget', def.tier]} data-widget={id} aria-label={copy.title}>
+  <header class="widget-head">
+    <Icon name={def.icon} class="widget-icon" />
+    <h2 class="widget-title">{copy.title}</h2>
+    <slot name="meta" />
+    {settings && (
+      <button class="widget-action" type="button" data-widget-settings aria-label={t.monitor.actions.settings}>
+        <Icon name="lucide:sliders-horizontal" />
+      </button>
+    )}
+    <button class="widget-action remove" type="button" data-widget-remove aria-label={t.monitor.actions.remove}>
+      <Icon name="lucide:x" />
+    </button>
+  </header>
+  <div class="widget-body">
+    <slot />
+  </div>
+</article>

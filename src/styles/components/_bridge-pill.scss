@@ -1,0 +1,40 @@
+@use '../abstracts' as *;
+
+// Stato del bridge nell'header: grigio = non raggiungibile, verde = attivo, pulsante = dati in arrivo
+.bridge-pill {
+  @include racing-label($fs-11);
+  display: inline-flex;
+  align-items: center;
+  gap: $sp-8;
+  height: $chip-height;
+  padding: 0 $sp-12;
+  border: $border-thin solid $color-line;
+  border-radius: $radius-pill;
+  color: $color-ink-faint;
+  white-space: nowrap;
+
+  .bridge-pill-dot {
+    width: $dot-size;
+    height: $dot-size;
+    border-radius: $radius-round;
+    background: $color-ink-faint;
+  }
+
+  &[data-state='online'],
+  &[data-state='live'] {
+    color: $color-ink-soft;
+
+    .bridge-pill-dot {
+      background: $color-personal;
+    }
+  }
+
+  &[data-state='live'] .bridge-pill-dot {
+    box-shadow: 0 0 0 $sp-3 $color-personal-tint;
+    animation: blink $dur-pulse $ease-in-out infinite;
+
+    @include reduced-motion {
+      animation: none;
+    }
+  }
+}

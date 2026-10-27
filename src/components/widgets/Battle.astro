@@ -1,0 +1,17 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import BattleCar from '@components/monitor/BattleCar.astro';
+import TyreChip from '@components/monitor/TyreChip.astro';
+---
+
+<Widget id="battle">
+  <div class="w-battle">
+    <BattleCar side="ahead" />
+    <div class="w-battle-you" data-var="--team:player.teamId|team">
+      <span class="w-battle-you-pos" data-text="player.position|pos"></span>
+      <span class="w-battle-you-code" data-text="player.code"></span>
+      <TyreChip path="player.status.visualTyreCompound" />
+    </div>
+    <BattleCar side="behind" />
+  </div>
+</Widget>

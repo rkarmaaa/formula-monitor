@@ -1,0 +1,41 @@
+---
+import TyreChip from './TyreChip.astro';
+import { t } from '@i18n/index';
+
+// Scheda di un avversario diretto: distacco, trend a giro, giri al contatto e gomme a confronto
+interface Props {
+  side: 'ahead' | 'behind';
+}
+
+const { side } = Astro.props;
+const b = t.widgets.battle;
+const catchFormatter = side === 'ahead' ? 'laps' : 'lapsBehind';
+---
+
+<article
+  class:list={['battle-car', side]}
+  data-attr={`hidden:${side}|not; data-drs:${side}.drsRange|bool`}
+  data-var={`--team:${side}.car.teamId|team`}
+>
+  <p class="battle-car-label">{side === 'ahead' ? b.ahead : b.behind}</p>
+  <p class="battle-car-driver">
+    <span class="battle-car-pos" data-text={`${side}.car.position|pos`}></span>
+    <span class="battle-car-name" data-text={`${side}.car.surname`}></span>
+  </p>
+  <p class="battle-car-gap" data-text={`${side}.gapMs|gap`}></p>
+  <p class="battle-car-trend" data-attr={`data-tone:${side}.trendMs|trendTone:${side}`}>
+    <span data-text={`${side}.trendMs|trend`}></span>
+    {b.trend}
+  </p>
+  <p
+    class="battle-car-catch"
+    data-attr={`hidden:${side}.catchLaps|not`}
+    data-text={`${side}.catchLaps|${catchFormatter}`}
+  ></p>
+  <p class="battle-car-tyre">
+    <TyreChip path={`${side}.car.status.visualTyreCompound`} />
+    <span data-text={`${side}.car.status.tyresAgeLaps`}></span>
+    <span class="battle-car-age" data-text={`${side}.tyreAgeDelta|ageDelta`}></span>
+  </p>
+  <span class="battle-car-drs">{b.drs}</span>
+</article>

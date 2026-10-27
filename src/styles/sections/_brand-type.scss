@@ -1,0 +1,43 @@
+@use '../abstracts' as *;
+
+// Campioni tipografici: Saira per numeri e titoli, Geist per testo
+.brand-type {
+  @include grid-cols(2);
+
+  @include respond(tab-port) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .brand-font {
+    @include stack($sp-12);
+    padding: $card-padding;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-lg;
+    background: $color-surface;
+
+    &.display .brand-font-sample {
+      @include title-display($fs-h3);
+      @include numeric;
+    }
+
+    &:not(.display) .brand-font-name {
+      font-family: $font-body;
+    }
+  }
+
+  .brand-font-name {
+    @include type-size($fs-32);
+    font-family: $font-display;
+    font-weight: $fw-bold;
+  }
+
+  .brand-font-role {
+    @include racing-label($fs-11);
+    color: $color-primary;
+  }
+
+  .brand-font-sample {
+    @include type-size($fs-18);
+    color: $color-ink-soft;
+  }
+}

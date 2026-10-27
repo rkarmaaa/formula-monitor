@@ -1,0 +1,15 @@
+@use '../abstracts' as *;
+
+// Pagina 404 centrata
+.not-found {
+  min-height: calc(100dvh - #{$header-height});
+  display: flex;
+  align-items: center;
+
+  .not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $sp-12;
+  }
+}

@@ -1,0 +1,60 @@
+@use '../abstracts' as *;
+
+// Meteo previsto: colonne temporali con icona, probabilità di pioggia e temperatura pista
+.w-weather {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: $sp-cq-xs;
+  height: 100%;
+
+  .w-weather-sample {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: $sp-cq-xs;
+    border-radius: $radius-xs;
+    background: $color-surface-raised;
+    font-size: $value-xs;
+
+    &[data-rain] {
+      background: $color-accent-tint;
+    }
+  }
+
+  .w-weather-time {
+    @include numeric;
+    color: $color-ink-faint;
+  }
+
+  .w-weather-icon {
+    color: $color-ink-soft;
+
+    .icon {
+      width: $icon-inline-lg;
+      height: $icon-inline-lg;
+    }
+  }
+
+  .w-weather-glyph {
+    display: none;
+  }
+
+  @for $i from 0 through 5 {
+    .w-weather-sample[data-weather='#{$i}'] .w-weather-glyph[data-glyph='#{$i}'] {
+      display: block;
+    }
+  }
+
+  .w-weather-rain {
+    @include numeric;
+    color: $color-accent;
+    font-weight: $fw-semibold;
+  }
+
+  .w-weather-temp {
+    @include numeric;
+    color: $color-ink-faint;
+  }
+}

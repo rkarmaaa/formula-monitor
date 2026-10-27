@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(npm run check)",
+      "Bash(npm run format)",
+      "Bash(npm test)",
+      "Bash(npm run mock*)",
+      "Bash(npx astro *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ],
+    "deny": ["Read(./.env)", "Read(./.env.local)", "Read(./.env.production)"]
+  }
+}

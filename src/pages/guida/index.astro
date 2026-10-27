@@ -1,0 +1,93 @@
+---
+import SiteLayout from '@layouts/SiteLayout.astro';
+import Section from '@components/ui/Section.astro';
+import SectionTitle from '@components/ui/SectionTitle.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import GamePicker from '@components/setup/GamePicker.astro';
+import UdpSettings from '@components/setup/UdpSettings.astro';
+import { accent } from '@lib/text';
+import { t } from '@i18n/index';
+
+const g = t.setup;
+---
+
+<SiteLayout title={g.title} description={g.description} page="guide">
+  <Section labelledby="guide-title" class="guide-intro">
+    <SectionTitle id="guide-title" level={1} size="h1" eyebrow={g.eyebrow} title={g.heading} lead={g.lead} />
+    <div data-reveal>
+      <GamePicker compact />
+    </div>
+  </Section>
+
+  <Section labelledby="how-title" tone="alt" size="sm">
+    <SectionTitle id="how-title" title={g.howTitle} />
+    <ol class="guide-flow" data-reveal-group>
+      {g.how.map((step, i) => (
+        <li class="guide-flow-step" data-reveal>
+          <span class="guide-flow-num">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="guide-flow-title">{step.title}</h3>
+          <p class="guide-flow-text">{step.text}</p>
+        </li>
+      ))}
+    </ol>
+  </Section>
+
+  <Section id="impostazioni" labelledby="settings-title">
+    <SectionTitle id="settings-title" title={g.gameTitle} lead={g.gameLead} />
+    <div data-reveal>
+      <UdpSettings detailed />
+    </div>
+  </Section>
+
+  <Section labelledby="platforms-title" tone="alt">
+    <SectionTitle id="platforms-title" title={g.platformsTitle} />
+    <ul class="guide-platforms" data-reveal-group>
+      {g.platforms.map((platform) => (
+        <li class="guide-platform" data-reveal>
+          <Icon name={platform.icon} class="guide-platform-icon" />
+          <h3 class="guide-platform-title">{platform.title}</h3>
+          <p class="guide-platform-text">{platform.text}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="guide-find-ip" data-reveal>
+      <h3 class="guide-find-ip-title">{g.findIpTitle}</h3>
+      <ul class="guide-find-ip-list">
+        {g.findIp.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+    </div>
+  </Section>
+
+  <Section id="problemi" labelledby="faq-title" width="narrow">
+    <SectionTitle id="faq-title" title={g.faqTitle} />
+    <div class="guide-faq" data-reveal>
+      {g.faq.map((item) => (
+        <details class="guide-faq-item" name="faq">
+          <summary class="guide-faq-question">
+            {item.q}
+            <Icon name="lucide:plus" class="guide-faq-icon" />
+          </summary>
+          <p class="guide-faq-answer">{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </Section>
+
+  <Section tone="alt" size="sm" width="narrow" class="guide-cta">
+    <h2 class="guide-cta-title" data-reveal set:html={accent(g.ctaTitle)} />
+    <p class="guide-cta-text" data-reveal>
+      {g.ctaText}
+    </p>
+    <div class="guide-cta-actions" data-reveal>
+      <Button href="/monitor/" size="lg" icon="lucide:layout-dashboard" arrow>
+        {t.common.openMonitor}
+      </Button>
+      <Button href="/monitor/?demo" size="lg" variant="outline" icon="lucide:play">
+        {t.common.demo}
+      </Button>
+    </div>
+  </Section>
+</SiteLayout>

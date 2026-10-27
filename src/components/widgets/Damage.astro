@@ -1,0 +1,44 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+// Vettura vista dall'alto: ogni parte si colora in base al danno (data-damage dal binder)
+const w = t.widgets.damage;
+const parts = [
+  { key: 'frontLeftWingDamage', label: w.frontLeft },
+  { key: 'frontRightWingDamage', label: w.frontRight },
+  { key: 'rearWingDamage', label: w.rear },
+  { key: 'floorDamage', label: w.floor },
+  { key: 'diffuserDamage', label: w.diffuser },
+  { key: 'sidepodDamage', label: w.sidepod },
+];
+const tone = (key: string) => `data-damage:player.damage.${key}|tone:damage`;
+---
+
+<Widget id="damage">
+  <div class="w-damage">
+    <svg class="w-damage-car" viewBox="0 0 60 120" aria-hidden="true">
+      <path class="w-damage-part" data-attr={tone('frontLeftWingDamage')} d="M6 6h22v8H4z"></path>
+      <path class="w-damage-part" data-attr={tone('frontRightWingDamage')} d="M32 6h22l2 8H32z"></path>
+      <path class="w-damage-part" data-attr={tone('floorDamage')} d="M20 30h20l4 50-4 18H20l-4-18z"></path>
+      <path class="w-damage-part" data-attr={tone('sidepodDamage')} d="M10 48h8v34h-8zM42 48h8v34h-8z"></path>
+      <path class="w-damage-part" data-attr={tone('diffuserDamage')} d="M18 100h24l-2 8H20z"></path>
+      <path class="w-damage-part" data-attr={tone('rearWingDamage')} d="M8 110h44v6H8z"></path>
+      <path class="w-damage-body" d="M26 14h8l2 16H24zM24 44h12v20H24z"></path>
+    </svg>
+    <dl class="w-damage-list">
+      {parts.map((part) => (
+        <div class="w-damage-row" data-attr={tone(part.key)}>
+          <dt>{part.label}</dt>
+          <dd data-text={`player.damage.${part.key}|pct`} />
+        </div>
+      ))}
+      <div class="w-damage-row fault" data-attr="hidden:player.damage.drsFault|not">
+        <dt>{w.drsFault}</dt>
+      </div>
+      <div class="w-damage-row fault" data-attr="hidden:player.damage.ersFault|not">
+        <dt>{w.ersFault}</dt>
+      </div>
+    </dl>
+  </div>
+</Widget>

@@ -1,0 +1,41 @@
+@use '../abstracts' as *;
+
+// Footer: marchio, specifiche e disclaimer sui marchi F1/EA
+.site-footer {
+  padding-block: $sp-56;
+  border-top: $border-thin solid $color-line;
+  background: $color-bg;
+
+  .site-footer-inner {
+    @include container($container-wide);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: $sp-40;
+
+    @include respond(tab-port) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .site-footer-brand {
+    @include stack($sp-14);
+  }
+
+  .site-footer-tagline,
+  .site-footer-legal {
+    @include text-muted;
+    @include type-size($fs-14);
+    max-width: $measure-short;
+  }
+
+  .site-footer-legal {
+    @include stack($sp-8);
+    max-width: none;
+    color: $color-ink-faint;
+
+    a {
+      color: $color-ink-soft;
+      @include focus-ring;
+    }
+  }
+}

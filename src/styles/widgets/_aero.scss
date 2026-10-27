@@ -1,0 +1,90 @@
+@use '../abstracts' as *;
+
+// Regolamento 2026: modalità aero (curva/rettilineo) sopra, Overtake mode sotto
+.w-aero {
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  gap: $sp-cq-xs;
+  height: 100%;
+
+  .w-aero-mode {
+    display: flex;
+    padding: $sp-cq-xs;
+    border-radius: $radius-sm;
+    background: $color-surface-raised;
+  }
+
+  .w-aero-option {
+    @include racing-label;
+    flex: 1;
+    padding: $sp-cq-xs;
+    border-radius: $radius-xs;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+    text-align: center;
+
+    &.corner {
+      background: $color-surface-high;
+      color: $color-ink;
+    }
+  }
+
+  &[data-straight] {
+    .w-aero-option.corner {
+      background: none;
+      color: $color-ink-faint;
+    }
+
+    .w-aero-option.straight {
+      background: $color-accent;
+      color: $color-bg;
+    }
+  }
+
+  .w-aero-overtake {
+    display: flex;
+    align-items: baseline;
+    gap: $sp-cq-sm;
+    min-width: 0;
+  }
+
+  .w-aero-label {
+    @include racing-label;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+  }
+
+  .w-aero-state {
+    @include racing-label;
+    @include ellipsis;
+    font-size: $value-xs;
+    font-weight: $fw-heavy;
+
+    span {
+      display: none;
+    }
+  }
+
+  &:not([data-ready]):not([data-overtake]) .w-aero-off,
+  &[data-ready]:not([data-overtake]) .w-aero-ready,
+  &[data-overtake] .w-aero-active {
+    display: inline;
+  }
+
+  &[data-ready] .w-aero-state {
+    color: $color-personal;
+  }
+
+  &[data-overtake] .w-aero-state {
+    color: $color-best;
+  }
+
+  .w-aero-distance {
+    @include numeric;
+    margin-left: auto;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,42 @@
+@use '../abstracts' as *;
+
+// Varianti del logo su card: completo, simbolo, monocromatico su chiaro
+.brand-logos {
+  @include grid-cols(3);
+
+  @include respond(tab-port) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .brand-logo {
+    @include stack($sp-24);
+    align-items: center;
+    justify-content: center;
+    min-height: $sp-160 + $sp-80;
+    padding: $sp-32;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-lg;
+    background: $speed-lines, $color-surface;
+
+    &.wide {
+      grid-column: span 2;
+
+      @include respond(tab-port) {
+        grid-column: auto;
+      }
+    }
+
+    &.light {
+      background: $color-ink;
+
+      .brand-logo-caption {
+        color: $color-bg;
+      }
+    }
+  }
+
+  .brand-logo-caption {
+    @include racing-label($fs-11);
+    color: $color-ink-faint;
+  }
+}

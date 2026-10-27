@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "formula-monitor-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 4321
+    },
+    {
+      "name": "formula-monitor-start",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "port": 20780
+    }
+  ]
+}

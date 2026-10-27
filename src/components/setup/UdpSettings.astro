@@ -1,0 +1,59 @@
+---
+import { games, ports } from '@data/games';
+import { t } from '@i18n/index';
+
+// Tabella dei valori da inserire nel gioco: IP dal bridge live, formato dalla versione scelta
+interface Props {
+  detailed?: boolean;
+}
+
+const { detailed = false } = Astro.props;
+const s = t.setup.settings;
+const rows = [
+  { ...s.telemetry },
+  { ...s.broadcast },
+  { option: s.ip.option, why: s.ip.why, ip: true },
+  { ...s.port, value: String(ports.udp) },
+  { ...s.rate },
+  { option: s.format.option, why: s.format.why, format: true },
+  ...(detailed ? [s.telemetryPublic, s.names] : []),
+];
+---
+
+<div class="udp-settings">
+  <table class="udp-settings-table">
+    <caption class="udp-settings-caption">{t.setup.settingsCaption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">{t.setup.columns.option}</th>
+        <th scope="col">{t.setup.columns.value}</th>
+        {detailed && <th scope="col">{t.setup.columns.why}</th>}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <th scope="row">
+            <code>{row.option}</code>
+          </th>
+          <td class="udp-settings-value">
+            {'ip' in row && (
+              <span data-bridge-ip data-empty>
+                {t.setup.ipPlaceholder}
+              </span>
+            )}
+            {'format' in row && games.map((game) => <span data-game-only={game.id}>{game.udpFormat}</span>)}
+            {'value' in row && row.value}
+          </td>
+          {detailed && <td class="udp-settings-why">{row.why}</td>}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  {detailed &&
+    games.map((game) => (
+      <p class="udp-settings-note" data-game-only={game.id}>
+        {t.setup.formatNote[game.id]}
+      </p>
+    ))}
+</div>

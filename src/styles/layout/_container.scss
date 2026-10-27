@@ -1,0 +1,14 @@
+@use '../abstracts' as *;
+
+// Contenitore centrato con gutter fluido
+.container {
+  @include container;
+
+  &.narrow {
+    @include container($container-narrow);
+  }
+
+  &.wide {
+    @include container($container-wide);
+  }
+}

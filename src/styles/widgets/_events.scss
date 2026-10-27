@@ -1,0 +1,75 @@
+@use '../abstracts' as *;
+
+// Feed di direzione gara: ultimo evento in alto, puntino colorato per categoria
+.w-events {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, $color-black 80%, transparent);
+
+  .w-events-empty {
+    @include text-muted;
+    font-size: $value-xs;
+
+    &:has(+ .w-events-list > li) {
+      display: none;
+    }
+  }
+
+  .w-events-list {
+    @include stack($sp-cq-xs);
+  }
+
+  .w-events-item {
+    --tone: #{$color-ink-faint};
+    display: grid;
+    grid-template-columns: $col-lap minmax(0, 1fr);
+    align-items: baseline;
+    gap: $sp-cq-sm;
+    font-size: $value-xs;
+    line-height: $lh-snug;
+
+    &.enter {
+      animation: slide-in $dur-base $ease-out;
+    }
+
+    &[data-tone='overtake'] {
+      --tone: #{$color-accent};
+    }
+
+    &[data-tone='penalty'] {
+      --tone: #{$color-warn};
+    }
+
+    &[data-tone='fastest'] {
+      --tone: #{$color-best};
+    }
+
+    &[data-tone='caution'] {
+      --tone: #{$color-slower};
+    }
+
+    &[data-tone='danger'] {
+      --tone: #{$color-primary};
+    }
+
+    &[data-tone='finish'] {
+      --tone: #{$color-ink};
+    }
+
+    &[data-player] .w-events-text {
+      color: $color-ink;
+      font-weight: $fw-semibold;
+    }
+  }
+
+  .w-events-lap {
+    @include numeric;
+    color: var(--tone);
+    font-weight: $fw-bold;
+  }
+
+  .w-events-text {
+    color: $color-ink-soft;
+  }
+}

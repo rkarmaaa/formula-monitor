@@ -1,0 +1,80 @@
+@use '../abstracts' as *;
+
+// Bottone: primary (rosso segnale), outline (filo), ghost (superficie). Angolo tagliato di firma.
+.button {
+  @include button-base;
+  @include cut-corner($cut);
+  background: $color-primary;
+  color: $color-white;
+  box-shadow: $shadow-button;
+
+  .icon {
+    width: $icon-md;
+    height: $icon-md;
+  }
+
+  .button-arrow {
+    transition: transform $dur-base $ease-out;
+  }
+
+  @include hover {
+    background: $color-primary-deep;
+    box-shadow: $shadow-button-hover;
+
+    .button-arrow {
+      transform: translateX($arrow-shift);
+    }
+  }
+
+  &.outline {
+    background: transparent;
+    border-color: $color-line-strong;
+    color: $color-ink;
+    box-shadow: none;
+
+    @include hover {
+      background: $color-surface-raised;
+      border-color: $color-ink-faint;
+    }
+  }
+
+  &.ghost {
+    background: $color-surface-raised;
+    color: $color-ink;
+    box-shadow: none;
+
+    @include hover {
+      background: $color-surface-high;
+    }
+  }
+
+  &[aria-pressed='true'] {
+    background: $color-accent-tint;
+    border-color: $color-accent-line;
+    color: $color-accent;
+  }
+
+  &.sm {
+    @include type-size($fs-13);
+    @include cut-corner($sp-6);
+    min-height: $touch-min-sm;
+    padding: 0 $sp-14;
+    gap: $sp-8;
+
+    .icon {
+      width: $icon-sm;
+      height: $icon-sm;
+    }
+  }
+
+  &.lg {
+    @include type-size($fs-17);
+    @include cut-corner($cut-lg);
+    min-height: $sp-56;
+    padding: 0 $sp-32;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}

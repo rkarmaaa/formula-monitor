@@ -1,0 +1,59 @@
+---
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import { widgets, type WidgetCategory } from '@data/widgets';
+import { t } from '@i18n/index';
+
+// Catalogo dei blocchi in modalità Personalizza (dialog non modale: la griglia resta usabile)
+const d = t.monitor.drawer;
+const categories = Object.keys(d.categories) as WidgetCategory[];
+---
+
+<dialog class="drawer" data-drawer aria-labelledby="drawer-title">
+  <header class="drawer-head">
+    <h2 class="drawer-title" id="drawer-title">
+      {d.title}
+    </h2>
+    <button class="drawer-close" type="button" data-drawer-hide aria-label={d.close}>
+      <Icon name="lucide:x" />
+    </button>
+  </header>
+  <p class="drawer-lead">{d.lead}</p>
+  <div class="drawer-body">
+    {categories.map((category) => (
+      <section class="drawer-group">
+        <h3 class="drawer-group-title">{d.categories[category]}</h3>
+        <ul class="drawer-list">
+          {widgets
+            .filter((widget) => widget.category === category)
+            .map((widget) => (
+              <li
+                class:list={['drawer-item', widget.tier]}
+                data-game-only={'games' in widget ? widget.games[0] : undefined}
+              >
+                <Icon name={widget.icon} class="drawer-item-icon" />
+                <div class="drawer-item-copy">
+                  <p class="drawer-item-title">
+                    {t.widgets[widget.id].title}
+                    {'exclusive' in widget && <span class="drawer-item-badge">{d.exclusive}</span>}
+                  </p>
+                  <p class="drawer-item-text">{t.widgets[widget.id].description}</p>
+                </div>
+                <Button size="sm" variant="ghost" icon="lucide:plus" data-add={widget.id}>
+                  {d.add}
+                </Button>
+              </li>
+            ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+  <footer class="drawer-foot">
+    <Button size="sm" variant="outline" icon="lucide:rotate-ccw" data-reset>
+      {d.reset}
+    </Button>
+    <Button size="sm" icon="lucide:check" data-drawer-close>
+      {t.monitor.actions.done}
+    </Button>
+  </footer>
+</dialog>

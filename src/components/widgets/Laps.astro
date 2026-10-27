@@ -1,0 +1,36 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import TyreChip from '@components/monitor/TyreChip.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.laps;
+---
+
+<Widget id="laps">
+  <div class="w-laps">
+    <p class="w-laps-head" aria-hidden="true">
+      <span>{w.lap}</span>
+      <span>{w.time}</span>
+      <span>S1</span>
+      <span>S2</span>
+      <span>S3</span>
+      <span></span>
+    </p>
+    <ol class="w-laps-list" data-list="playerLaps" data-key="lap">
+      <template>
+        <li class="w-laps-row" data-attr="data-invalid:valid|not">
+          <span class="w-laps-num" data-text="lap"></span>
+          <span class="w-laps-time" data-text="ms|lapTime" data-attr="data-tone:tone"></span>
+          {[0, 1, 2].map((i) => (
+            <span
+              class="w-laps-sector"
+              data-text={`sectors.${i}.ms|lapTime`}
+              data-attr={`data-tone:sectors.${i}.tone`}
+            />
+          ))}
+          <TyreChip path="compound" />
+        </li>
+      </template>
+    </ol>
+  </div>
+</Widget>

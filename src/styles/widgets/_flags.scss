@@ -1,0 +1,111 @@
+@use '../abstracts' as *;
+
+// Direzione gara: stato pista a tutta larghezza, gialli per settore, blu, semaforo
+.w-flags {
+  --state: #{$color-personal};
+  display: flex;
+  flex-direction: column;
+  gap: $sp-cq-sm;
+  height: 100%;
+
+  &[data-sc] {
+    --state: #{$color-slower};
+  }
+
+  &[data-red] {
+    --state: #{$color-primary};
+  }
+
+  .w-flags-state {
+    @include flex-center;
+    @include racing-label;
+    flex: 1;
+    min-height: 0;
+    border-radius: $radius-sm;
+    background: color-mix(in srgb, var(--state) $mix-tint, transparent);
+    box-shadow: inset 0 0 0 $border-thin var(--state);
+    font-size: $value-sm;
+    font-weight: $fw-heavy;
+    color: var(--state);
+    text-align: center;
+  }
+
+  &[data-sc] .w-flags-state {
+    animation: blink $dur-pulse $ease-in-out infinite;
+
+    @include reduced-motion {
+      animation: none;
+    }
+  }
+
+  .w-flags-red {
+    display: none;
+  }
+
+  &[data-red] {
+    .w-flags-red {
+      display: inline;
+    }
+
+    .w-flags-sc {
+      display: none;
+    }
+  }
+
+  .w-flags-sectors {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $sp-cq-xs;
+  }
+
+  .w-flags-sector {
+    @include racing-label;
+    padding: $sp-cq-xs;
+    border-radius: $radius-xs;
+    background: $color-surface-raised;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+    text-align: center;
+
+    &[data-yellow] {
+      background: $color-slower;
+      color: $color-bg;
+    }
+  }
+
+  .w-flags-blue {
+    @include racing-label;
+    display: none;
+    padding: $sp-cq-xs;
+    border-radius: $radius-xs;
+    background: $tyre-wet;
+    font-size: $label-widget;
+    color: $color-white;
+    text-align: center;
+  }
+
+  &[data-blue] .w-flags-blue {
+    display: block;
+  }
+
+  .w-flags-lights {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: $sp-cq-sm;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .w-flags-light {
+    aspect-ratio: 1;
+    border-radius: $radius-round;
+    background: $color-surface-high;
+
+    &[data-on] {
+      background: $color-primary;
+      box-shadow: $glow-primary;
+    }
+  }
+}

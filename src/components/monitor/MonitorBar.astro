@@ -1,0 +1,49 @@
+---
+import Logo from '@components/brand/Logo.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import { games } from '@data/games';
+import { t } from '@i18n/index';
+
+// Barra comandi: stato sorgente, riepilogo sessione, azioni. Le etichette dinamiche le aggiorna lo script.
+const a = t.monitor.actions;
+---
+
+<header class="monitor-bar" data-bar>
+  <Logo variant="mark" href="/" />
+  <p class="monitor-status" data-status data-state="connecting" role="status">
+    <span class="monitor-status-dot" aria-hidden="true"></span>
+    <span class="monitor-status-label" data-status-label>
+      {t.monitor.status.connecting}
+    </span>
+  </p>
+  <p class="monitor-summary">
+    <span class="monitor-summary-track" data-text="session.trackId|track"></span>
+    <span class="monitor-summary-session" data-text="session.sessionType|session"></span>
+  </p>
+  <div class="monitor-actions" role="toolbar" aria-label={t.monitor.toolbar}>
+    <button class="monitor-game" type="button" data-action="game" aria-label={a.game}>
+      {games.map((game) => (
+        <span data-game-only={game.id}>{t.games[game.id].badge}</span>
+      ))}
+    </button>
+    <Button variant="ghost" size="sm" icon="lucide:play" data-action="demo" aria-pressed="false">
+      {a.demoOn}
+    </Button>
+    <button class="monitor-icon monitor-add" type="button" data-action="drawer" aria-label={a.blocks}>
+      <Icon name="lucide:plus" />
+    </button>
+    <Button variant="outline" size="sm" icon="lucide:layout-dashboard" data-action="edit" aria-pressed="false">
+      {a.edit}
+    </Button>
+    <button class="monitor-icon" type="button" data-action="dev" aria-label={a.dev}>
+      <Icon name="lucide:bug" />
+    </button>
+    <a class="monitor-icon" href="/guida/" aria-label={a.guide}>
+      <Icon name="lucide:circle-help" />
+    </a>
+    <button class="monitor-icon" type="button" data-action="fullscreen" aria-label={a.fullscreen}>
+      <Icon name="lucide:maximize" />
+    </button>
+  </div>
+</header>

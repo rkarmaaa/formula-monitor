@@ -1,0 +1,134 @@
+@use '../abstracts' as *;
+
+// Catalogo dei blocchi: pannello laterale su desktop, foglio dal basso su smartphone
+.drawer {
+  position: fixed;
+  inset: $monitor-bar-height 0 0 auto;
+  z-index: $z-drawer;
+  display: none;
+  flex-direction: column;
+  width: min($drawer-width, 100vw);
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border-left: $border-thin solid $color-line-strong;
+  background: $color-bg-alt;
+  box-shadow: $shadow-drawer;
+  color: $color-ink;
+
+  &[open] {
+    display: flex;
+  }
+
+  @include respond(phone) {
+    inset: auto 0 0;
+    width: 100vw;
+    height: $drawer-height-phone;
+    border-left: 0;
+    border-top: $border-thin solid $color-line-strong;
+    border-radius: $radius-lg $radius-lg 0 0;
+  }
+
+  .drawer-head {
+    @include flex-between;
+    padding: $sp-16 $sp-16 $sp-4 $sp-20;
+  }
+
+  .drawer-title {
+    @include title-display($fs-h4);
+  }
+
+  .drawer-close {
+    @include icon-button;
+  }
+
+  .drawer-lead {
+    @include text-muted;
+    @include type-size($fs-13);
+    padding: 0 $sp-20 $sp-12;
+    border-bottom: $border-thin solid $color-line;
+  }
+
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: $sp-8 $sp-12 $sp-20;
+  }
+
+  .drawer-group {
+    @include stack($sp-6);
+    margin-top: $sp-16;
+  }
+
+  .drawer-group-title {
+    @include racing-label($fs-11);
+    padding-left: $sp-8;
+    color: $color-ink-faint;
+    font-style: normal;
+  }
+
+  .drawer-list {
+    @include stack($sp-6);
+  }
+
+  .drawer-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: $sp-12;
+    padding: $sp-10 $sp-10 $sp-10 $sp-12;
+    border: $border-thin solid $color-line;
+    border-radius: $radius-md;
+    background: $color-surface;
+
+    &.hero .drawer-item-icon {
+      color: $color-primary;
+    }
+
+    .button:disabled {
+      opacity: $opacity-muted;
+
+      .icon {
+        display: none;
+      }
+    }
+  }
+
+  .drawer-item-icon {
+    width: $icon-md;
+    height: $icon-md;
+    color: $color-ink-soft;
+  }
+
+  .drawer-item-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $sp-6;
+    font-weight: $fw-semibold;
+    @include type-size($fs-14);
+  }
+
+  .drawer-item-badge {
+    @include racing-label($fs-10);
+    padding: $sp-2 $sp-6;
+    border-radius: $radius-xs;
+    background: $color-accent-tint;
+    color: $color-accent;
+  }
+
+  .drawer-item-text {
+    @include text-muted;
+    @include type-size($fs-12);
+    line-height: $lh-snug;
+  }
+
+  .drawer-foot {
+    @include flex-between;
+    gap: $sp-12;
+    padding: $sp-12 $sp-16;
+    padding-bottom: max(#{$sp-12}, env(safe-area-inset-bottom));
+    border-top: $border-thin solid $color-line;
+  }
+}

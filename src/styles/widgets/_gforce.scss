@@ -1,0 +1,61 @@
+@use '../abstracts' as *;
+
+// Forze G: cerchio a ±5 g con il punto che si sposta, valori attuali e picchi del giro
+.w-gforce {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: $sp-cq-md;
+  height: 100%;
+
+  .w-gforce-dial {
+    position: relative;
+    height: $dial-size;
+    aspect-ratio: 1;
+    border: $border-thin solid $color-line-strong;
+    border-radius: $radius-round;
+    background:
+      radial-gradient(circle, transparent 49%, $color-line 49% 51%, transparent 51%),
+      linear-gradient($color-line, $color-line) center / 100% $border-thin no-repeat,
+      linear-gradient($color-line, $color-line) center / $border-thin 100% no-repeat;
+  }
+
+  .w-gforce-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: $dot-size;
+    height: $dot-size;
+    margin: calc(#{$dot-size} / -2);
+    border-radius: $radius-round;
+    background: $color-primary;
+    box-shadow: $glow-primary;
+    transform: translate(calc(var(--x, 0) * #{$dial-travel}), calc(var(--y, 0) * -1 * #{$dial-travel}));
+    transition: transform $dur-data linear;
+  }
+
+  .w-gforce-values {
+    @include stack($sp-cq-sm);
+
+    dt {
+      @include racing-label;
+      font-size: $label-widget;
+      color: $color-ink-faint;
+    }
+
+    dd {
+      @include numeric;
+      font-size: $value-xs;
+      font-weight: $fw-semibold;
+    }
+  }
+
+  @container (max-width: #{$cq-tiny}) {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+
+    .w-gforce-values {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+@use '../abstracts' as *;
+
+// Pallino di stato "live"
+@keyframes pulse {
+  0% {
+    opacity: $opacity-pulse;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+// Lampeggio per allarmi (bandiere, carburante critico)
+@keyframes blink {
+  50% {
+    opacity: $opacity-fill;
+  }
+}
+
+// Ingresso di una riga nel feed eventi
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-$sp-8);
+  }
+}

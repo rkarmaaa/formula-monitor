@@ -1,0 +1,30 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.position;
+---
+
+<Widget id="position">
+  <div class="w-position">
+    <p class="w-position-main">
+      <span class="w-position-p">P</span>
+      <span class="w-position-value" data-text="player.position">
+        —
+      </span>
+      <span class="w-position-total">
+        /<span data-text="cars.length"></span>
+      </span>
+    </p>
+    <p class="w-position-meta">
+      <span
+        class="w-position-gain"
+        data-text="player.positionsGained|gained"
+        data-attr="data-tone:player.positionsGained|gainedTone"
+      ></span>
+      <span class="w-position-grid">
+        {w.grid} <b data-text="player.lap.gridPosition|pos"></b>
+      </span>
+    </p>
+  </div>
+</Widget>

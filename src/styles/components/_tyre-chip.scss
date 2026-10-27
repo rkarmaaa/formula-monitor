@@ -1,0 +1,41 @@
+@use '../abstracts' as *;
+
+// Mescola: cerchio con lettera e anello del colore convenzionale (S rosso, M giallo, H bianco…)
+.tyre-chip {
+  @include flex-center;
+  @include numeric($stretch-condensed);
+  flex-shrink: 0;
+  width: $chip-size;
+  height: $chip-size;
+  border: $chip-ring solid $color-ink-faint;
+  border-radius: $radius-round;
+  font-weight: $fw-heavy;
+  font-size: $chip-text;
+  line-height: $lh-none;
+  color: $color-ink;
+
+  &[data-compound='soft'] {
+    border-color: $tyre-soft;
+    color: $tyre-soft;
+  }
+
+  &[data-compound='medium'] {
+    border-color: $tyre-medium;
+    color: $tyre-medium;
+  }
+
+  &[data-compound='hard'] {
+    border-color: $tyre-hard;
+    color: $tyre-hard;
+  }
+
+  &[data-compound='inter'] {
+    border-color: $tyre-inter;
+    color: $tyre-inter;
+  }
+
+  &[data-compound='wet'] {
+    border-color: $tyre-wet;
+    color: $tyre-wet;
+  }
+}

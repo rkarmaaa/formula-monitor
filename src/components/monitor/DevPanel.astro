@@ -1,0 +1,51 @@
+---
+import { t } from '@i18n/index';
+
+// Pannello sviluppatore (tasto D o ?dev): metriche e comandi del simulatore
+const d = t.monitor.dev;
+const speeds = [1, 2, 4, 8];
+---
+
+<aside class="dev-panel" data-dev hidden aria-label={d.title}>
+  <p class="dev-panel-title">{d.title}</p>
+  <dl class="dev-panel-stats">
+    <div>
+      <dt>{d.fps}</dt>
+      <dd data-dev-fps>0</dd>
+    </div>
+    <div>
+      <dt>{d.packets}</dt>
+      <dd data-dev-pps>0</dd>
+    </div>
+    <div>
+      <dt>{d.source}</dt>
+      <dd data-dev-source>—</dd>
+    </div>
+  </dl>
+  <p class="dev-panel-counts" data-dev-counts></p>
+  <div class="dev-panel-controls" data-dev-controls hidden>
+    <p class="dev-panel-label">{d.speed}</p>
+    <div class="dev-panel-row">
+      <button class="dev-panel-button" type="button" data-dev-pause aria-pressed="false">
+        ❚❚
+      </button>
+      {speeds.map((speed) => (
+        <button
+          class="dev-panel-button"
+          type="button"
+          data-dev-speed={speed}
+          aria-pressed={speed === 1 ? 'true' : 'false'}
+        >
+          {speed}×
+        </button>
+      ))}
+    </div>
+    <div class="dev-panel-row">
+      {Object.entries(d.commands).map(([command, label]) => (
+        <button class="dev-panel-button" type="button" data-dev-command={command}>
+          {label}
+        </button>
+      ))}
+    </div>
+  </div>
+</aside>

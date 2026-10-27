@@ -1,0 +1,59 @@
+@use '../abstracts' as *;
+
+// DRS: badge che si accende in verde quando l'ala è aperta
+.w-drs {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: $sp-cq-md;
+  height: 100%;
+
+  .w-drs-badge {
+    @include racing-label;
+    grid-row: 1 / -1;
+    padding: $sp-cq-sm $sp-cq-md;
+    border: $border-bold solid $color-line-strong;
+    border-radius: $radius-sm;
+    font-size: $value-sm;
+    font-weight: $fw-black;
+    color: $color-ink-faint;
+  }
+
+  &[data-ready] .w-drs-badge {
+    border-color: $color-personal;
+    color: $color-personal;
+  }
+
+  &[data-open] .w-drs-badge {
+    background: $color-personal;
+    border-color: $color-personal;
+    color: $color-bg;
+  }
+
+  .w-drs-state {
+    @include racing-label;
+    font-size: $value-xs;
+
+    span {
+      display: none;
+    }
+  }
+
+  &:not([data-ready]):not([data-open]) .w-drs-off,
+  &[data-ready]:not([data-open]) .w-drs-ready,
+  &[data-open] .w-drs-open {
+    display: inline;
+  }
+
+  .w-drs-distance {
+    @include numeric;
+
+    &[hidden] {
+      display: none;
+    }
+
+    font-size: $value-xs;
+    color: $color-ink-faint;
+  }
+}

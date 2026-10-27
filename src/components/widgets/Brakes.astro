@@ -1,0 +1,27 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.brakes;
+const order = [2, 3, 0, 1];
+---
+
+<Widget id="brakes">
+  <div class="w-brakes">
+    <ol class="w-brakes-grid">
+      {order.map((i) => (
+        <li
+          class="w-brake"
+          data-attr={`data-temp:player.telemetry.brakesTemperature.${i}|tone:brake`}
+          data-var={`--heat:player.telemetry.brakesTemperature.${i}|ratio:1100`}
+        >
+          <span class="w-brake-label">{t.wheels[i]}</span>
+          <span class="w-brake-value" data-text={`player.telemetry.brakesTemperature.${i}|temp`} />
+        </li>
+      ))}
+    </ol>
+    <p class="w-brakes-bias">
+      {w.bias} <b data-text="player.status.frontBrakeBias|pct"></b>
+    </p>
+  </div>
+</Widget>

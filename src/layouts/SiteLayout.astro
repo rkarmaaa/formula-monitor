@@ -1,0 +1,27 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SiteHeader from '@components/global/SiteHeader.astro';
+import Footer from '@components/global/Footer.astro';
+
+// Pagine informative (avvio, guida, brand): header, contenuto con reveal, footer
+interface Props {
+  title: string;
+  description: string;
+  page: 'home' | 'guide' | 'brand';
+}
+
+const { page, ...seo } = Astro.props;
+---
+
+<BaseLayout {...seo} class="site">
+  <SiteHeader current={page} />
+  <main id="main" tabindex="-1">
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  import '@scripts/reveal';
+  import '@scripts/site';
+</script>

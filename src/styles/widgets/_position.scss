@@ -1,0 +1,58 @@
+@use '../abstracts' as *;
+
+// Posizione: numero enorme, totale e posti guadagnati dalla griglia
+.w-position {
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  height: 100%;
+  gap: $sp-cq-xs;
+
+  .w-position-main {
+    @include numeric;
+    display: flex;
+    align-items: baseline;
+    column-gap: $sp-cq-xs;
+    font-weight: $fw-black;
+    font-style: italic;
+    line-height: $lh-none;
+  }
+
+  .w-position-p {
+    font-size: $value-md;
+    color: $color-primary;
+  }
+
+  .w-position-value {
+    font-size: $value-xl;
+    letter-spacing: $tracking-tight;
+  }
+
+  .w-position-total {
+    font-size: $value-sm;
+    font-weight: $fw-semibold;
+    color: $color-ink-faint;
+  }
+
+  .w-position-meta {
+    @include racing-label;
+    display: flex;
+    gap: $sp-cq-sm;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+
+    b {
+      color: $color-ink-soft;
+    }
+  }
+
+  .w-position-gain {
+    &[data-tone='up'] {
+      color: $color-personal;
+    }
+
+    &[data-tone='down'] {
+      color: $color-primary;
+    }
+  }
+}

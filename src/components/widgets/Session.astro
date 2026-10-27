@@ -1,0 +1,35 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.session;
+---
+
+<Widget id="session">
+  <div class="w-session">
+    <p class="w-session-track" data-text="session.trackId|track"></p>
+    <p class="w-session-type">
+      <span data-text="session.sessionType|session"></span> ·{' '}
+      <span class="w-session-weather" data-text="session.weather|weather"></span>
+    </p>
+    <dl class="w-session-facts">
+      <div>
+        <dt>{w.temps}</dt>
+        <dd>
+          <span data-text="session.trackTemperature|temp"></span>/<span data-text="session.airTemperature|temp"></span>
+        </dd>
+      </div>
+      <div>
+        <dt>{w.left}</dt>
+        <dd data-text="session.sessionTimeLeft|time"></dd>
+      </div>
+      <div>
+        <dt>{w.sc}</dt>
+        <dd>
+          <span data-text="session.numSafetyCarPeriods"></span> /{' '}
+          <span data-text="session.numVirtualSafetyCarPeriods"></span>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</Widget>

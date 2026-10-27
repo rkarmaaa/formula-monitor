@@ -1,0 +1,186 @@
+@use '../abstracts' as *;
+
+// Classifica live: righe compatte con striscia team, giocatore evidenziato, colonne che si
+// nascondono quando il blocco si stringe
+.w-board {
+  --cols: #{$sp-24} minmax(0, 1fr) #{$col-gap} #{$col-tyre} #{$col-stops} #{$col-time};
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-size: $value-list;
+
+  .w-board-head,
+  .w-board-row {
+    display: grid;
+    grid-template-columns: var(--cols);
+    align-items: center;
+    gap: $sp-cq-sm;
+  }
+
+  .w-board-head {
+    @include racing-label;
+    padding: 0 $sp-cq-sm $sp-cq-xs;
+    font-size: $label-widget;
+    color: $color-ink-faint;
+
+    > span {
+      @include ellipsis;
+    }
+  }
+
+  .w-board-list {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .w-board-row {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: $row-max;
+    line-height: $lh-none;
+    padding: 0 $sp-cq-sm;
+    border-bottom: $border-thin solid $color-line;
+    @include numeric;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 18%;
+      bottom: 18%;
+      width: $border-heavy;
+      border-radius: $radius-pill;
+      background: var(--team);
+    }
+
+    &[data-player] {
+      background: $color-primary-tint;
+      box-shadow: inset 0 0 0 $border-thin $color-primary-line;
+    }
+
+    &[data-out] {
+      opacity: $opacity-disabled;
+    }
+
+    &.enter {
+      animation: slide-in $dur-base $ease-out;
+    }
+  }
+
+  .w-board-pos {
+    font-weight: $fw-bold;
+    text-align: right;
+  }
+
+  .w-board-driver {
+    display: flex;
+    align-items: center;
+    gap: $sp-cq-xs;
+    min-width: 0;
+  }
+
+  .w-board-code {
+    font-weight: $fw-bold;
+    letter-spacing: $tracking-wide;
+  }
+
+  .w-board-flags {
+    @include racing-label;
+    display: flex;
+    gap: $sp-cq-xs;
+    font-size: $label-widget;
+
+    > [hidden] {
+      display: none;
+    }
+
+    .icon {
+      width: $icon-inline;
+      height: $icon-inline;
+    }
+  }
+
+  .w-board-tag {
+    display: none;
+    padding: $sp-1 $sp-4;
+    border-radius: $radius-xs;
+    background: $color-surface-high;
+    color: $color-ink;
+
+    &.pit {
+      background: $color-accent;
+      color: $color-bg;
+    }
+  }
+
+  .w-board-row[data-pit] .w-board-tag.pit,
+  .w-board-row[data-out] .w-board-tag.out {
+    display: inline-block;
+  }
+
+  .w-board-pen {
+    color: $color-primary;
+  }
+
+  .w-board-warn {
+    display: inline-flex;
+    align-items: center;
+    gap: $sp-1;
+    color: $color-slower;
+  }
+
+  .w-board-fastest {
+    color: $color-best;
+  }
+
+  .w-board-gap,
+  .w-board-last {
+    text-align: right;
+    color: $color-ink-soft;
+  }
+
+  .w-board-last[data-best] {
+    color: $color-best;
+  }
+
+  .w-board-tyre {
+    display: flex;
+    align-items: center;
+    gap: $sp-cq-xs;
+    color: $color-ink-soft;
+  }
+
+  .w-board-stops {
+    text-align: center;
+    color: $color-ink-faint;
+  }
+
+  @container (max-width: #{$cq-lg}) {
+    --cols: #{$sp-24} minmax(0, 1fr) #{$col-gap} #{$col-tyre} #{$col-stops};
+
+    .w-board-last {
+      display: none;
+    }
+  }
+
+  @container (max-width: #{$cq-md}) {
+    --cols: #{$sp-20} minmax(0, 1fr) #{$col-gap-sm} #{$col-tyre-sm};
+
+    .w-board-stops {
+      display: none;
+    }
+  }
+
+  @container (max-width: #{$cq-sm}) {
+    --cols: #{$sp-20} minmax(0, 1fr) #{$col-gap-sm};
+
+    .w-board-tyre,
+    .w-board-flags {
+      display: none;
+    }
+  }
+}

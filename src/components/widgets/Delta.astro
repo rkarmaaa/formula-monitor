@@ -1,0 +1,31 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.delta;
+---
+
+<Widget id="delta">
+  <div class="w-delta" data-attr="data-tone:liveDeltaMs|deltaTone">
+    <p class="w-delta-value" data-text="liveDeltaMs|delta">
+      —
+    </p>
+    <div class="w-delta-bar" data-var="--d:liveDeltaMs|signedRatio:1500">
+      <span class="w-delta-fill"></span>
+    </div>
+    <dl class="w-delta-times">
+      <div class="w-delta-time" data-attr="data-invalid:player.lap.currentLapInvalid|bool">
+        <dt>{w.current}</dt>
+        <dd data-text="player.lap.currentLapTimeInMS|lapTime"></dd>
+      </div>
+      <div class="w-delta-time">
+        <dt>{w.last}</dt>
+        <dd data-text="player.lastLapMs|lapTime"></dd>
+      </div>
+      <div class="w-delta-time best">
+        <dt>{w.best}</dt>
+        <dd data-text="playerBestMs|lapTime"></dd>
+      </div>
+    </dl>
+  </div>
+</Widget>

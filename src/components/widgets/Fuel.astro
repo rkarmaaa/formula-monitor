@@ -1,0 +1,24 @@
+---
+import Widget from '@components/monitor/Widget.astro';
+import { t } from '@i18n/index';
+
+const w = t.widgets.fuel;
+---
+
+<Widget id="fuel">
+  <div class="w-fuel" data-attr="data-tone:race.fuelDeltaLaps|fuelTone">
+    <p class="w-fuel-delta">
+      <span class="w-fuel-value" data-text="race.fuelDeltaLaps|signedLaps">
+        —
+      </span>
+      <span class="w-fuel-unit">{w.laps}</span>
+    </p>
+    <div class="w-fuel-meter" data-var="--v:player.status.fuelInTank|ratio:110"></div>
+    <p class="w-fuel-meta">
+      <span data-text="player.status.fuelInTank|kg"></span>
+      <span class="w-fuel-mix">
+        {w.mix} <b data-text="player.status.fuelMix|fuelMix"></b>
+      </span>
+    </p>
+  </div>
+</Widget>
