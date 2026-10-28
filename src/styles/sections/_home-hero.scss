@@ -1,6 +1,6 @@
 @use '../abstracts' as *;
 
-// Hero a tutto schermo: titolo e due azioni in alto, l'auto che emerge dal basso
+// Hero a tutto schermo: titolo, descrizione, download e demo in alto, l'auto che emerge dal basso
 .home-hero {
   position: relative;
   display: flex;
@@ -26,6 +26,17 @@
   .home-hero-title {
     @include title-display($fs-display);
     max-width: 14ch;
+  }
+
+  .home-hero-lead {
+    @include type-size($fs-lead);
+    max-width: $measure-short;
+    color: $color-ink-soft;
+  }
+
+  .home-hero-note {
+    @include label($fs-10);
+    color: $color-ink-faint;
   }
 
   .home-hero-actions {

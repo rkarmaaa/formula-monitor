@@ -5,8 +5,9 @@ import { t } from '@i18n/index';
 
 // Barra in basso: indirizzo del sito, stato della sorgente, sessione, schermo intero ed uscita.
 // In simulazione (?demo) a destra compare anche il selettore della schermata: la vista attuale con le doppie
-// frecce, al clic un menu con le viste disponibili.
+// frecce, al clic un menu con le viste disponibili. Nell'app (exe, npm start) la home non c'è: niente uscita.
 const bar = t.monitor.bar;
+const hasHome = import.meta.env.PUBLIC_TARGET === 'site' || import.meta.env.DEV;
 const modes = [
   { id: 'qualifying', label: bar.modes.qualifying },
   { id: 'race', label: bar.modes.race },
@@ -14,7 +15,7 @@ const modes = [
 ---
 
 <nav class="monitor-bar" aria-label={bar.label}>
-  <a class="monitor-bar-domain" href={href('')} data-domain>
+  <a class="monitor-bar-domain" href={hasHome ? href('') : href('monitor/')} data-domain>
     {t.common.brand}
   </a>
   <p class="monitor-bar-status" data-status data-state="connecting" role="status">
@@ -53,8 +54,10 @@ const modes = [
     <button class="monitor-bar-button" type="button" data-action="fullscreen" aria-label={bar.fullscreen}>
       <Icon name="lucide:maximize" />
     </button>
-    <a class="monitor-bar-button" href={href('')} aria-label={bar.exit}>
-      <Icon name="lucide:x" />
-    </a>
+    {hasHome && (
+      <a class="monitor-bar-button" href={href('')} aria-label={bar.exit}>
+        <Icon name="lucide:x" />
+      </a>
+    )}
   </div>
 </nav>

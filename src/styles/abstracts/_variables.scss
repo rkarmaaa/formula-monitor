@@ -167,6 +167,7 @@ $card-padding-phone: $sp-16;
 // ——— Layout ———
 $container-default: 1120px;
 $container-narrow: 720px;
+$container-wide: 1440px; // schermata di attesa del monitor a 16:9
 $gutter: clamp(16px, 4vw, 40px);
 $grid-gap: clamp(12px, 2vw, 24px);
 $touch-min: 48px;
@@ -377,7 +378,7 @@ $q-pu-bar-h: 3;
 $q-feed-pad-x: 12;
 $q-feed-pad-y: 16;
 $q-feed-gap: 12;
-$q-feed-row-gap: 8;
+$q-feed-row-gap: 6;
 $q-feed-lap-w: 32;
 $q-feed-fade: 63;
 $feed-lines: 3; // righe massime di un messaggio del live feed

@@ -10,40 +10,68 @@ export default {
       simulation: 'Simulazione sviluppatore',
       simulationHint: 'Sessione simulata nel browser, senza gioco',
     },
-    copy: 'Copia',
-    copied: 'Copiato',
   },
 
   home: {
     title: 'Formula Monitor — telemetria live per F1 25',
     description:
-      'Cruscotto in tempo reale per F1 25 su PS5, Xbox e PC: timer, classifica con settori e mappa, su qualsiasi schermo della tua rete.',
+      'Cruscotto in tempo reale per F1 25 su PS5, Xbox e PC: cronometro, classifica con settori, gomme e meteo su qualsiasi schermo di casa. App gratuita per Windows.',
     hero: {
       eyebrow: 'Telemetria live · F1 25',
       heading: 'Il muretto box, *sul tuo schermo.*',
-      start: 'Avvia',
-      tutorial: 'Tutorial',
-      scroll: 'Scorri per il tutorial',
+      lead: 'Un’app gratuita per Windows: riceve la telemetria del gioco e la mostra in un cruscotto live sul PC, sul telefono o sul tablet.',
+      download: 'Scarica per Windows',
+      demo: 'Prova la demo',
+      note: 'Windows 10 e 11 · PS5, Xbox e PC · F1 25 e Season Pack 2026',
+      scroll: 'Scorri per scoprire come funziona',
+    },
+    preview: {
+      eyebrow: 'Il cruscotto',
+      heading: 'Tutta la sessione, *a colpo d’occhio.*',
+      lead: 'Qui sotto gira la demo vera, con una qualifica simulata: lo stesso cruscotto che vedrai con il gioco, in verticale o in orizzontale.',
+      frame: 'Demo live del cruscotto di Formula Monitor',
+      features: [
+        {
+          title: 'Cronometro e delta',
+          text: 'Tempo del giro, settori colorati e delta sul tuo migliore, in tempo reale.',
+        },
+        { title: 'Classifica', text: 'Giri veloci con i settori del miglior giro di ogni pilota, distacchi e box.' },
+        { title: 'Gomme e ali', text: 'Usura, temperature e danni della tua auto, con la mescola montata.' },
+        { title: 'Power unit e meteo', text: 'Usura dei componenti, ERS e previsioni dei prossimi minuti.' },
+        { title: 'Live feed', text: 'Sorpassi, penalità, ritiri e bandiere, man mano che succedono.' },
+        {
+          title: 'Gara e qualifica',
+          text: 'In gara la strategia prende il posto dei pedali: finestra dei box e ritmo.',
+        },
+      ],
     },
     tutorial: {
-      eyebrow: 'Tutorial',
-      heading: 'Due passi, *due minuti.*',
-      lead: 'Il gioco invia la telemetria a un computer della tua rete; Formula Monitor la riceve e la mostra in un browser.',
+      eyebrow: 'Come funziona',
+      heading: 'Tre passi, *due minuti.*',
+      lead: 'Il gioco invia la telemetria a un PC della tua rete: Formula Monitor la riceve e la mostra in un browser, anche sugli altri dispositivi di casa.',
       steps: [
+        {
+          title: 'Scarica e apri Formula Monitor',
+          text: 'Un solo file, niente da installare. Si apre il cruscotto in attesa, con l’IP del PC da inserire nel gioco.',
+          notes: [
+            'Windows potrebbe avvisare che l’app non è riconosciuta: Ulteriori informazioni → Esegui comunque.',
+            'Al primo avvio consenti l’accesso alle reti private, altrimenti i dati della console non arrivano.',
+          ],
+        },
         {
           title: 'Configura il gioco',
           text: 'Opzioni di gioco → Impostazioni → Impostazioni telemetria UDP, in fondo alla lista.',
         },
         {
-          title: 'Apri il monitor',
-          text: 'Da telefono, tablet o secondo monitor sulla stessa rete apri questo indirizzo e premi Avvia. Il monitor resta in attesa finché non entri in una sessione.',
+          title: 'Entra in pista',
+          text: 'Il cruscotto compare da solo. Per vederlo su telefono o tablet apri l’indirizzo che Formula Monitor mostra in attesa: devono stare sulla stessa rete del PC.',
         },
       ],
       troubleTitle: 'Se resta in attesa',
       trouble: [
-        'Controlla che UDP Telemetry sia On e che IP e porta coincidano con quelli qui sopra.',
+        'Controlla che UDP Telemetry sia On e che IP e porta coincidano con quelli mostrati da Formula Monitor.',
         'Console e PC devono stare sulla stessa rete: le reti “ospiti” spesso non si vedono tra loro.',
-        'Su Windows consenti Node.js nel firewall per le reti private (porta UDP 20777 in ingresso).',
+        'Nel firewall di Windows consenti Formula Monitor sulle reti private (porta UDP 20777 in ingresso).',
         'Con un’altra app di telemetria attiva, usa UDP Broadcast Mode: On, così ascoltano entrambe.',
       ],
     },
@@ -78,7 +106,7 @@ export default {
         why: 'Solo online: mostra i nomi reali dei giocatori.',
       },
     },
-    ipPlaceholder: 'IP del tuo PC',
+    ipPlaceholder: 'L’IP del tuo PC',
   },
 
   monitor: {
@@ -86,11 +114,13 @@ export default {
     description: 'Il cruscotto live di Formula Monitor.',
     wait: {
       title: 'In attesa',
-      text: 'Aspetto l’inizio della sessione. Entra in pista in F1 25: i dati compariranno qui da soli.',
-      tutorial: 'Tutorial',
+      text: 'Imposta il gioco come nella tabella ed entra in pista in F1 25: il cruscotto compare da solo.',
+      settings: 'Impostazioni del gioco',
+      devices: 'Su telefono o tablet, sulla stessa rete',
+      devicesEmpty: 'Indirizzo in arrivo…',
       detail: {
         connecting: 'Connessione al PC…',
-        offline: 'Formula Monitor non risponde sul PC: avvialo con npm start.',
+        offline: 'Formula Monitor non risponde: riapri l’app sul PC e lascia aperta la sua finestra.',
         listening: 'Collegato. Nessun dato dal gioco sulla porta UDP {port}.',
         format: 'Il gioco invia il formato {format}: imposta UDP Format su 2025 (o 2026 con il Season Pack).',
         error: 'Errore del PC: {error}',

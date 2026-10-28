@@ -8,7 +8,9 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 ## 1. Overview
 
 - **Prodotto:** cruscotto live per la telemetria UDP di F1 25 (formati 2025 e 2026), ottimizzato per display 9:16
-  e utilizzabile anche a 16:9. Home con tutorial, monitor con schermata di attesa e cruscotto disegnato in Figma
+  e utilizzabile anche a 16:9. Si distribuisce come **exe per Windows** (`npm run build:exe`): il sito online
+  (`PUBLIC_TARGET=site`) è solo la presentazione con download e demo live, perché un sito non riceve UDP. App: monitor
+  con schermata di attesa (impostazioni del gioco e IP del PC) e cruscotto disegnato in Figma
   (file "Roba", frame **QUALI & TESTING**, nodo `1283:9`): intestazione con cronometro, scheda del giocatore
   (posizione, settori, delta), classifica dei giri veloci, meteo, power unit, live feed, pedali, gomme e ali.
   Le modifiche visive al monitor partono dal Figma (vedi `DESIGN-SYSTEM.md`, scala `dp()`).
@@ -22,6 +24,7 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 | ----------------------------- | --------------------------------------------------------------------------------------- |
 | `npm run dev`                 | sito + bridge UDP→WebSocket su http://localhost:4321 (UDP 20777)                        |
 | `npm run build` / `npm start` | build in `dist/` / sito + bridge su http://IP:20780 (`--port`, `--udp`)                 |
+| `npm run build:exe`           | `release/FormulaMonitor.exe` (Node SEA: sito + bridge in un file, apre il monitor)      |
 | `npm run mock`                | gioco finto via UDP (`--session quali --format 2026 --rate 60 --laps 10 --host --port`) |
 | `npm test`                    | test Node (`node --test`): codec, gara e qualifica simulate, mappa                      |
 | `npm run check`               | `astro check`: 0 errori, 0 warning, 0 hint                                              |
@@ -50,7 +53,9 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 ```
 server/bridge.ts        UDP → WebSocket (frame binari invariati) + stato JSON ogni secondo
 server/integration.ts   bridge dentro il dev server di Astro (stessa porta, path /ws)
-server/start.ts         produzione: serve dist/ + bridge
+server/start.ts         produzione: serve dist/ + bridge (server HTTP comune in server/http.ts)
+server/app.ts           ingresso dell'exe: sito incorporato (asset SEA) + bridge + apre il browser
+server/build-exe.ts     build dell'exe: sito, bundle rolldown, blob SEA iniettato con postject nel node.exe
 src/lib/f1/             struct.ts (codec dichiarativo), schema.ts (2025/2026), codec.ts (decode/encode)
 src/lib/telemetry/      state.ts (reducer), view.ts (vista per frame), track.ts (tracciato appreso +
                         allineamento della forma reale del circuito)

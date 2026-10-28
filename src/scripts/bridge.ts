@@ -15,17 +15,11 @@ interface Handlers {
 const RETRY_MIN = 1000;
 const RETRY_MAX = 6000;
 
-// Bridge della pagina stessa (npm start / npm run dev), quello indicato con ?bridge=host:porta,
-// oppure quelli di build PUBLIC_BRIDGE separati da virgola (versione online: il bridge su questo PC,
-// provati a turno a ogni tentativo, così risponde sia npm start sia npm run dev)
+// Bridge della pagina stessa (app, npm start, npm run dev) o quello indicato con ?bridge=host:porta
 const LOCAL_HOST = /^(localhost|127\.0\.0\.1)(:|$)/;
 
-function bridgeUrl(attempt: number) {
-  const hosts = (new URLSearchParams(location.search).get('bridge') ?? import.meta.env.PUBLIC_BRIDGE ?? location.host)
-    .split(',')
-    .map((host) => host.trim())
-    .filter(Boolean);
-  const host = hosts[attempt % hosts.length] ?? location.host;
+function bridgeUrl() {
+  const host = new URLSearchParams(location.search).get('bridge') ?? location.host;
   const secure = location.protocol === 'https:' && !LOCAL_HOST.test(host);
   return `${secure ? 'wss' : 'ws'}://${host}${wsPath}`;
 }
@@ -35,15 +29,13 @@ export function connectBridge(handlers: Handlers): () => void {
   let retry = RETRY_MIN;
   let timer: number | undefined;
   let stopped = false;
-  let attempt = 0;
 
   const open = () => {
     handlers.onState?.('connecting');
-    socket = new WebSocket(bridgeUrl(attempt++));
+    socket = new WebSocket(bridgeUrl());
     socket.binaryType = 'arraybuffer';
     socket.onopen = () => {
       retry = RETRY_MIN;
-      attempt--;
       handlers.onState?.('open');
     };
     socket.onmessage = (message: MessageEvent<ArrayBuffer | string>) => {

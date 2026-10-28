@@ -11,8 +11,9 @@ import type { SimSession } from '@lib/sim/simulator';
 
 // Monitor: schermata di attesa finché il gioco non invia una sessione, poi i blocchi.
 // La versione del gioco (formato 2025/2026) si riconosce dai pacchetti: nessuna scelta da fare.
+// Sul sito online non c'è il bridge (un sito non riceve UDP): il monitor gira sempre in simulazione.
 const params = new URLSearchParams(location.search);
-const demo = params.has('demo');
+const demo = params.has('demo') || import.meta.env.PUBLIC_TARGET === 'site';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const monitor = $('[data-monitor]');
@@ -20,6 +21,7 @@ const status = $('[data-status]');
 const statusLabel = $('[data-status-label]');
 const waitDetail = $('[data-wait-detail]');
 const domain = $('[data-domain]');
+const waitUrl = $('[data-wait-url]');
 const board = $('[data-board]');
 const modes = $('[data-modes]');
 
@@ -100,11 +102,19 @@ function render() {
 }
 window.setInterval(render, 500);
 
-// Indirizzo da aprire sugli altri dispositivi: su localhost mostriamo l'IP di rete del PC
+// Indirizzo da aprire sugli altri dispositivi: su localhost mostriamo l'IP di rete del PC.
+// Nell'attesa anche l'IP da inserire nel gioco (tabella delle impostazioni).
 function renderDomain() {
   const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
   const ip = bridgeStatus?.addresses[0];
-  domain.textContent = local && ip ? `${ip}${location.port ? `:${location.port}` : ''}` : location.host;
+  const host = local && ip ? `${ip}${location.port ? `:${location.port}` : ''}` : location.host;
+  domain.textContent = host;
+  if (ip) waitUrl.textContent = `http://${host}/monitor/`;
+  document.querySelectorAll<HTMLElement>('[data-bridge-ip]').forEach((el) => {
+    if (!ip) return;
+    el.textContent = ip;
+    delete el.dataset.empty;
+  });
 }
 renderDomain();
 

@@ -23,7 +23,7 @@ classifica con settori e distacchi, delta, gomme, power unit, live feed e strate
 
 |                            |                                                                                                                                             |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 📡 **Live dal gioco**      | Un piccolo bridge Node riceve l'UDP di F1 25 e lo porta in qualsiasi browser di casa: telefono, tablet, secondo monitor.                    |
+| 📡 **Live dal gioco**      | Un'app per Windows (un solo .exe) riceve l'UDP di F1 25 e lo porta in qualsiasi browser di casa: PC, telefono, tablet, secondo monitor.     |
 | ⏱️ **Qualifica in chiaro** | Timer della sessione e classifica di tutti i piloti con giro migliore, distacco e S1·S2·S3: viola il migliore assoluto, verde il personale. |
 | ⏳ **Attesa che spiega**   | Finché la sessione non parte il monitor dice cosa manca: PC non raggiungibile, nessun dato UDP, formato sbagliato.                          |
 | 🎮 **Due formati**         | F1 25 (formato 2025) e Season Pack 2026 (22 auto): riconosciuti automaticamente.                                                            |
@@ -32,18 +32,14 @@ classifica con settori e distacchi, delta, gomme, power unit, live feed e strate
 
 ## 🚀 Avvio rapido
 
-Serve **Node.js 22.18+** (consigliato 24) sul PC che riceve i dati.
+Scarica **[FormulaMonitor.exe](https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor.exe)**
+(Windows 10/11) e aprilo: niente da installare. Si apre il monitor nel browser, in attesa, con l'IP del PC da
+inserire nel gioco e l'indirizzo da aprire su telefono o tablet della stessa rete.
 
-```bash
-git clone https://github.com/rkarmaaa/formula-monitor.git
-cd formula-monitor
-npm install
-npm run build
-npm start
-```
+> 💡 Windows può avvisare che l'app non è riconosciuta (non è firmata): _Ulteriori informazioni → Esegui comunque_.
+> Al primo avvio consenti l'accesso alle reti private, altrimenti i dati della console non arrivano.
 
-Il terminale mostra l'indirizzo da aprire, per esempio `http://192.168.1.20:20780`.
-Aprilo dal telefono o dal tablet sulla stessa rete: il tutorial è nella home, **Avvia** apre il monitor.
+Da sorgente serve **Node.js 22.18+** (consigliato 24): `npm install`, `npm run build`, `npm start`.
 
 ### 🎛️ Nel gioco
 
@@ -59,14 +55,14 @@ _Opzioni di gioco → Impostazioni → Impostazioni telemetria UDP_
 | UDP Format         | **2025** per F1 25 · **2026** con il Season Pack                          |
 | Your Telemetry     | **Public** (solo online, per mostrare i tuoi dati agli altri)             |
 
-> 💡 Su Windows consenti Node.js nel firewall per le reti private.
+> 💡 Nel firewall di Windows consenti Formula Monitor sulle reti private (UDP 20777 in ingresso).
 
-## 🌐 Versione online
+## 🌐 Sito e release
 
-Il workflow `pages.yml` pubblica il sito su GitHub Pages: home e tutorial funzionano ovunque.
-Il monitor online si collega al bridge in esecuzione **sullo stesso PC** (`npm start`, porta 20780).
-Per il telefono usa l'indirizzo locale stampato da `npm start`: il browser non permette a una pagina HTTPS di
-collegarsi a un indirizzo di rete locale.
+- `pages.yml` pubblica su GitHub Pages la presentazione del prodotto (`PUBLIC_TARGET=site`): download dell'exe,
+  demo live del cruscotto e come funziona. Un sito non riceve UDP, quindi online il monitor è sempre in simulazione.
+- `release.yml` a ogni push su `main` crea l'exe (`npm run build:exe`, Node SEA) e lo pubblica nella release
+  `v<versione>`. La versione è automatica: `major.minor` da `package.json`, patch = commit successivi.
 
 ## 🛠️ Sviluppo
 

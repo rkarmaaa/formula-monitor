@@ -14,7 +14,6 @@
 @use 'components/icon';
 @use 'components/skip-link';
 @use 'components/button';
-@use 'components/command-list';
 @use 'components/udp-settings';
 @use 'components/hero-car';
 @use 'components/team-logo';
@@ -34,6 +33,7 @@
 
 // Sezioni e pagine
 @use 'sections/home-hero';
+@use 'sections/home-preview';
 @use 'sections/home-tutorial';
 @use 'pages/not-found';
 

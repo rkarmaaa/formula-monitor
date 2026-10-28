@@ -5,14 +5,16 @@ import Button from '@components/ui/Button.astro';
 import Icon from '@components/ui/Icon.astro';
 import HeroCar from '@components/home/HeroCar.astro';
 import UdpSettings from '@components/setup/UdpSettings.astro';
-import CommandList from '@components/setup/CommandList.astro';
 import { accent } from '@lib/text';
 import { t } from '@i18n/index';
 import { site } from '@data/site';
 
+// Presentazione del prodotto: download dell'app per Windows, demo live del cruscotto, come funziona
 const h = t.home;
 const tut = h.tutorial;
-const [game, open] = tut.steps;
+const pre = h.preview;
+const [download, game, play] = tut.steps;
+const num = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
 <SiteLayout title={h.title} description={h.description}>
@@ -21,18 +23,41 @@ const [game, open] = tut.steps;
     <div class="home-hero-content">
       <p class="home-hero-eyebrow">{h.hero.eyebrow}</p>
       <h1 class="home-hero-title" id="home-title" set:html={accent(h.hero.heading)} />
+      <p class="home-hero-lead">{h.hero.lead}</p>
       <div class="home-hero-actions">
-        <Button href={href('monitor/')} size="lg" arrow>
-          {h.hero.start}
+        <Button href={site.download} size="lg" icon="lucide:download">
+          {h.hero.download}
         </Button>
-        <Button href="#tutorial" size="lg" variant="outline">
-          {h.hero.tutorial}
+        <Button href={href('monitor/?demo')} size="lg" variant="outline">
+          {h.hero.demo}
         </Button>
       </div>
+      <p class="home-hero-note">
+        v{site.version} · {h.hero.note}
+      </p>
     </div>
-    <a class="home-hero-scroll" href="#tutorial" aria-label={h.hero.scroll}>
+    <a class="home-hero-scroll" href="#preview" aria-label={h.hero.scroll}>
       <Icon name="lucide:arrow-down" />
     </a>
+  </section>
+
+  <section class="home-preview" id="preview" aria-labelledby="preview-title">
+    <header class="home-preview-head" data-reveal>
+      <p class="home-preview-eyebrow">{pre.eyebrow}</p>
+      <h2 class="home-preview-title" id="preview-title" set:html={accent(pre.heading)} />
+      <p class="home-preview-lead">{pre.lead}</p>
+    </header>
+    <div class="home-preview-screen" data-reveal>
+      <iframe class="home-preview-frame" src={href('monitor/?demo')} title={pre.frame} loading="lazy"></iframe>
+    </div>
+    <ul class="home-preview-features" data-reveal-group>
+      {pre.features.map((feature) => (
+        <li class="home-preview-feature" data-reveal>
+          <h3 class="home-preview-feature-title">{feature.title}</h3>
+          <p class="home-preview-feature-text">{feature.text}</p>
+        </li>
+      ))}
+    </ul>
   </section>
 
   <section class="home-tutorial" id="tutorial" aria-labelledby="tutorial-title">
@@ -45,7 +70,26 @@ const [game, open] = tut.steps;
     <ol class="home-tutorial-steps">
       <li class="home-tutorial-step" data-reveal>
         <span class="home-tutorial-num" aria-hidden="true">
-          01
+          {num(0)}
+        </span>
+        <div class="home-tutorial-body">
+          <h3 class="home-tutorial-step-title">{download!.title}</h3>
+          <p class="home-tutorial-text">{download!.text}</p>
+          <ul class="home-tutorial-list">
+            {download!.notes?.map((line) => (
+              <li>{line}</li>
+            ))}
+          </ul>
+          <div class="home-tutorial-actions">
+            <Button href={site.download} icon="lucide:download">
+              {h.hero.download}
+            </Button>
+          </div>
+        </div>
+      </li>
+      <li class="home-tutorial-step" data-reveal>
+        <span class="home-tutorial-num" aria-hidden="true">
+          {num(1)}
         </span>
         <div class="home-tutorial-body">
           <h3 class="home-tutorial-step-title">{game!.title}</h3>
@@ -55,17 +99,11 @@ const [game, open] = tut.steps;
       </li>
       <li class="home-tutorial-step" data-reveal>
         <span class="home-tutorial-num" aria-hidden="true">
-          02
+          {num(2)}
         </span>
         <div class="home-tutorial-body">
-          <h3 class="home-tutorial-step-title">{open!.title}</h3>
-          <p class="home-tutorial-text">{open!.text}</p>
-          <CommandList lines={[`${site.url}monitor/`]} />
-          <div class="home-tutorial-actions">
-            <Button href={href('monitor/')} arrow>
-              {h.hero.start}
-            </Button>
-          </div>
+          <h3 class="home-tutorial-step-title">{play!.title}</h3>
+          <p class="home-tutorial-text">{play!.text}</p>
         </div>
       </li>
     </ol>

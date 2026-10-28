@@ -1,0 +1,79 @@
+@use '../abstracts' as *;
+
+// Anteprima del prodotto: la demo vera del monitor in uno schermo 16:9 (9:16 su telefono), poi le funzioni
+// su una griglia a filo
+.home-preview {
+  @include container;
+  @include section-space;
+
+  .home-preview-head {
+    @include stack($stack-title);
+    max-width: $measure;
+    margin-bottom: $sp-40;
+  }
+
+  .home-preview-eyebrow {
+    @include eyebrow;
+  }
+
+  .home-preview-title {
+    @include title-display($fs-h1);
+  }
+
+  .home-preview-lead {
+    @include type-size($fs-lead);
+    color: $color-ink-soft;
+  }
+
+  .home-preview-screen {
+    aspect-ratio: 16 / 9;
+    border: $border-thin solid $color-line-strong;
+    background: $color-bg;
+    overflow: hidden;
+
+    @include respond(phone) {
+      aspect-ratio: 9 / 16;
+    }
+  }
+
+  .home-preview-frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .home-preview-features {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: $sp-40;
+    border-top: $border-thin solid $color-line-strong;
+
+    @include respond(tab-port) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include respond(phone) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .home-preview-feature {
+    @include stack($sp-8);
+    padding: $sp-24 $sp-24 $sp-24 0;
+    border-bottom: $border-thin solid $color-line;
+
+    @include respond(phone) {
+      padding-right: 0;
+    }
+  }
+
+  .home-preview-feature-title {
+    @include title-display($fs-h3);
+  }
+
+  .home-preview-feature-text {
+    max-width: $measure-short;
+    color: $color-ink-soft;
+  }
+}

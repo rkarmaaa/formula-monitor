@@ -1,0 +1,45 @@
+name: Release
+
+# Exe per Windows a ogni push su main: release "v<versione>" (versione automatica dai commit, vedi
+# server/version.ts) con FormulaMonitor.exe allegato. Il sito scarica sempre l'ultima:
+# https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor.exe
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  exe:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # storia completa: la versione conta i commit
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:exe
+      - id: version
+        shell: bash
+        run: echo "tag=v$(node -e "import('./server/version.ts').then((m) => console.log(m.appVersion()))")" >> "$GITHUB_OUTPUT"
+      - name: Pubblica la release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" release/FormulaMonitor.exe --clobber
+          else
+            gh release create "$TAG" release/FormulaMonitor.exe --target "$GITHUB_SHA" --title "Formula Monitor $TAG" --generate-notes --latest
+          fi

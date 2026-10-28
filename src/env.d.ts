@@ -1,4 +1,4 @@
 interface ImportMetaEnv {
-  readonly PUBLIC_BRIDGE?: string;
+  readonly PUBLIC_TARGET?: 'site';
   readonly PUBLIC_VERSION?: string;
 }

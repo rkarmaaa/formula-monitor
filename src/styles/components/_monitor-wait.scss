@@ -1,17 +1,36 @@
 @use '../abstracts' as *;
 
-// Schermata di attesa: titolo grande, una riga di spiegazione, la diagnosi e il tutorial
+// Schermata di attesa: a sinistra stato e diagnosi con l'indirizzo per gli altri dispositivi, a destra la tabella
+// delle impostazioni del gioco con l'IP del PC. In 9:16 le due parti sono impilate e la schermata scorre.
 .monitor-wait {
-  @include stack($sp-20);
-  align-items: flex-start;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: safe center;
+  gap: $sp-40;
   height: 100%;
   padding: $gutter;
-  max-width: $container-narrow;
-  margin-inline: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  @include respond(landscape) {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    align-items: center;
+    gap: $sp-64;
+    max-width: $container-wide;
+    margin-inline: auto;
+  }
+
+  .monitor-wait-intro {
+    @include stack($sp-20);
+    align-items: flex-start;
+  }
+
+  .monitor-wait-eyebrow {
+    @include eyebrow($color-ink-faint);
+  }
 
   .monitor-wait-title {
-    @include title-display($fs-display);
+    @include title-display($fs-h1);
     // flex: i puntini restano attaccati alla parola, senza spazi
     display: flex;
     align-items: baseline;
@@ -52,5 +71,35 @@
     &::before {
       @include rule($tick);
     }
+  }
+
+  .monitor-wait-url {
+    @include stack($sp-8);
+    width: 100%;
+    padding-top: $sp-20;
+    border-top: $border-thin solid $color-line;
+  }
+
+  .monitor-wait-label {
+    @include label($fs-10);
+    color: $color-ink-faint;
+  }
+
+  .monitor-wait-address {
+    @include numeric;
+    @include type-size($fs-20);
+    font-weight: $fw-semibold;
+    color: $color-ink-strong;
+    overflow-wrap: anywhere;
+  }
+
+  .monitor-wait-settings {
+    @include stack($sp-12);
+    min-width: 0;
+  }
+
+  .monitor-wait-path {
+    @include type-size($fs-14);
+    color: $color-ink-soft;
   }
 }

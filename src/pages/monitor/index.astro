@@ -1,7 +1,6 @@
 ---
-import { href } from '@lib/paths';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import Button from '@components/ui/Button.astro';
+import UdpSettings from '@components/setup/UdpSettings.astro';
 import MonitorBar from '@components/monitor/MonitorBar.astro';
 import Header from '@components/blocks/Header.astro';
 import PlayerCard from '@components/blocks/PlayerCard.astro';
@@ -13,6 +12,7 @@ import Pedals from '@components/blocks/Pedals.astro';
 import Car from '@components/blocks/Car.astro';
 import Strategy from '@components/blocks/Strategy.astro';
 import { t } from '@i18n/index';
+import { site } from '@data/site';
 
 const m = t.monitor;
 const dots = ['.', '.', '.'];
@@ -22,22 +22,35 @@ const dots = ['.', '.', '.'];
   <div class="monitor" data-monitor data-view="wait">
     <main class="monitor-main" id="main" tabindex="-1">
       <h1 class="monitor-heading">{m.title}</h1>
-      <section class="monitor-wait" data-wait aria-live="polite">
-        <p class="monitor-wait-title">
-          {m.wait.title}
-          <span class="monitor-wait-dots" aria-hidden="true">
-            {dots.map((dot) => (
-              <span>{dot}</span>
-            ))}
-          </span>
-        </p>
-        <p class="monitor-wait-text">{m.wait.text}</p>
-        <p class="monitor-wait-detail" data-wait-detail>
-          {m.wait.detail.connecting}
-        </p>
-        <Button href={`${href('')}#tutorial`} variant="outline">
-          {m.wait.tutorial}
-        </Button>
+      <section class="monitor-wait" data-wait>
+        <div class="monitor-wait-intro">
+          <p class="monitor-wait-eyebrow">
+            {t.common.brand} · v{site.version}
+          </p>
+          <p class="monitor-wait-title">
+            {m.wait.title}
+            <span class="monitor-wait-dots" aria-hidden="true">
+              {dots.map((dot) => (
+                <span>{dot}</span>
+              ))}
+            </span>
+          </p>
+          <p class="monitor-wait-text">{m.wait.text}</p>
+          <p class="monitor-wait-detail" data-wait-detail aria-live="polite">
+            {m.wait.detail.connecting}
+          </p>
+          <div class="monitor-wait-url">
+            <p class="monitor-wait-label">{m.wait.devices}</p>
+            <p class="monitor-wait-address" data-wait-url>
+              {m.wait.devicesEmpty}
+            </p>
+          </div>
+        </div>
+        <div class="monitor-wait-settings">
+          <p class="monitor-wait-label">{m.wait.settings}</p>
+          <p class="monitor-wait-path">{t.home.tutorial.steps[0]!.text}</p>
+          <UdpSettings />
+        </div>
       </section>
       <div class="monitor-board" data-board>
         <Header />

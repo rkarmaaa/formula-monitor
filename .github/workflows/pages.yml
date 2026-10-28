@@ -1,7 +1,7 @@
 name: GitHub Pages
 
-# Versione online: home, tutorial e monitor. Il monitor si collega al bridge locale
-# (npm start su questo PC, porta 20780, o npm run dev, porta 4321) quando è in esecuzione.
+# Versione online: presentazione del prodotto con il download dell'exe e la demo del monitor.
+# Un sito non riceve UDP: online il monitor gira sempre in simulazione (PUBLIC_TARGET=site).
 # Pubblicazione a ogni push su main (repository pubblico: Pages gratuito) o a mano
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}/
-          PUBLIC_BRIDGE: localhost:20780,localhost:4321
+          PUBLIC_TARGET: site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
