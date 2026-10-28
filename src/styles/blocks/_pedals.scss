@@ -13,6 +13,7 @@
   min-width: 0;
   min-height: 0;
   padding: dp(16);
+  // padding-top: dp(12);
 
   // La traccia occupa lo spazio sotto la legenda
   .pedals-canvas {
@@ -83,6 +84,7 @@
 
   .pedals-range {
     @include figures($fw-regular);
+    cursor: default;
     min-width: dp($q-pedals-range-w);
     font-size: dp($q-fs-pedals-zoom);
     text-align: center;

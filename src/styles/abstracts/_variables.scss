@@ -206,7 +206,7 @@ $dot-size: 6px;
 $tick: 24px;
 $rule: 1px;
 $bullet-offset: 0.8em;
-$underline-offset: 0.3em;
+$underline-offset: 0.2em;
 
 // ——— Forme: spigoli vivi ———
 $radius-none: 0;
@@ -260,7 +260,7 @@ $q-divider-gap: 20;
 
 // Intestazione: logo della vettura, circuito, sessione, cronometro (in gara il conteggio dei giri);
 // sotto, un filo a tutta larghezza
-$q-logo-head: 33;
+$q-logo-head: 40;
 $q-head-logo-gap: 10;
 $q-head-pad-b: 12;
 $q-fs-track: 20;
@@ -277,12 +277,12 @@ $q-pos-gap: 12;
 $q-compound-pad-x: 10;
 $q-side-w: 400;
 $q-bar-h: 20;
-$q-bar-gap: 8;
+$q-bar-gap: 6;
 $q-fs-bar: 16;
 $q-fs-delta-label: 32;
 $q-fs-delta: 56;
 $q-fs-lap: 24;
-$q-lap-gap: 12;
+$q-lap-gap: 6;
 
 // Classifica: righe da 46 (22 + 12 sopra e sotto il filo), testo condensato
 $q-fs-head: 16;
@@ -329,7 +329,7 @@ $q-ring-rear: 216;
 $q-fs-ring: 28;
 
 // Pedali: comandi della legenda e dello zoom
-$q-pedals-button: 32;
+$q-pedals-button: 24;
 $q-fs-pedals-zoom: 14;
 $q-pedals-range-w: 48;
 

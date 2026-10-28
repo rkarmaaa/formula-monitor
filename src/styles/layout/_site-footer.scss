@@ -33,6 +33,7 @@
     @include focus-ring;
     color: $color-ink-soft;
     text-underline-offset: $underline-offset;
+    text-decoration: underline $color-line-strong;
 
     @include hover {
       color: $color-ink-strong;

@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: dp($q-card-pad) dp($q-card-pad-x);
+  padding: dp($q-card-pad-x) dp($q-card-pad-x);
   border: $border-thin solid $color-line;
 
   .timing-tower-head,
@@ -23,7 +23,6 @@
 
   .timing-tower-head {
     padding-bottom: dp($q-lap-gap);
-    border-bottom: $border-thin solid $color-line;
     font-family: $font-body;
     font-size: dp($q-fs-head);
     line-height: $lh-none;
@@ -130,7 +129,7 @@
   }
 
   .timing-tower-tag {
-    @include label($fs-14);
+    @include label(dp(16));
     display: none;
     padding: $tag-pad;
     background: $color-surface-high;

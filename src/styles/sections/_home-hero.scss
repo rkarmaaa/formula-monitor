@@ -44,5 +44,7 @@
     z-index: $z-raised;
     translate: -50% 0;
     border: $border-thin solid $color-line-strong;
+
+    display: none;
   }
 }

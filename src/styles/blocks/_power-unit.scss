@@ -2,7 +2,7 @@
 
 // Power unit: griglia 2 × 4 divisa da fili, ogni casella con nome, percentuale e barra d'usura sottile
 .power-unit {
-  @include card($color-surface-raised);
+  @include card();
   min-width: 0;
 
   .power-unit-list {
@@ -11,6 +11,8 @@
     grid-template-rows: repeat(4, minmax(0, 1fr));
     gap: 0;
     height: 100%;
+    padding: dp(10);
+    gap: dp(10);
   }
 
   .power-unit-part {
@@ -20,7 +22,6 @@
     align-content: center;
     height: 100%;
     row-gap: dp($q-pu-gap);
-    padding: dp($q-pu-pad-y) dp($q-pu-pad-x);
     background: $color-surface;
     font-size: dp($q-fs-pu);
     line-height: $lh-none;
