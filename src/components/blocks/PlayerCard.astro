@@ -1,18 +1,20 @@
 ---
-import TeamLogo from './TeamLogo.astro';
 import { t } from '@i18n/index';
 
-// Scheda del giocatore: logo e posizione; settori del giro in corso (viola/verde/rosso), delta live sul
-// proprio miglior giro, ultimo e migliore
+// Scheda del giocatore: posizione e mescola montata; settori del giro in corso (viola/verde/rosso), delta live
+// sul proprio miglior giro (al massimo 3 aggiornamenti al secondo, data-every), ultimo e migliore
 const b = t.monitor.blocks.player;
 const sectors = [0, 1, 2];
 ---
 
 <section class="player-card" data-block="player" aria-label={b.title}>
   <div class="player-card-place">
-    <TeamLogo path="player.teamId" size="lg" />
     <p class="player-card-position" aria-label={b.position}>
       P<span data-text="player.position"></span>
+    </p>
+    <p class="player-card-compound" data-attr="data-compound:player.status.visualTyreCompound|compoundClass">
+      <span class="player-card-chip" data-text="player.status.visualTyreCompound|compoundLetter"></span>
+      <span data-text="player.status.visualTyreCompound|compoundName"></span>
     </p>
   </div>
   <div class="player-card-times">
@@ -32,6 +34,7 @@ const sectors = [0, 1, 2];
         class="player-card-delta-value"
         data-text="liveDeltaMs|delta"
         data-attr="data-tone:liveDeltaMs|deltaTone"
+        data-every="334"
       ></span>
     </p>
     <dl class="player-card-laps">

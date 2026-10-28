@@ -8,18 +8,18 @@ interface Team {
 }
 
 const base: Record<string, Team> = {
-  mercedes: { name: 'Mercedes', color: '#2bd9c2' },
+  mercedes: { name: 'Mercedes', color: '#2bd9c2', logo: 'mercedes' },
   ferrari: { name: 'Ferrari', color: '#e8102e', logo: 'ferrari' },
-  redbull: { name: 'Red Bull', color: '#4777d6' },
-  williams: { name: 'Williams', color: '#5ab8f5' },
-  aston: { name: 'Aston Martin', color: '#26a37a' },
-  alpine: { name: 'Alpine', color: '#f58ac0' },
-  rb: { name: 'Racing Bulls', color: '#7a9cff' },
-  haas: { name: 'Haas', color: '#a3a9b0' },
-  mclaren: { name: 'McLaren', color: '#ff8a1a' },
-  sauber: { name: 'Sauber', color: '#4fdb5a' },
-  audi: { name: 'Audi', color: '#d6dbe2' },
-  cadillac: { name: 'Cadillac', color: '#c9a65a' },
+  redbull: { name: 'Red Bull', color: '#4777d6', logo: 'redbull' },
+  williams: { name: 'Williams', color: '#5ab8f5', logo: 'williams' },
+  aston: { name: 'Aston Martin', color: '#26a37a', logo: 'aston' },
+  alpine: { name: 'Alpine', color: '#f58ac0', logo: 'alpine' },
+  rb: { name: 'Racing Bulls', color: '#7a9cff', logo: 'rb' },
+  haas: { name: 'Haas', color: '#a3a9b0', logo: 'haas' },
+  mclaren: { name: 'McLaren', color: '#ff8a1a', logo: 'mclaren' },
+  sauber: { name: 'Sauber', color: '#4fdb5a', logo: 'sauber' },
+  audi: { name: 'Audi', color: '#d6dbe2', logo: 'audi' },
+  cadillac: { name: 'Cadillac', color: '#c9a65a', logo: 'cadillac' },
   generic: { name: 'F1', color: '#8a93a6' },
 };
 

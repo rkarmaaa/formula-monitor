@@ -1,15 +1,42 @@
 ---
+import Icon from '@components/ui/Icon.astro';
+import { fill } from '@lib/text';
 import { t } from '@i18n/index';
 
 // Telemetria dei pedali: traccia di acceleratore e freno degli ultimi secondi (senza sterzo).
-// Disegnata da scripts/blocks/inputs.ts sul canvas [data-trace].
+// Disegnata da scripts/blocks/inputs.ts sul canvas [data-trace]: le voci della legenda accendono e spengono
+// le tracce, i due bottoni a destra allargano o stringono la finestra di tempo (default la più corta).
 const b = t.monitor.blocks.pedals;
+const series = [
+  { key: 'throttle', label: b.throttle },
+  { key: 'brake', label: b.brake },
+];
 ---
 
 <section class="pedals" data-block="pedals" aria-label={b.title}>
-  <p class="pedals-legend" aria-hidden="true">
-    <span class="pedals-key throttle">{b.throttle}</span>
-    <span class="pedals-key brake">{b.brake}</span>
-  </p>
-  <canvas class="pedals-canvas" data-trace></canvas>
+  <div class="pedals-head">
+    <p class="pedals-legend">
+      {series.map(({ key, label }) => (
+        <button
+          class:list={['pedals-key', key]}
+          type="button"
+          aria-pressed="true"
+          title={fill(b.toggle, { name: label.toLowerCase() })}
+          data-series={key}
+        >
+          {label}
+        </button>
+      ))}
+    </p>
+    <p class="pedals-zoom">
+      <button class="pedals-button" type="button" data-zoom="-1" aria-label={b.zoomIn} title={b.zoomIn}>
+        <Icon name="lucide:minus" />
+      </button>
+      <span class="pedals-range" data-range></span>
+      <button class="pedals-button" type="button" data-zoom="1" aria-label={b.zoomOut} title={b.zoomOut}>
+        <Icon name="lucide:plus" />
+      </button>
+    </p>
+  </div>
+  <canvas class="pedals-canvas" data-trace data-range-label={b.range}></canvas>
 </section>

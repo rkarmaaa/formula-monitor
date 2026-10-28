@@ -3,9 +3,11 @@
 // Monitor a tutto schermo: contenuto sopra, barra in basso. Il cruscotto riproduce il Figma "QUALI & TESTING":
 // --dp = pixel del design, scalati per stare nello schermo. In 9:16 i blocchi sono impilati come nel design;
 // oltre 1:1 la classifica va a sinistra a tutta altezza, a destra scheda del giocatore, meteo, pedali e gomme.
+// In basso meteo e power unit accanto al live feed, poi i pedali; in gara (data-race) la strategia li sostituisce.
 .monitor {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   height: 100dvh;
   overflow: hidden;
   background: $color-bg;
@@ -25,13 +27,15 @@
     --dp: min(100cqw / #{$q-base-w}, 100cqh / #{$q-base-h});
     display: grid;
     grid-template-areas:
-      'header header'
-      'player player'
-      'timing timing'
-      'forecast car'
-      'engine car'
-      'pedals car';
-    grid-template-columns: minmax(0, $q-left-w * 1fr) minmax(0, $q-car-w * 1fr);
+      'header header header'
+      'player player player'
+      'timing timing timing'
+      'forecast feed car'
+      'engine feed car'
+      'pedals pedals car';
+    grid-template-columns:
+      minmax(0, $q-side-col-w * 1fr) minmax(0, $q-feed-w * 1fr)
+      minmax(0, $q-car-w * 1fr);
     grid-template-rows: auto auto minmax(0, 1fr) dp($q-forecast-h) dp($q-engine-h) dp($q-pedals-h);
     gap: dp($q-gap);
     height: 100%;
@@ -41,15 +45,15 @@
     @include respond(landscape) {
       --dp: min(100cqw / #{$q-base-w-land}, 100cqh / #{$q-base-h-land});
       grid-template-areas:
-        'header header header'
-        'timing player player'
-        'timing forecast car'
-        'timing engine car'
-        'timing pedals car'
-        'timing . .';
+        'header header header header'
+        'timing player player player'
+        'timing forecast feed car'
+        'timing engine feed car'
+        'timing pedals pedals car'
+        'timing . . .';
       grid-template-columns:
-        minmax(0, $q-content-w * 1fr) minmax(0, $q-left-w * 1fr)
-        minmax(0, $q-car-w * 1fr);
+        minmax(0, $q-content-w * 1fr) minmax(0, $q-side-col-w * 1fr)
+        minmax(0, $q-feed-w * 1fr) minmax(0, $q-car-w * 1fr);
       grid-template-rows: auto auto dp($q-forecast-h) dp($q-engine-h) dp($q-pedals-h) minmax(0, 1fr);
     }
 
@@ -73,8 +77,23 @@
       grid-area: engine;
     }
 
-    > [data-block='pedals'] {
+    > [data-block='feed'] {
+      grid-area: feed;
+    }
+
+    > [data-block='pedals'],
+    > [data-block='strategy'] {
       grid-area: pedals;
+    }
+
+    // In gara la strategia prende il posto dei pedali (stessa area)
+    > [data-block='strategy'],
+    &[data-race] > [data-block='pedals'] {
+      display: none;
+    }
+
+    &[data-race] > [data-block='strategy'] {
+      display: grid;
     }
 
     > [data-block='car'] {

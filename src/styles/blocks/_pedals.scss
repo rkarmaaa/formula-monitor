@@ -1,6 +1,7 @@
 @use '../abstracts' as *;
 
-// Telemetria dei pedali: traccia di acceleratore (verde) e freno (rosso), colori letti dal canvas
+// Telemetria dei pedali: traccia di acceleratore (verde) e freno (rosso), colori letti dal canvas.
+// In alto la legenda (ogni voce accende/spegne la sua traccia) e, a destra, lo zoom della finestra di tempo.
 .pedals {
   @include card;
   --trace-throttle: #{$color-personal};
@@ -21,9 +22,17 @@
     min-height: 0;
   }
 
-  .pedals-legend {
+  .pedals-head {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: dp($q-gap);
+  }
+
+  .pedals-legend,
+  .pedals-zoom {
+    display: flex;
+    align-items: center;
     font-family: $font-body;
     font-size: dp($q-fs-head);
     line-height: $lh-none;
@@ -31,10 +40,21 @@
     color: $color-ink-faint;
   }
 
+  .pedals-legend {
+    gap: dp($q-gap);
+  }
+
+  // Voce della legenda: bottone con il campione di colore; spenta resta attenuata e barrata
   .pedals-key {
+    @include focus-ring;
     display: inline-flex;
     align-items: center;
     gap: dp($q-head-gap);
+    min-height: dp($q-pedals-button);
+    color: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+    transition: opacity $dur-fast $ease-out;
 
     &::before {
       content: '';
@@ -49,6 +69,42 @@
 
     &.brake::before {
       background: $color-danger;
+    }
+
+    &[aria-pressed='false'] {
+      opacity: $opacity-dim;
+      text-decoration: line-through;
+    }
+
+    @include hover {
+      color: $color-ink;
+    }
+  }
+
+  .pedals-zoom {
+    border: $border-thin solid $color-line;
+  }
+
+  .pedals-range {
+    @include figures($fw-regular);
+    min-width: dp($q-pedals-range-w);
+    font-size: dp($q-fs-pedals-zoom);
+    text-align: center;
+    text-transform: none;
+    color: $color-ink-soft;
+  }
+
+  .pedals-button {
+    @include icon-button(dp($q-pedals-button));
+
+    &:disabled {
+      opacity: $opacity-dim;
+      pointer-events: none;
+    }
+
+    .icon {
+      width: dp($q-fs-head);
+      height: dp($q-fs-head);
     }
   }
 }

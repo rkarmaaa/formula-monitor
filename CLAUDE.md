@@ -10,7 +10,7 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 - **Prodotto:** cruscotto live per la telemetria UDP di F1 25 (formati 2025 e 2026), ottimizzato per display 9:16
   e utilizzabile anche a 16:9. Home con tutorial, monitor con schermata di attesa e cruscotto disegnato in Figma
   (file "Roba", frame **QUALI & TESTING**, nodo `1283:9`): intestazione con cronometro, scheda del giocatore
-  (posizione, settori, delta), classifica dei giri veloci, meteo, power unit, pedali, gomme e ali.
+  (posizione, settori, delta), classifica dei giri veloci, meteo, power unit, live feed, pedali, gomme e ali.
   Le modifiche visive al monitor partono dal Figma (vedi `DESIGN-SYSTEM.md`, scala `dp()`).
 - **Stack:** Astro 7 statico · TypeScript strict · SCSS (solo `@use`) · bridge Node 22.18+ (TypeScript eseguito
   nativamente da Node, senza build).
@@ -29,13 +29,16 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 - **È un'app, non un sito vetrina**: niente navbar, sitemap, SEO, JSON-LD, Open Graph immagine, badge Nuvola GO.
 - **Nessuna dipendenza client**: il layout del monitor è fisso (CSS grid per 9:16 e 16:9), niente griglia trascinabile.
 - **`ws` + server Node** in `server/`: il browser non può ricevere UDP.
-- **localStorage** solo per i tracciati appresi (`fm:track:*`), sempre dietro `src/scripts/prefs.ts` (try/catch).
+- **localStorage** solo per i tracciati appresi (`fm:track:*`) e le preferenze del grafico pedali, separate per
+  qualifica e gara (`fm:pedals:qualifying|race`: finestra di tempo e tracce visibili), sempre dietro
+  `src/scripts/prefs.ts` (try/catch).
 - **`src/data/circuits.ts`**: forme reali dei circuiti da github.com/bacinger/f1-circuits (MIT), generate una volta
   e incluse nel sorgente; servono a mostrare la mappa prima che le auto girino.
 - **`respond(landscape)`**: unica media query sulle proporzioni, perché il monitor dipende dal formato dello schermo.
 - **`dp()` e `--dp`**: le misure del cruscotto sono pixel del frame Figma scalati sullo schermo (container query),
   non token `$sp-*`; i raggi esistono solo nei grafici dati (chip, anelli, sagome delle gomme).
-- **Loghi dei team** in `public/teams/<id>.png` (oggi solo Ferrari, dal Figma); senza logo un quadrato nel colore del team.
+- **Loghi dei team** in `public/teams/<id>.png`, quadrati 128 × 128 dal CDN di formula1.com (bianchi per Mercedes,
+  Aston Martin, Audi e Cadillac, illeggibili in nero sul carbone); senza logo un quadrato nel colore del team.
 - I file in `src/lib/` e `src/data/` usati dal server importano con percorsi relativi ed estensione `.ts`
   (Node li esegue direttamente): niente alias `@…` lì dentro e solo sintassi TypeScript "cancellabile"
   (`erasableSyntaxOnly`: niente `enum`, `namespace`, parameter properties).
@@ -50,7 +53,8 @@ src/lib/f1/             struct.ts (codec dichiarativo), schema.ts (2025/2026), c
 src/lib/telemetry/      state.ts (reducer), view.ts (vista per frame), track.ts (tracciato appreso +
                         allineamento della forma reale del circuito)
 src/lib/sim/            simulatore isomorfo, gara o qualifica (demo ?demo nel browser e mock UDP)
-src/components/blocks/  blocchi del cruscotto (Header, PlayerCard, Timing, Forecast, Engine, Pedals, Car, TeamLogo)
+src/components/blocks/  blocchi del cruscotto (Header, PlayerCard, Timing, Forecast, Engine, Feed, Pedals, Strategy, Car,
+                        CarShape, TeamLogo); in gara (`data-race` sul cruscotto) Strategy sostituisce Pedals
                         + Map e Block (cornice) per la simulazione completa
 src/components/widgets/ i 24 blocchi completi (catalogo in src/data/widgets.ts), visibili solo in simulazione
 src/scripts/monitor/    index (attesa/cruscotto, diagnosi), runtime (rAF + ripiego a timer), sources, bind, formatters
@@ -73,7 +77,10 @@ il formato da ogni pacchetto. Formati diversi (2024 e precedenti) vengono scarta
 spiega come correggere l'impostazione nel gioco. Il decoder accetta pacchetti più lunghi del previsto.
 
 La **simulazione sviluppatore** (simulatore nel browser) si apre dal link nel footer della home o con
-`/monitor/?demo` (qualifica), `?demo=race`, `&format=2026`; non resta salvata nell'URL. Sotto i blocchi base
+`/monitor/?demo` (qualifica), `?demo=race`, `&format=2026`; non resta salvata nell'URL. Nella barra in basso, a
+destra, il selettore della schermata (vista attuale + doppie frecce, menu verso l'alto) riavvia la simulazione con
+l'altra sessione. In qualifica la simulazione parte già avanti, con un giro lanciato valido: il delta si vede subito. C'è sempre
+almeno un ritiro subito (in gara l'auto colpita nel contatto al via, in qualifica un guasto). Sotto i blocchi base
 mostra **tutti i blocchi completi** con ogni dato disponibile, in una griglia scorrevole 12 × 24 (24 colonne a
 16:9) dove ogni blocco prende la misura dal catalogo. I blocchi di una sola versione usano `data-game-only`,
 nascosti in base a `html[data-game]` impostato dal formato rilevato.

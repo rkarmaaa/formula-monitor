@@ -11,7 +11,7 @@ import { t } from '@i18n/index';
 
 const h = t.home;
 const tut = h.tutorial;
-const [run, game, open] = tut.steps;
+const [game, open] = tut.steps;
 ---
 
 <SiteLayout title={h.title} description={h.description}>
@@ -47,16 +47,6 @@ const [run, game, open] = tut.steps;
           01
         </span>
         <div class="home-tutorial-body">
-          <h3 class="home-tutorial-step-title">{run!.title}</h3>
-          <p class="home-tutorial-text">{run!.text}</p>
-          <CommandList lines={['npm install', 'npm run build', 'npm start']} />
-        </div>
-      </li>
-      <li class="home-tutorial-step" data-reveal>
-        <span class="home-tutorial-num" aria-hidden="true">
-          02
-        </span>
-        <div class="home-tutorial-body">
           <h3 class="home-tutorial-step-title">{game!.title}</h3>
           <p class="home-tutorial-text">{game!.text}</p>
           <UdpSettings />
@@ -64,7 +54,7 @@ const [run, game, open] = tut.steps;
       </li>
       <li class="home-tutorial-step" data-reveal>
         <span class="home-tutorial-num" aria-hidden="true">
-          03
+          02
         </span>
         <div class="home-tutorial-body">
           <h3 class="home-tutorial-step-title">{open!.title}</h3>

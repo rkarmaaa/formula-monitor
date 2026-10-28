@@ -27,13 +27,9 @@ export default {
     },
     tutorial: {
       eyebrow: 'Tutorial',
-      heading: 'Tre passi, *cinque minuti.*',
+      heading: 'Due passi, *due minuti.*',
       lead: 'Il gioco invia la telemetria a un computer della tua rete; Formula Monitor la riceve e la mostra in un browser.',
       steps: [
-        {
-          title: 'Avvia Formula Monitor sul PC',
-          text: 'Serve Node.js 22.18 o superiore. Dalla cartella del progetto, una volta sola:',
-        },
         {
           title: 'Configura il gioco',
           text: 'Opzioni di gioco → Impostazioni → Impostazioni telemetria UDP, in fondo alla lista.',
@@ -114,6 +110,7 @@ export default {
       label: 'Comandi del monitor',
       fullscreen: 'Schermo intero',
       exit: 'Esci dal monitor',
+      modes: { label: 'Schermata della simulazione', qualifying: 'Qualifica', race: 'Gara' },
     },
     all: { title: 'Simulazione · tutti i blocchi' },
     blocks: {
@@ -133,8 +130,10 @@ export default {
         pit: 'Box',
         out: 'Out',
         laps: 'G',
+        leader: 'Leader',
       },
       forecast: { title: 'Meteo previsto' },
+      feed: { title: 'Live feed', empty: 'Nessun messaggio per ora' },
       engine: {
         title: 'Power unit',
         parts: {
@@ -148,13 +147,33 @@ export default {
           engine: 'Motore',
         },
       },
-      pedals: { title: 'Acceleratore e freno', throttle: 'Acceleratore', brake: 'Freno' },
+      pedals: {
+        title: 'Acceleratore e freno',
+        throttle: 'Acceleratore',
+        brake: 'Freno',
+        toggle: 'Mostra o nascondi {name}',
+        zoomIn: 'Meno secondi',
+        zoomOut: 'Più secondi',
+        range: '{s} s',
+      },
+      strategy: {
+        title: 'Strategia di gara',
+        window: 'Finestra pit',
+        in: 'Tra {n} giri',
+        inOne: 'Tra 1 giro',
+        open: 'Aperta',
+        closed: 'Chiusa',
+        age: '{n} giri',
+        rejoin: 'Rientrando adesso',
+        fuel: 'Carburante',
+        fuelLaps: '{laps} giri',
+      },
       car: {
         title: 'Gomme e ali',
         wear: 'Usura',
         wheels: ['Posteriore sinistra', 'Posteriore destra', 'Anteriore sinistra', 'Anteriore destra'],
-        frontWing: 'Ala anteriore',
-        rearWing: 'Alettone',
+        frontWing: 'Danno ala anteriore',
+        rearWing: 'Danno alettone',
       },
       map: { title: 'Circuito', unknown: 'Tracciato in apprendimento: si completa mentre le auto girano.' },
     },

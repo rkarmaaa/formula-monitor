@@ -1,25 +1,52 @@
 @use '../abstracts' as *;
 
-// Scheda del giocatore: logo e posizione a sinistra; a destra settori, delta, ultimo e migliore giro
+// Scheda del giocatore, senza cornice: posizione sfumata e mescola a sinistra; a destra settori, delta,
+// ultimo e migliore giro
 .player-card {
-  @include card;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: dp($q-gap);
-  padding: dp($q-card-pad);
+  padding: dp($q-player-pad-t) 0 dp($q-player-pad-b);
   min-width: 0;
 
   .player-card-place {
-    display: flex;
-    align-items: center;
-    gap: dp($q-gap);
+    @include stack(dp($q-pos-gap));
   }
 
+  // Cifre con la sfumatura del Figma: il colore è il fondo ritagliato sul testo
   .player-card-position {
-    @include figures;
+    @include figures($fw-semibold);
     font-size: dp($q-fs-pos);
-    color: $color-ink;
+    background: $position-fill;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .player-card-compound {
+    @include compound-tones;
+    display: flex;
+    align-items: center;
+    gap: dp($q-head-gap);
+    padding-inline: dp($q-compound-pad-x);
+    font-family: $font-body;
+    font-size: dp($q-fs-compound);
+    font-weight: $fw-semibold;
+    line-height: $lh-none;
+    text-transform: uppercase;
+    color: $color-ink-soft;
+  }
+
+  .player-card-chip {
+    @include flex-center;
+    width: dp($q-chip-lg);
+    height: dp($q-chip-lg);
+    border-radius: $radius-round;
+    background: color-mix(in srgb, currentColor $tyre-chip-alpha, transparent);
+
+    &:empty {
+      visibility: hidden;
+    }
   }
 
   .player-card-times {

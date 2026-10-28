@@ -1,7 +1,9 @@
 @use '../abstracts' as *;
 
 // Classifica dei giri veloci: righe divise da un filo, cifre in Saira condensata.
-// Viola = migliore assoluto, verde = migliore personale; il giocatore ha la riga evidenziata.
+// Viola = migliore assoluto, verde = migliore personale, gli altri settori sempre grigi (anche quelli del giro
+// in corso); il giocatore ha la riga evidenziata.
+// Prima del giro migliore il distacco dal primo (in qualifica sul giro migliore, in gara dal leader).
 .timing-tower {
   display: flex;
   flex-direction: column;
@@ -12,7 +14,9 @@
   .timing-tower-head,
   .timing-tower-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) dp($q-col-best) repeat(3, dp($q-col-sector));
+    grid-template-columns:
+      minmax(0, 1fr) dp($q-col-interval) dp($q-col-best)
+      repeat(3, dp($q-col-sector));
     align-items: center;
     column-gap: dp($q-col-gap);
   }
@@ -142,10 +146,6 @@
     @include figures($fw-light, $stretch-narrow);
     color: $color-ink-faint;
 
-    &[data-live] {
-      color: $color-ink;
-    }
-
     &[data-tone='best'] {
       color: $color-best;
     }
@@ -162,5 +162,17 @@
 
   .timing-tower-row .timing-tower-best {
     color: $color-ink;
+  }
+
+  .timing-tower-row .timing-tower-interval {
+    @include figures($fw-light, $stretch-narrow);
+    margin-right: dp($q-col-gap);
+    text-align: right;
+    white-space: nowrap;
+    color: $color-ink-faint;
+
+    &[data-leader] {
+      text-transform: uppercase;
+    }
   }
 }

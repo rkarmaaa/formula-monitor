@@ -1,49 +1,42 @@
 ---
+import CarShape from './CarShape.astro';
 import { t } from '@i18n/index';
 
-// Condizioni della vettura: mescola montata, usura delle quattro gomme (anelli) con la temperatura
-// di superficie nella sagoma, integrità di ala anteriore e alettone.
-// Indici delle gomme come nelle specifiche UDP: 0 post. sx, 1 post. dx, 2 ant. sx, 3 ant. dx.
+// Gomme e ali (Figma nodo 1284:947): sagoma della vettura al centro con le gomme colorate dall'usura, un anello
+// aperto accanto a ogni gomma e il danno di ala anteriore (sopra) e alettone (sotto), anch'essi ad anello.
+// Gli anelli sono aperti verso la vettura; il colore passa gradualmente da verde a giallo, arancio e rosso
+// (mixin wear-color). Indici delle gomme come nelle specifiche UDP: 0 post. sx, 1 post. dx, 2 ant. sx, 3 ant. dx.
 const b = t.monitor.blocks.car;
 const wheels = [
-  { i: 2, side: 'left' },
-  { i: 3, side: 'right' },
-  { i: 0, side: 'left' },
-  { i: 1, side: 'right' },
+  { i: 2, place: 'front left' },
+  { i: 3, place: 'front right' },
+  { i: 0, place: 'rear left' },
+  { i: 1, place: 'rear right' },
+];
+const wings = [
+  { place: 'front', label: b.frontWing },
+  { place: 'rear', label: b.rearWing },
 ];
 ---
 
 <section class="car-state" data-block="car" aria-label={b.title}>
-  <p class="car-state-compound" data-attr="data-compound:player.status.visualTyreCompound|compoundClass">
-    <span class="car-state-chip" data-text="player.status.visualTyreCompound|compoundLetter"></span>
-    <span class="car-state-name" data-text="player.status.visualTyreCompound|compoundName"></span>
-  </p>
-  <ul class="car-state-tyres">
-    {wheels.map(({ i, side }) => (
-      <li class:list={['car-state-wheel', side]} aria-label={b.wheels[i]}>
-        <span
-          class="car-state-ring"
+  {wings.map(({ place, label }) => (
+    <p class:list={['car-state-ring', 'wing', place]} title={label} data-var={`--v:wings.${place}|ratio:100`}>
+      <span data-text={`wings.${place}|fixed:0`} />
+    </p>
+  ))}
+  <div class="car-state-car">
+    <CarShape />
+    <ul class="car-state-rings">
+      {wheels.map(({ i, place }) => (
+        <li
+          class:list={['car-state-ring', 'wheel', place]}
+          title={`${b.wheels[i]} · ${b.wear}`}
           data-var={`--v:player.damage.tyresWear.${i}|ratio:100`}
-          data-attr={`data-tone:player.damage.tyresWear.${i}|wearTone`}
-          title={b.wear}
         >
-          <span class="car-state-wear">
-            <span data-text={`player.damage.tyresWear.${i}|fixed:0`}></span>
-            <small>%</small>
-          </span>
-        </span>
-        <span class="car-state-tyre" data-text={`player.telemetry.tyresSurfaceTemperature.${i}|temp`}></span>
-      </li>
-    ))}
-  </ul>
-  <dl class="car-state-wings">
-    <div class="car-state-wing">
-      <dt>{b.frontWing}</dt>
-      <dd data-text="player.damage|frontWing"></dd>
-    </div>
-    <div class="car-state-wing">
-      <dt>{b.rearWing}</dt>
-      <dd data-text="player.damage.rearWingDamage|health"></dd>
-    </div>
-  </dl>
+          <span data-text={`player.damage.tyresWear.${i}|fixed:0`} />
+        </li>
+      ))}
+    </ul>
+  </div>
 </section>

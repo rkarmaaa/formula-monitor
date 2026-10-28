@@ -3,13 +3,14 @@ import { t } from '@i18n/index';
 import type { BridgeState, BridgeStatus } from '../bridge';
 import { createBinder, type Binder } from './bind';
 import { createRuntime } from './runtime';
-import { startBridge, startDemo } from './sources';
+import { startBridge, startDemo, type DemoSource } from './sources';
 import { createMap } from '../blocks/map';
 import { createInputs } from '../blocks/inputs';
 import { createPositions } from '../blocks/positions';
 import { createGforce } from '../blocks/gforce';
 import { gameByFormat } from '@data/games';
 import type { RaceView } from '@lib/telemetry/view';
+import type { SimSession } from '@lib/sim/simulator';
 
 // Monitor: schermata di attesa finché il gioco non invia una sessione, poi i blocchi.
 // La versione del gioco (formato 2025/2026) si riconosce dai pacchetti: nessuna scelta da fare.
@@ -22,6 +23,8 @@ const status = $('[data-status]');
 const statusLabel = $('[data-status-label]');
 const waitDetail = $('[data-wait-detail]');
 const domain = $('[data-domain]');
+const board = $('[data-board]');
+const modes = $('[data-modes]');
 
 const BOARD_TIMEOUT = 15_000; // senza pacchetti per 15 s si torna all'attesa (menu del gioco)
 const LIVE_TIMEOUT = 2500;
@@ -59,6 +62,8 @@ if (demo) {
 const binders: Binder[] = roots.map((el) => createBinder(el));
 
 runtime.subscribe((view) => {
+  // In gara il cruscotto cambia: distacchi in classifica, strategia al posto dei pedali
+  board.toggleAttribute('data-race', view.race.isRace);
   if (monitor.dataset.view !== 'board') return;
   for (const binder of binders) binder.update(view, view);
   for (const renderer of renderers) renderer.update(view);
@@ -126,7 +131,46 @@ renderDomain();
 if (demo) {
   const format = params.get('format') === '2026' ? 2026 : 2025;
   applyFormat(format);
-  startDemo(runtime, format, params.get('demo') === 'race' ? 'race' : 'qualifying');
+  // Selettore della schermata nella barra: menu con le viste, la scelta riparte la simulazione con quella sessione
+  const toggle = modes.querySelector<HTMLButtonElement>('[data-mode-toggle]')!;
+  const menu = modes.querySelector<HTMLElement>('.monitor-bar-menu')!;
+  const label = modes.querySelector<HTMLElement>('[data-mode-label]')!;
+  const open = (next: boolean) => {
+    menu.hidden = !next;
+    toggle.setAttribute('aria-expanded', String(next));
+  };
+  let source: DemoSource | undefined;
+  const play = (session: SimSession) => {
+    source?.stop();
+    runtime.reset();
+    source = startDemo(runtime, format, session);
+    for (const button of modes.querySelectorAll<HTMLElement>('[data-mode]')) {
+      const active = button.dataset.mode === session;
+      button.setAttribute('aria-pressed', String(active));
+      if (active) label.textContent = button.textContent?.trim() ?? '';
+    }
+  };
+  modes.hidden = false;
+  modes.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-mode-toggle]')) return open(Boolean(menu.hidden));
+    const mode = target.closest<HTMLElement>('[data-mode]')?.dataset.mode;
+    if (mode === 'race' || mode === 'qualifying') {
+      open(false);
+      play(mode);
+      toggle.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (!modes.contains(event.target as Node)) open(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !menu.hidden) {
+      open(false);
+      toggle.focus();
+    }
+  });
+  play(params.get('demo') === 'race' ? 'race' : 'qualifying');
 } else {
   startBridge(runtime, {
     onState(state) {

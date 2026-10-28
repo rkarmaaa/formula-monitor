@@ -1,14 +1,24 @@
 @use '../abstracts' as *;
 
-// Intestazione del monitor: circuito e sessione a sinistra, cronometro grande a destra (in gara il giro)
+// Intestazione del monitor: logo, circuito e sessione a sinistra, cronometro grande a destra (in gara il giro);
+// sotto, un filo a tutta larghezza
 .quali-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: dp($q-gap);
   min-width: 0;
+  padding-bottom: dp($q-head-pad-b);
+  border-bottom: $border-thin solid $color-line;
 
   .quali-header-place {
+    display: flex;
+    align-items: flex-start;
+    gap: dp($q-head-logo-gap);
+    min-width: 0;
+  }
+
+  .quali-header-names {
     @include stack(dp($q-head-gap));
     min-width: 0;
     font-family: $font-display;
@@ -17,6 +27,7 @@
 
   .quali-header-track {
     @include ellipsis;
+    @include cap-trim;
     font-size: dp($q-fs-track);
     color: $color-ink;
   }
@@ -51,13 +62,8 @@
     color: $color-ink;
   }
 
-  .quali-header-label {
-    font-size: dp($q-fs-session);
-    text-transform: uppercase;
-    color: $color-ink-faint;
-  }
-
   .quali-header-total {
+    font-weight: $fw-regular;
     color: $color-ink-faint;
   }
 

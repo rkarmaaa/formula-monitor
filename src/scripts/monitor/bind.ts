@@ -6,6 +6,7 @@ import { formatters, type Formatter } from './formatters';
 //   data-var="--v:player.telemetry.throttle"        → custom property (più voci separate da ;)
 //   data-attr="data-tone:ersPct|tone:ers"           → attributo (null/false lo rimuove)
 //   data-list="cars" + <template> [data-key] [data-limit] [data-flip] → righe ripetute
+//   data-every="334"                                 → al massimo un aggiornamento ogni 334 ms (valori nervosi)
 // Percorsi relativi all'elemento della lista corrente; "@" parte dalla vista intera.
 type Getter = (item: unknown, view: RaceView) => unknown;
 
@@ -21,6 +22,15 @@ interface Binding {
   name: string;
   expr: Expr;
   last: unknown;
+  clock?: Clock;
+}
+
+// Ritmo di un elemento con data-every: tutte le sue voci si aggiornano insieme, al massimo una volta per intervallo
+interface Clock {
+  every: number;
+  at: number;
+  frame: number;
+  open: boolean;
 }
 
 interface Row {
@@ -147,13 +157,15 @@ export function createBinder(root: HTMLElement): Binder {
 
   for (const el of elements) {
     const { text, var: vars, attr, list } = el.dataset;
-    if (text !== undefined) bindings.push({ el, kind: 'text', name: '', expr: compileExpr(text), last: Symbol() });
+    const every = Number(el.dataset.every ?? 0);
+    const timing = { last: Symbol(), clock: every ? { every, at: -Infinity, frame: -1, open: true } : undefined };
+    if (text !== undefined) bindings.push({ el, kind: 'text', name: '', expr: compileExpr(text), ...timing });
     if (vars)
       for (const [name, expr] of pairs(vars))
-        bindings.push({ el, kind: 'var', name, expr: compileExpr(expr), last: Symbol() });
+        bindings.push({ el, kind: 'var', name, expr: compileExpr(expr), ...timing });
     if (attr)
       for (const [name, expr] of pairs(attr))
-        bindings.push({ el, kind: 'attr', name, expr: compileExpr(expr), last: Symbol() });
+        bindings.push({ el, kind: 'attr', name, expr: compileExpr(expr), ...timing });
     const template = el.querySelector<HTMLTemplateElement>(':scope > template');
     if (list !== undefined && template) {
       lists.push({
@@ -170,7 +182,17 @@ export function createBinder(root: HTMLElement): Binder {
 
   return {
     update(item, view) {
+      const now = performance.now();
       for (const binding of bindings) {
+        const { clock } = binding;
+        if (clock) {
+          if (clock.frame !== now) {
+            clock.frame = now;
+            clock.open = now - clock.at >= clock.every;
+            if (clock.open) clock.at = now;
+          }
+          if (!clock.open) continue;
+        }
         const value = evaluate(binding.expr, item, view);
         if (value === binding.last) continue;
         binding.last = value;

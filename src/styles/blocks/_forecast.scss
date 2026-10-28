@@ -1,13 +1,13 @@
 @use '../abstracts' as *;
 
-// Meteo previsto: cinque caselle divise da un filo, quella con pioggia evidenziata
+// Meteo previsto: quattro caselle divise da un filo, quella con pioggia evidenziata
 .forecast {
   @include card($color-surface-raised);
   min-width: 0;
 
   .forecast-list {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: $border-thin;
     height: 100%;
   }
@@ -16,7 +16,7 @@
     @include stack(dp($q-weather-gap));
     align-items: center;
     justify-content: center;
-    padding: dp($q-weather-pad-y) dp($q-card-pad-x);
+    padding: dp($q-weather-pad);
     background: $color-surface;
     font-family: $font-body;
     font-size: dp($q-fs-weather);

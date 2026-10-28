@@ -211,6 +211,53 @@
   text-box: trim-both cap alphabetic;
 }
 
+// Colore d'usura graduale in --wear, da --v (0..1 = 0..100%): verde, giallo, arancio, rosso pieni alle soglie
+// di $wear-stops, sfumati in mezzo. Lo usano gomme, anelli e ali del blocco "Gomme e ali".
+@mixin wear-color {
+  $yellow: list.nth($wear-stops, 1);
+  $orange: list.nth($wear-stops, 2);
+  $red: list.nth($wear-stops, 3);
+  --wear-pct: calc(var(--v, 0) * 100);
+  --wear-1: color-mix(
+    in oklab,
+    #{$wear-yellow} clamp(0%, calc(var(--wear-pct) / #{$yellow} * 100%), 100%),
+    #{$wear-green}
+  );
+  --wear-2: color-mix(
+    in oklab,
+    #{$wear-orange} clamp(0%, calc((var(--wear-pct) - #{$yellow}) / #{$orange - $yellow} * 100%), 100%),
+    var(--wear-1)
+  );
+  --wear: color-mix(
+    in oklab,
+    #{$wear-red} clamp(0%, calc((var(--wear-pct) - #{$orange}) / #{$red - $orange} * 100%), 100%),
+    var(--wear-2)
+  );
+}
+
+// Colore della mescola sull'elemento con data-compound (chip e nomi: testo pieno, fondo al 20%)
+@mixin compound-tones {
+  &[data-compound='soft'] {
+    color: $tyre-soft;
+  }
+
+  &[data-compound='medium'] {
+    color: $tyre-medium;
+  }
+
+  &[data-compound='hard'] {
+    color: $tyre-hard;
+  }
+
+  &[data-compound='inter'] {
+    color: $tyre-inter;
+  }
+
+  &[data-compound='wet'] {
+    color: $tyre-wet;
+  }
+}
+
 // Barra squadrata riempita da --v (0..1) impostata dal binder
 @mixin meter($color: $color-ink-strong, $height: $bar-thin) {
   position: relative;

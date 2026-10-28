@@ -9,6 +9,14 @@ Tutto ciò che la telemetria UDP di F1 25 rende disponibile durante una sessione
 **Blocco** indica il blocco completo che mostra il dato: oggi sono tutti visibili nella **simulazione
 sviluppatore** (`/monitor/?demo`) e sono i candidati da portare nel monitor reale, uno alla volta.
 
+**Cruscotto base** (Figma QUALI & TESTING e RACE): intestazione (logo vettura, circuito, sessione, tempo o giri),
+scheda giocatore (posizione, mescola, settori, delta a 3 aggiornamenti/s, ultimo e migliore), classifica (distacco
+dal primo: sul giro migliore in qualifica, sul traguardo in gara), meteo (4 previsioni), power unit, live feed
+(messaggi di gara), gomme e ali (usura delle 4 gomme e danno delle ali con colore
+graduale) e, in qualifica, pedali; in gara al loro posto la **strategia**: finestra pit (tra quanti giri / aperta /
+chiusa, sulla barra della gara), gomma montata con i giri fatti, posizione al rientro se ti fermi adesso, margine di
+carburante a fine gara.
+
 ## Gara e classifica
 
 | Dato                                                               | Fonte                      | Blocco                |

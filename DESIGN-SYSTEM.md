@@ -3,7 +3,8 @@
 Documento di riferimento per i prossimi aggiornamenti. Tutti i valori vivono in
 `src/styles/abstracts/_variables.scss`, i mixin in `_mixins.scss`; qui si spiega **quando** usarli.
 
-**Fonte del design**: Figma, file "Roba", frame **QUALI & TESTING** (nodo `1283:9`, 1080 × 1920).
+**Fonte del design**: Figma, file "Roba", frame **QUALI & TESTING** (nodo `1283:9`, 1080 × 1920) e **RACE**
+(nodo `1283:76`, stessi blocchi: distacchi in classifica, giri in alto, strategia al posto dei pedali).
 Ogni modifica visiva al monitor parte da lì: i token `$q-*` sono le misure del frame in pixel di design.
 
 ## 1. Filosofia
@@ -14,7 +15,7 @@ Un monitor da muretto box: carbone, schede a filo, dati grandi e leggibili. Ogni
 1. **Il colore è dato.** L'interfaccia è in scala di grigi; i colori informano: viola (migliore assoluto),
    verde (migliore personale / guadagno), rosso (più lento / perdita), arancio (usura), mescole, team.
 2. **Schede a spigoli vivi.** Fondo `$color-surface`, filo `$color-line`, niente ombre. I raggi esistono solo
-   nei **grafici dati**: chip delle mescole e anelli d'usura (cerchi), sagome delle gomme (`$q-tyre-radius`).
+   nei **grafici dati**: chip delle mescole e anelli d'usura (cerchi), sagoma della vettura (`CarShape`).
 3. **Gerarchia con i grigi.** Valori `$color-ink` (#D9D9D9), etichette `$color-ink-faint` (#767676),
    sottotitoli `$color-ink-soft` (#8D8D8D). Evidenze di riga e caselle attive con `$color-surface-raised`.
 4. **Bottoni chiari su fondo scuro** (`.button`), secondari a filo (`.button.outline`).
@@ -63,7 +64,9 @@ I token `$q-*` sono numeri senza unità (pixel del Figma): `font-size: dp($q-fs-
 
 ### Altro
 
-Spazi `$sp-*` per le pagine · `$touch-min` 48 px · soglie d'usura `$wear-ok/$wear-high` (gomme, anche in
+Spazi `$sp-*` per le pagine · `$touch-min` 48 px · usura di gomme e ali con colore **graduale**
+(`@include wear-color` → `--wear` da `--v`: `$wear-green/yellow/orange/red` pieni alle soglie `$wear-stops`) ·
+`@include compound-tones` per i colori delle mescole (testo pieno, fondo al 20%) · soglie della power unit (anche in
 `formatters.ts`) e `PU_OK/PU_HIGH` (power unit) · `respond(phone | tab-port | tab-land | big-desktop)` e
 `respond(landscape)` (deroga: proporzioni dello schermo).
 
@@ -72,29 +75,31 @@ Spazi `$sp-*` per le pagine · `$touch-min` 48 px · soglie d'usura `$wear-ok/$w
 **Classi root esistenti** (una variante non può avere uno di questi nomi):
 `button` `icon` `skip-link` `command-list` `udp-settings` `hero-car` `block` `team-logo` `monitor-bar`
 `monitor-wait` `monitor` `site-footer` `home-hero` `home-tutorial` `not-found` `tyre-chip` `battle-car`, i blocchi
-del monitor `quali-header` `player-card` `timing-tower` `forecast` `power-unit` `pedals` `car-state` `track-map`
+del monitor `quali-header` `player-card` `timing-tower` `forecast` `power-unit` `pedals` `car-state` `race-strategy` `live-feed` `track-map`
 e i blocchi della simulazione completa `w-*` (vedi `src/styles/widgets/`).
 
-| Componente (`src/components/`)         | Anatomia                                                               | Dati / stati                               |
-| -------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------ |
-| `blocks/Header`                        | `quali-header` › circuito, sessione, cronometro (in gara: giro)        | `data-race`                                |
-| `blocks/PlayerCard`                    | `player-card` › logo, posizione · barre S1-S3, delta, ultimo, migliore | barre `data-tone` best/personal/slower     |
-| `blocks/Timing`                        | `timing-tower` › pos, logo, sigla, chip mescola · migliore, S1, S2, S3 | `data-tone`, `data-live`, `data-player`    |
-| `blocks/Forecast`                      | `forecast` › 5 caselle: minuti, icona, temperatura                     | `data-weather` 0-5, `data-wet` evidenziata |
-| `blocks/Engine`                        | `power-unit` › 4 × 2: nome, %, barra (ICE…TC, cambio, motore)          | `data-tone` ok/high/over, `--v`            |
-| `blocks/Pedals`                        | `pedals` › legenda, canvas acceleratore/freno (niente sterzo)          | `--trace-*`                                |
-| `blocks/Car`                           | `car-state` › mescola · 4 gomme (anello usura + sagoma con °C) · ali   | anelli `data-tone`, `--v`                  |
-| `blocks/TeamLogo`                      | `team-logo` › immagine o quadrato colore team                          | `sm` `lg`                                  |
-| `blocks/Map`, `blocks/Block`           | mappa e cornice dei blocchi della simulazione completa                 | `data-block`                               |
-| `monitor/MonitorBar`                   | `monitor-bar` › dominio, stato, sessione, schermo intero, esci         | `data-state`                               |
-| `ui/Button`, `home/HeroCar`, `setup/*` | pagine informative                                                     |                                            |
+| Componente (`src/components/`)         | Anatomia                                                                                                                         | Dati / stati                                           |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `blocks/Header`                        | `quali-header` › logo vettura, circuito, sessione · cronometro / giri                                                            | `data-race`                                            |
+| `blocks/PlayerCard`                    | `player-card` (senza cornice) › posizione sfumata, mescola · S1-S3, delta (max 3/s), ultimo, migliore                            | barre `data-tone`, `data-every`                        |
+| `blocks/Timing`                        | `timing-tower` › pos, logo, sigla, chip mescola · distacco dal primo, migliore, S1, S2, S3                                       | `data-tone`, `data-live`, `data-player`, `data-leader` |
+| `blocks/Forecast`                      | `forecast` › 4 caselle: minuti, icona, temperatura                                                                               | `data-weather` 0-5, `data-wet` evidenziata             |
+| `blocks/Engine`                        | `power-unit` › 2 × 4: nome, %, barra sottile (ICE…TC, cambio, motore)                                                            | `data-tone` ok/high/over, `--v`                        |
+| `blocks/Feed`                          | `live-feed` › titolo, messaggi di gara (giro + testo, sigle in evidenza), sfumatura in fondo                                     | `data-name`                                            |
+| `blocks/Pedals`                        | `pedals` › legenda cliccabile, zoom 4–32 s (scelte salvate per qualifica e gara), canvas acceleratore/freno                      | `aria-pressed`, `--trace-*`                            |
+| `blocks/Strategy`                      | `race-strategy` (solo gara) › finestra pit, gomma, barra gara · rientro, carburante                                              | `data-compound`, `--from/--to/--now`                   |
+| `blocks/Car` + `CarShape`              | `car-state` › anello ala ant. · sagoma centrata con gomme colorate e 4 anelli · anello alettone (anelli aperti verso la vettura) | `--v` → `--wear` graduale                              |
+| `blocks/TeamLogo`                      | `team-logo` › logo 1:1 o quadrato colore team                                                                                    | `sm` (classifica) `lg` (intestazione)                  |
+| `blocks/Map`, `blocks/Block`           | mappa e cornice dei blocchi della simulazione completa                                                                           | `data-block`                                           |
+| `monitor/MonitorBar`                   | `monitor-bar` › dominio, stato, sessione, selettore della schermata (solo demo: vista + menu), schermo intero, esci              | `data-state`, `aria-expanded`, `aria-pressed`          |
+| `ui/Button`, `home/HeroCar`, `setup/*` | pagine informative                                                                                                               |                                                        |
 
 ## 4. Monitor
 
 - **Attesa** (`data-view="wait"`) finché non arriva il pacchetto Session; torna all'attesa dopo 15 s senza dati.
-- **Cruscotto**: aree in `layout/_monitor.scss`. 9:16 = intestazione, scheda giocatore, classifica, poi
-  meteo / power unit / pedali a sinistra e gomme a destra (come il Figma). 16:9 = classifica a tutta altezza a
-  sinistra, a destra le stesse schede del 9:16.
+- **Cruscotto**: aree in `layout/_monitor.scss`. 9:16 = intestazione, scheda giocatore, classifica, poi in basso
+  meteo e power unit (325) accanto al live feed (296), sotto i pedali (in gara la strategia), a destra gomme e ali
+  (Figma 1291:192). 16:9 = classifica a tutta altezza a sinistra, a destra le stesse schede del 9:16.
 - **Simulazione** (`?demo`): sotto il cruscotto, tutti i blocchi completi e la mappa.
 
 ### Aggiungere un blocco al cruscotto
@@ -107,7 +112,8 @@ e i blocchi della simulazione completa `w-*` (vedi `src/styles/widgets/`).
 ### Attributi del binder
 
 `data-text="percorso|formatter:arg"` · `data-var="--v:percorso|formatter"` · `data-attr="data-x:percorso|formatter"`
-· `data-list="percorso"` con `<template>` e opzionali `data-key`, `data-limit`, `data-flip`.
+· `data-list="percorso"` con `<template>` e opzionali `data-key`, `data-limit`, `data-flip` · `data-every="ms"`
+(al massimo un aggiornamento dell'elemento per intervallo: il delta usa 334 ms, cioè 3 al secondo).
 Formatter in `src/scripts/monitor/formatters.ts`.
 
 ### Microsettori

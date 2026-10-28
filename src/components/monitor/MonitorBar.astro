@@ -3,8 +3,14 @@ import { href } from '@lib/paths';
 import Icon from '@components/ui/Icon.astro';
 import { t } from '@i18n/index';
 
-// Barra in basso: indirizzo del sito, stato della sorgente, sessione, schermo intero ed uscita
+// Barra in basso: indirizzo del sito, stato della sorgente, sessione, schermo intero ed uscita.
+// In simulazione (?demo) a destra compare anche il selettore della schermata: la vista attuale con le doppie
+// frecce, al clic un menu con le viste disponibili.
 const bar = t.monitor.bar;
+const modes = [
+  { id: 'qualifying', label: bar.modes.qualifying },
+  { id: 'race', label: bar.modes.race },
+];
 ---
 
 <nav class="monitor-bar" aria-label={bar.label}>
@@ -19,6 +25,30 @@ const bar = t.monitor.bar;
     <span data-text="session.trackId|track"></span>
     <span data-text="session.sessionType|session"></span>
   </p>
+  <div class="monitor-bar-modes" data-modes hidden>
+    <button
+      class="monitor-bar-mode"
+      type="button"
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-controls="monitor-modes"
+      aria-label={bar.modes.label}
+      data-mode-toggle
+    >
+      <span data-mode-label>{modes[0]!.label}</span>
+      <Icon name="lucide:chevrons-up-down" />
+    </button>
+    <ul class="monitor-bar-menu" id="monitor-modes" aria-label={bar.modes.label} hidden>
+      {modes.map(({ id, label }) => (
+        <li>
+          <button class="monitor-bar-option" type="button" aria-pressed="false" data-mode={id}>
+            {label}
+            <Icon name="lucide:check" />
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
   <div class="monitor-bar-actions">
     <button class="monitor-bar-button" type="button" data-action="fullscreen" aria-label={bar.fullscreen}>
       <Icon name="lucide:maximize" />

@@ -1,0 +1,26 @@
+---
+import { t } from '@i18n/index';
+
+// Live feed (Figma nodo 1291:141): i messaggi di gara più recenti in alto, con il giro a sinistra e le sigle
+// dei piloti evidenziate; in fondo la lista sfuma nel fondo della scheda.
+const b = t.monitor.blocks.feed;
+---
+
+<section class="live-feed" data-block="feed" aria-labelledby="feed-title">
+  <p class="live-feed-title" id="feed-title">
+    {b.title}
+  </p>
+  <p class="live-feed-empty">{b.empty}</p>
+  <ol class="live-feed-list" data-list="events" data-key="id" data-limit="24" aria-live="polite">
+    <template>
+      <li class="live-feed-row">
+        <span class="live-feed-lap" data-text="lap|lapLabel"></span>
+        <span class="live-feed-text" data-list=".|eventParts">
+          <template>
+            <span data-text="text" data-attr="data-name:name|bool"></span>
+          </template>
+        </span>
+      </li>
+    </template>
+  </ol>
+</section>

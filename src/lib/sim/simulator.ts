@@ -43,6 +43,9 @@ const CHECKPOINT = 25;
 const VSC_DURATION = 48;
 const RESTART_DELAY = 15;
 const QUALI_DURATION = 18 * 60; // Q1 da 18 minuti
+// Ritiro da subito (secondi dal via): in gara qualche secondo dopo il contatto, in qualifica durante il giro di lancio
+const RACE_RETIRE_S = 14;
+const QUALI_RETIRE_S = 25;
 const QUALI_SPACING = 220; // metri tra un'auto e l'altra all'uscita dai box
 const POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
 const COMPOUNDS: Record<Compound, { actual: number; wear: number; pace: number; heat: number }> = {
@@ -170,6 +173,8 @@ export function createSimulator(options: SimOptions): Simulator {
   let lapPositions: number[][] = [];
   let leaderLap = 0;
   let collided = false;
+  let earlyRetired = false;
+  let crashed: SimCar | undefined;
   let overtakes = new Map<string, number>();
   let historyCursor = 0;
   let out: Packet[] = [];
@@ -285,6 +290,8 @@ export function createSimulator(options: SimOptions): Simulator {
     lapPositions = [];
     leaderLap = 0;
     collided = quali;
+    earlyRetired = false;
+    crashed = undefined;
     overtakes = new Map();
     if (quali) phase = 'race';
     Object.keys(next).forEach((key) => (next[key as keyof typeof next] = 0));
@@ -548,10 +555,10 @@ export function createSimulator(options: SimOptions): Simulator {
     if (drsEnabled) emitEvent({ code: 'DRSD', details: { reason: 1 } });
   }
 
-  function retire(car: SimCar) {
+  function retire(car: SimCar, reason = 8) {
     if (car.status !== 2) return;
     car.status = 7;
-    emitEvent({ code: 'RTMT', details: { vehicleIdx: car.index, reason: 8 } });
+    emitEvent({ code: 'RTMT', details: { vehicleIdx: car.index, reason } });
   }
 
   function finish(car: SimCar) {
@@ -695,7 +702,14 @@ export function createSimulator(options: SimOptions): Simulator {
           details: { vehicle1Idx: a.index, vehicle2Idx: b.index, severity: is2026 ? 1 : undefined },
         });
         b.wing = [12 + Math.round(random() * 10), 3];
+        crashed = b;
       }
+    }
+    // Un ritiro da subito: in gara l'auto colpita nel contatto (danni irreparabili), in qualifica un guasto
+    if (!earlyRetired && phase === 'race' && t - raceStart > (quali ? QUALI_RETIRE_S : RACE_RETIRE_S)) {
+      earlyRetired = true;
+      const victim = quali ? order.findLast((car) => car !== player && car.status === 2) : crashed;
+      if (victim && victim !== player) retire(victim, quali ? 8 : 3);
     }
   }
 

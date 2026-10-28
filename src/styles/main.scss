@@ -30,8 +30,10 @@
 @use 'blocks/timing-tower';
 @use 'blocks/forecast';
 @use 'blocks/power-unit';
+@use 'blocks/live-feed';
 @use 'blocks/pedals';
 @use 'blocks/car-state';
+@use 'blocks/race-strategy';
 @use 'blocks/track-map';
 
 // Blocchi della simulazione completa

@@ -1,0 +1,124 @@
+@use '../abstracts' as *;
+
+// Strategia di gara: a sinistra la finestra dei pit (stato, gomma montata, barra della gara con la finestra
+// nel colore della mescola e il giro attuale), a destra rientro e carburante
+.race-strategy {
+  @include card;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: dp($q-strategy-gap);
+  min-width: 0;
+  min-height: 0;
+  padding: dp($q-card-pad);
+
+  .race-strategy-window,
+  .race-strategy-fact {
+    @include stack(dp($q-lap-gap));
+    min-width: 0;
+  }
+
+  .race-strategy-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: dp($q-lap-gap);
+    min-width: 0;
+  }
+
+  .race-strategy-label {
+    @include cap-trim;
+    @include ellipsis;
+    font-family: $font-body;
+    font-size: dp($q-fs-strategy-label);
+    line-height: $lh-none;
+    text-transform: uppercase;
+    color: $color-ink-faint;
+  }
+
+  .race-strategy-value {
+    @include figures;
+    @include ellipsis;
+    font-size: dp($q-fs-strategy-value);
+    text-transform: uppercase;
+    color: $color-ink;
+  }
+
+  .race-strategy-tyre {
+    @include compound-tones;
+    display: flex;
+    align-items: center;
+    gap: dp($q-strategy-tyre-gap);
+    font-family: $font-body;
+    font-size: dp($q-fs-strategy-tyre);
+    font-weight: $fw-semibold;
+    line-height: $lh-none;
+    text-transform: uppercase;
+    color: $color-ink-soft;
+  }
+
+  .race-strategy-chip {
+    @include flex-center;
+    width: dp($q-chip);
+    height: dp($q-chip);
+    border-radius: $radius-round;
+    background: color-mix(in srgb, currentColor $tyre-chip-alpha, transparent);
+    font-size: dp($q-fs-chip);
+
+    &:empty {
+      visibility: hidden;
+    }
+  }
+
+  .race-strategy-age {
+    margin-left: dp($q-strategy-tyre-gap);
+    font-weight: $fw-regular;
+    color: $color-ink-faint;
+  }
+
+  // Barra della gara: finestra dei pit tra --from e --to nel colore della mescola, tacca sul giro attuale
+  .race-strategy-bar {
+    @include compound-tones;
+    position: relative;
+    height: dp($q-strategy-bar-h);
+    margin-top: auto;
+    background: linear-gradient(
+      to right,
+      $color-surface-raised 0 calc(var(--from, 0) * 100%),
+      currentColor 0 calc(var(--to, 0) * 100%),
+      $color-surface-raised 0
+    );
+    color: $color-ink-soft;
+  }
+
+  .race-strategy-now {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--now, 0) * 100%);
+    width: dp($q-strategy-mark-w);
+    height: dp($q-strategy-mark-h);
+    background: $color-ink-soft;
+    box-shadow: 0 0 0 dp($q-strategy-mark-border) $color-surface;
+    transform: translate(-50%, -50%);
+  }
+
+  .race-strategy-fuel {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: dp($q-gap);
+  }
+
+  .race-strategy-fuel-value {
+    @include figures;
+    font-size: dp($q-fs-strategy-label);
+    color: $color-ink;
+
+    &[data-tone='warn'] {
+      color: $color-warn;
+    }
+
+    &[data-tone='danger'] {
+      color: $color-danger;
+    }
+  }
+}

@@ -18,6 +18,8 @@ export interface Runtime {
   readonly view: RaceView;
   readonly stats: { fps: number; packetsPerSecond: number; lastPacketAt: number };
   readonly counts: Partial<Record<PacketKind, number>>;
+  // Miglior giro valido del giocatore registrato per il delta live (0 = ancora nessun riferimento)
+  readonly referenceMs: number;
 }
 
 export function createRuntime(): Runtime {
@@ -98,6 +100,9 @@ export function createRuntime(): Runtime {
     },
     get counts() {
       return state.counts;
+    },
+    get referenceMs() {
+      return state.trace.bestMs;
     },
     stats,
   };

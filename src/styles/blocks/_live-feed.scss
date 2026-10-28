@@ -1,0 +1,69 @@
+@use '../abstracts' as *;
+
+// Live feed: titolo e filo, poi i messaggi più recenti in alto (giro in colonna fissa, sigle evidenziate);
+// la lista è tagliata dal fondo della scheda e sfuma nel carbone
+.live-feed {
+  @include card;
+  @include stack(dp($q-feed-gap));
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  padding: dp($q-feed-pad-y) dp($q-feed-pad-x);
+  overflow: hidden;
+  font-family: $font-body;
+  font-size: dp($q-fs-head);
+  line-height: $lh-none;
+  color: $color-ink-faint;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: dp($q-feed-fade);
+    background: linear-gradient(to top, $color-surface, transparent);
+    pointer-events: none;
+  }
+
+  .live-feed-title {
+    @include cap-trim;
+    padding-bottom: dp($q-feed-gap);
+    border-bottom: $border-thin solid $color-line;
+    text-transform: uppercase;
+  }
+
+  .live-feed-empty {
+    @include cap-trim;
+    color: $color-ink-ghost;
+  }
+
+  &:has(.live-feed-row) .live-feed-empty {
+    display: none;
+  }
+
+  .live-feed-list {
+    @include stack(dp($q-feed-row-gap));
+    min-height: 0;
+  }
+
+  .live-feed-row {
+    display: flex;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+
+  .live-feed-lap {
+    @include cap-trim;
+    flex-shrink: 0;
+    width: dp($q-feed-lap-w);
+  }
+
+  // Niente ellipsis: con il rifilo alle maiuscole taglierebbe le discendenti; il bordo della scheda chiude la riga
+  .live-feed-text {
+    @include cap-trim;
+    min-width: 0;
+
+    [data-name] {
+      color: $color-ink;
+    }
+  }
+}

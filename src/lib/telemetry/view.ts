@@ -112,6 +112,8 @@ export interface RaceView {
     lightsSlots: boolean[];
   };
   liveDeltaMs?: number;
+  // Danno delle ali del giocatore (%): l'ala anteriore conta il lato più danneggiato
+  wings: { front?: number; rear?: number };
   playerBestMs: number;
   bestSectorsMs: number[];
   playerSectors: SectorView[];
@@ -446,6 +448,10 @@ export function buildView(state: RaceState): RaceView {
       lightsSlots: [1, 2, 3, 4, 5].map((n) => state.startLights >= n),
     },
     liveDeltaMs: liveDelta(state),
+    wings: {
+      front: player?.damage && Math.max(player.damage.frontLeftWingDamage, player.damage.frontRightWingDamage),
+      rear: player?.damage?.rearWingDamage,
+    },
     playerBestMs: state.trace.bestMs || player?.bestLapMs || 0,
     bestSectorsMs,
     playerSectors: playerSectors(player, bestSectorsMs),

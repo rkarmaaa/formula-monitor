@@ -58,6 +58,8 @@ $sector-best: linear-gradient(to right, #a315bc, #4b0a56);
 $sector-personal: linear-gradient(to right, #089d09, #033703);
 $sector-slower: linear-gradient(to right, #bc152e, #560a15);
 $sector-none: linear-gradient(to right, $gray-400, $gray-200);
+// Posizione del giocatore: cifre sfumate dall'alto (Figma)
+$position-fill: linear-gradient(to bottom, $gray-900, #585858);
 
 // Mescole: testo pieno, fondo del chip al 20%
 $tyre-soft: $color-critical;
@@ -350,17 +352,23 @@ $q-card-pad: 24;
 $q-card-pad-x: 20;
 $q-divider-gap: 20;
 
-// Intestazione: circuito, sessione, cronometro
+// Intestazione: logo della vettura, circuito, sessione, cronometro (in gara il conteggio dei giri);
+// sotto, un filo a tutta larghezza
+$q-logo-head: 33;
+$q-head-logo-gap: 10;
+$q-head-pad-b: 12;
 $q-fs-track: 20;
 $q-fs-session: 16;
 $q-fs-timer: 48;
 $q-icon-timer: 32;
 $q-head-gap: 8;
 
-// Scheda del giocatore: logo, posizione, settori, delta, ultimo e migliore
-$q-logo-w: 63;
-$q-logo-h: 84;
-$q-fs-pos: 96;
+// Scheda del giocatore (senza cornice): posizione sfumata e mescola montata; settori, delta, ultimo e migliore
+$q-player-pad-t: 24;
+$q-player-pad-b: 32;
+$q-fs-pos: 128;
+$q-pos-gap: 12;
+$q-compound-pad-x: 10;
 $q-side-w: 400;
 $q-bar-h: 20;
 $q-bar-gap: 8;
@@ -388,36 +396,83 @@ $q-col-gap: 24;
 // Riquadri in basso: meteo, pedali, gomme e ali
 $q-bottom-h: 523;
 $q-content-w: 1016; // larghezza utile del 9:16 (1080 − 2 × 32)
-$q-left-w: 637;
+// Sezione in basso (505, Figma 1291:192): meteo e power unit (325) affiancati al live feed (296), sotto i pedali
+// (o la strategia in gara); a destra gomme e ali (363). Altezze 150 + 150 + 173 con 16 tra i riquadri.
+$q-side-col-w: 325;
+$q-feed-w: 296;
 $q-car-w: 363;
-// Colonna in basso a sinistra (523): meteo 156 + engine 156 + pedali 180, con 16 di spazio tra i riquadri
-$q-forecast-h: 156;
-$q-engine-h: 156;
-$q-pedals-h: 180;
-$q-weather-pad-y: 26;
+$q-forecast-h: 150;
+$q-engine-h: 150;
+$q-pedals-h: 173;
+$q-weather-pad: 20;
 $q-weather-gap: 20;
 $q-fs-weather: 16;
 $q-icon-weather: 40;
 $q-chip-lg: 32;
 $q-fs-compound: 23;
-$q-ring: 64;
-$q-ring-width: 5;
-$q-fs-ring: 20;
-$q-fs-ring-unit: 12;
-$q-tyre-w: 60;
-$q-tyre-h: 100;
-$q-tyre-radius: 12;
-$q-fs-tyre-temp: 14;
 $q-key-h: 4;
+
+// Gomme e ali (Figma nodo 1284:947): anello dell'ala anteriore, sagoma della vettura (160 × 311) con gli anelli
+// delle gomme ai lati, anello dell'alettone. Gli anelli d'ala si sovrappongono di 6 alla sagoma.
+$q-car-shape-w: 160;
+$q-car-shape-h: 311;
+$q-car-overlap: 6;
+$q-ring: 80;
+$q-ring-width: 7.5;
+$q-ring-out: 73.5; // quanto l'anello della gomma sporge all'esterno della sagoma (uguale sui due lati)
+$q-ring-front: 25;
+$q-ring-rear: 216;
+$q-fs-ring: 28;
+
+// Pedali: comandi della legenda e dello zoom
+$q-pedals-button: 32;
+$q-fs-pedals-zoom: 14;
+$q-pedals-range-w: 48;
+
+// Strategia di gara (Figma nodo 1285:2162): finestra pit, rientro, carburante
+$q-strategy-gap: 32;
+$q-strategy-tyre-gap: 6;
+$q-strategy-bar-h: 6;
+$q-fs-strategy-label: 20;
+$q-fs-strategy-value: 40;
+$q-strategy-mark-w: 2;
+$q-strategy-mark-h: 14;
+$q-strategy-mark-border: 2;
+$q-fs-strategy-tyre: 18;
+
+// Classifica in gara: colonna del distacco dal leader
+$q-col-interval: 160;
 $team-mark: 60%; // quadrato colore team quando manca il logo
 
-// Soglie d'usura degli anelli (%): verde sotto la prima, arancio fino alla seconda, rosso oltre
-$wear-ok: 10;
-$wear-high: 40;
+// Usura delle gomme e danno delle ali: colore graduale verde → giallo → arancio → rosso (Figma).
+// $wear-stops = percentuale a cui si arriva al colore pieno (vedi mixin wear-color)
+$wear-green: #48b04b;
+$wear-yellow: #d0c011;
+$wear-orange: #d08a11;
+$wear-red: #d02b11;
+$wear-stops: 10 20 40;
+$wear-track-alpha: 15%;
+// Anelli aperti verso la vettura (0deg = in alto, senso orario): l'arco parte da un estremo dell'apertura e
+// copre al massimo $ring-*-span. Gomme: apertura di 90° verso la vettura; ali: apertura di 130°.
+$ring-wheel-start: 135deg;
+$ring-wheel-span: 270deg;
+$ring-wing-start: 245deg;
+$ring-wing-span: 230deg;
+$ring-min: 0.01; // a 0% resta un puntino
+$car-shape: #4c4c4c;
 
 // Power unit: 4 × 2 componenti con barra d'usura (verde, arancio, rosso secondo le soglie in formatters.ts)
-$q-pu-pad-y: 12;
-$q-pu-gap: 10;
-$q-fs-pu: 20;
-$q-pu-bar-h: 6;
+$q-pu-pad-y: 6;
+$q-pu-pad-x: 8;
+$q-pu-gap: 4;
+$q-fs-pu: 16;
+$q-pu-bar-h: 3;
+
+// Live feed: messaggi a 10 di distanza, giro in colonna da 32, sfumatura in fondo alta 63
+$q-feed-pad-x: 12;
+$q-feed-pad-y: 16;
+$q-feed-gap: 12;
+$q-feed-row-gap: 10;
+$q-feed-lap-w: 32;
+$q-feed-fade: 63;
 $radius-round: 50%;

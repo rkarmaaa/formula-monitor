@@ -1,0 +1,42 @@
+---
+import { t } from '@i18n/index';
+
+// Strategia di gara (Figma nodo 1285:2162), al posto dei pedali in gara: finestra dei pit (tra quanti giri, gomma
+// montata con i giri fatti, barra della gara con la finestra e il giro attuale), posizione al rientro se ti fermi
+// adesso e margine di carburante a fine gara.
+const b = t.monitor.blocks.strategy;
+---
+
+<section class="race-strategy" data-block="strategy" aria-label={b.title}>
+  <div class="race-strategy-window">
+    <p class="race-strategy-label">{b.window}</p>
+    <p class="race-strategy-value" data-text="pit|pitWindow"></p>
+    <p class="race-strategy-tyre" data-attr="data-compound:player.status.visualTyreCompound|compoundClass">
+      <span class="race-strategy-chip" data-text="player.status.visualTyreCompound|compoundLetter"></span>
+      <span data-text="player.status.visualTyreCompound|compoundName"></span>
+      <span class="race-strategy-age" data-text="player.status.tyresAgeLaps|tyreAge"></span>
+    </p>
+    <p
+      class="race-strategy-bar"
+      data-var="--from:pit.from|unit; --to:pit.to|unit; --now:race.progress|unit"
+      data-attr="data-compound:player.status.visualTyreCompound|compoundClass"
+      aria-hidden="true"
+    >
+      <span class="race-strategy-now"></span>
+    </p>
+  </div>
+  <div class="race-strategy-side">
+    <p class="race-strategy-fact">
+      <span class="race-strategy-label">{b.rejoin}</span>
+      <span class="race-strategy-value" data-text="pit.rejoinPosition|pos"></span>
+    </p>
+    <p class="race-strategy-fuel">
+      <span class="race-strategy-label">{b.fuel}</span>
+      <span
+        class="race-strategy-fuel-value"
+        data-text="race.fuelDeltaLaps|fuelLaps"
+        data-attr="data-tone:race.fuelDeltaLaps|fuelTone"
+      ></span>
+    </p>
+  </div>
+</section>

@@ -1,159 +1,123 @@
 @use '../abstracts' as *;
 
-// Gomme e ali: mescola in alto, quattro gomme (anello d'usura + sagoma con la temperatura), integrità delle ali
+// Gomme e ali (Figma 1284:947): in colonna e al centro l'anello dell'ala anteriore, la sagoma della vettura con
+// gli anelli delle gomme ai lati e l'anello dell'alettone. Ogni elemento ha la propria --v (0..1) e ne ricava
+// il colore graduale --wear.
 .car-state {
   @include card;
-  @include stack(dp($q-gap));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
   min-height: 0;
   padding: dp($q-card-pad-x);
+  overflow: hidden;
 
-  .car-state-compound {
-    display: flex;
-    align-items: center;
-    gap: dp($q-head-gap);
-    padding-bottom: dp($q-gap);
-    border-bottom: $border-thin solid $color-line;
-    font-family: $font-body;
-    font-size: dp($q-fs-compound);
-    font-weight: $fw-semibold;
-    line-height: $lh-none;
-    text-transform: uppercase;
-    color: $color-ink-soft;
-
-    &[data-compound='soft'] {
-      color: $tyre-soft;
-    }
-
-    &[data-compound='medium'] {
-      color: $tyre-medium;
-    }
-
-    &[data-compound='hard'] {
-      color: $tyre-hard;
-    }
-
-    &[data-compound='inter'] {
-      color: $tyre-inter;
-    }
-
-    &[data-compound='wet'] {
-      color: $tyre-wet;
-    }
+  // Sagoma: le misure del Figma, gli anelli delle gomme posizionati rispetto alle gomme
+  .car-state-car {
+    position: relative;
+    flex-shrink: 0;
+    width: dp($q-car-shape-w);
+    height: dp($q-car-shape-h);
+    margin-block: calc(-1 * #{dp($q-car-overlap)});
   }
 
-  .car-state-chip {
-    @include flex-center;
-    width: dp($q-chip-lg);
-    height: dp($q-chip-lg);
-    border-radius: $radius-round;
-    background: color-mix(in srgb, currentColor $tyre-chip-alpha, transparent);
+  .car-state-shape {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
-  .car-state-tyres {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-content: center;
-    gap: dp($q-gap);
-    flex: 1;
-    min-height: 0;
+  .car-state-body {
+    fill: $car-shape;
   }
 
-  .car-state-wheel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: dp($q-lap-gap);
-
-    // A destra la sagoma resta verso il centro della vettura, l'anello all'esterno
-    &.right {
-      flex-direction: row-reverse;
-    }
+  .car-state-tyre {
+    @include wear-color;
+    fill: var(--wear);
+    transition: fill $dur-data linear;
   }
 
-  // Anello d'usura: arco conico pari a --v (0..1) su una traccia scura, centro pieno sopra
+  // Anello aperto: l'arco parte da un estremo dell'apertura (verso la vettura) e copre --v dello spazio utile;
+  // il resto è la traccia tenue dello stesso colore. Il valore resta al centro.
   .car-state-ring {
-    --ring: #{$color-personal};
+    @include wear-color;
     @include flex-center;
+    --ring-start: #{$ring-wheel-start};
+    --ring-span: #{$ring-wheel-span};
     position: relative;
     flex-shrink: 0;
     width: dp($q-ring);
     height: dp($q-ring);
-    border-radius: $radius-round;
-    background: conic-gradient(
-      var(--ring) calc(var(--v, 0) * 1turn),
-      color-mix(in srgb, var(--ring) $tyre-chip-alpha, transparent) 0
-    );
-    color: var(--ring);
+    font-size: dp($q-fs-ring);
+    color: var(--wear);
 
     &::before {
       content: '';
       position: absolute;
-      inset: dp($q-ring-width);
+      inset: 0;
       border-radius: $radius-round;
-      background: $color-surface;
+      background: conic-gradient(
+        from var(--ring-start),
+        var(--wear) 0 calc(max(var(--v, 0), #{$ring-min}) * var(--ring-span)),
+        color-mix(in srgb, var(--wear) $wear-track-alpha, transparent) 0 var(--ring-span),
+        transparent 0
+      );
+      mask: radial-gradient(
+        farthest-side,
+        transparent calc(100% - #{dp($q-ring-width)}),
+        $color-black calc(100% - #{dp($q-ring-width)})
+      );
     }
 
-    &[data-tone='high'] {
-      --ring: #{$color-wear};
+    span {
+      @include figures($fw-medium);
+      position: relative;
+      font-family: $font-body;
     }
 
-    &[data-tone='over'] {
-      --ring: #{$color-danger};
-    }
-  }
-
-  .car-state-wear {
-    position: relative;
-    display: flex;
-    align-items: baseline;
-    font-family: $font-body;
-    font-size: dp($q-fs-ring);
-    font-weight: $fw-medium;
-    line-height: $lh-none;
-
-    small {
-      font-size: dp($q-fs-ring-unit);
-      font-weight: $fw-regular;
-    }
-  }
-
-  // Sagoma della gomma con la temperatura di superficie
-  .car-state-tyre {
-    @include flex-center;
-    flex-shrink: 0;
-    width: dp($q-tyre-w);
-    height: dp($q-tyre-h);
-    border-radius: dp($q-tyre-radius);
-    background: $color-surface-raised;
-    font-family: $font-body;
-    font-size: dp($q-fs-tyre-temp);
-    line-height: $lh-none;
-    color: $color-ink-faint;
-  }
-
-  .car-state-wings {
-    @include stack(dp($q-lap-gap));
-    padding-top: dp($q-gap);
-    border-top: $border-thin solid $color-line;
-  }
-
-  .car-state-wing {
-    display: flex;
-    justify-content: space-between;
-    gap: dp($q-gap);
-    font-family: $font-display;
-    font-size: dp($q-fs-lap);
-    line-height: $lh-none;
-
-    dt {
-      text-transform: uppercase;
-      color: $color-ink-faint;
+    // Ali: apertura verso la vettura (sotto l'anteriore, sopra l'alettone, specchiato)
+    &.wing {
+      --ring-start: #{$ring-wing-start};
+      --ring-span: #{$ring-wing-span};
     }
 
-    dd {
-      @include figures;
-      color: $color-ink;
+    &.wing.front {
+      order: -1;
+    }
+
+    &.wing.rear {
+      order: 1;
+
+      &::before {
+        transform: scaleY(-1);
+      }
+    }
+
+    // Gomme: ai lati della sagoma, aperte verso la vettura (a destra specchiato)
+    &.wheel {
+      position: absolute;
+    }
+
+    &.wheel.left {
+      left: calc(-1 * #{dp($q-ring-out)});
+    }
+
+    &.wheel.right {
+      right: calc(-1 * #{dp($q-ring-out)});
+
+      &::before {
+        transform: scaleX(-1);
+      }
+    }
+
+    &.wheel.front {
+      top: dp($q-ring-front);
+    }
+
+    &.wheel.rear {
+      top: dp($q-ring-rear);
     }
   }
 }

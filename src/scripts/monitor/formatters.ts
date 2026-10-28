@@ -3,7 +3,6 @@ import { fill } from '@lib/text';
 import { teamOf } from '@data/teams';
 import { tracks } from '@data/tracks';
 import { href } from '@lib/paths';
-import type { CarDamage } from '@lib/f1/schema';
 import { t } from '@i18n/index';
 
 // Formatter del binder: valore grezzo → testo, numero (custom property) o stato (attributo).
@@ -14,8 +13,6 @@ export interface Scope {
 export type Formatter = (value: unknown, arg: string | undefined, scope: Scope) => unknown;
 
 const DASH = '—';
-const WEAR_OK = 10;
-const WEAR_HIGH = 40;
 const PU_OK = 30;
 const PU_HIGH = 60;
 const MINUS = '−';
@@ -50,43 +47,69 @@ const COMPOUND_CLASS: Record<string, string> = { S: 'soft', M: 'medium', H: 'har
 
 const surname = (car?: CarView) => car?.surname ?? DASH;
 
-function eventText(record: EventView, view: RaceView): string {
+// Valori dei messaggi di gara: piloti ({car}, {other}) più i dettagli del singolo evento
+function eventValues(record: EventView, view: RaceView, name: (car?: CarView) => string): Record<string, string> {
   const { event } = record;
-  const template = t.f1.events[event.code] ?? event.code;
-  const base = { car: surname(record.car), other: surname(record.other) };
+  const base = { car: name(record.car), other: name(record.other) };
   switch (event.code) {
     case 'FTLP':
-      return fill(template, { ...base, time: lapTime(event.details.lapTime * 1000) });
+      return { ...base, time: lapTime(event.details.lapTime * 1000) };
     case 'RTMT':
-      return fill(template, { ...base, reason: t.f1.retirement[event.details.reason] ?? DASH });
+      return { ...base, reason: t.f1.retirement[event.details.reason] ?? DASH };
     case 'DRSD':
-      return fill(template, { reason: t.f1.drsDisabled[event.details.reason] ?? DASH });
+      return { reason: t.f1.drsDisabled[event.details.reason] ?? DASH };
     case 'PENA': {
       const { penaltyType, infringementType, time } = event.details;
       const penalty = `${t.f1.penalties[penaltyType] ?? DASH}${penaltyType === 4 && time ? ` +${time} s` : ''}`;
-      return fill(template, { ...base, penalty, infringement: t.f1.infringements[infringementType] ?? DASH });
+      return { ...base, penalty, infringement: t.f1.infringements[infringementType] ?? DASH };
     }
     case 'SPTP':
-      return fill(template, {
+      return {
         ...base,
         speed: `${Math.round(toKmh(event.details.speed, view))} ${view.units.speed === 'mph' ? 'mph' : 'km/h'}`,
-      });
+      };
     case 'SCAR':
-      return fill(template, {
+      return {
         type: t.f1.safetyCar[event.details.safetyCarType] ?? DASH,
         phase: t.f1.safetyCarPhase[event.details.eventType] ?? '',
-      });
+      };
     default:
-      return fill(template, base);
+      return base;
   }
 }
 
-// Distacco in classifica: in gara dall'auto davanti (o giri di ritardo), altrimenti dal giro migliore del primo
+const eventTemplate = (record: EventView) => t.f1.events[record.event.code] ?? record.event.code;
+
+function eventText(record: EventView, view: RaceView): string {
+  return fill(eventTemplate(record), eventValues(record, view, surname));
+}
+
+// Messaggio a pezzi per il live feed: le sigle dei piloti diventano pezzi "name" (evidenziati nel blocco)
+export interface TextPart {
+  text: string;
+  name: boolean;
+}
+
+function eventParts(record: EventView, view: RaceView): TextPart[] {
+  const values = eventValues(record, view, (car) => car?.code ?? DASH);
+  return eventTemplate(record)
+    .split(/(\{\w+\})/)
+    .filter(Boolean)
+    .map((piece) => {
+      const key = /^\{(\w+)\}$/.exec(piece)?.[1];
+      if (!key) return { text: piece, name: false };
+      return { text: values[key] ?? '', name: key === 'car' || key === 'other' };
+    });
+}
+
+// Distacco in classifica: in gara dal leader (o giri di ritardo), altrimenti dal giro migliore del primo.
+// Il primo mostra "Leader" (in qualifica solo quando ha un tempo)
 function towerGap(car: CarView | undefined, view: RaceView): string {
-  if (!car || car.position === 1) return '';
+  if (!car) return '';
+  if (car.position === 1) return view.race.isRace || car.bestLapMs > 0 ? t.monitor.blocks.timing.leader : '';
   if (view.race.isRace) {
     if (car.lapsDown > 0) return `+${car.lapsDown} ${t.monitor.blocks.timing.laps}`;
-    return car.intervalMs > 0 ? `+${(car.intervalMs / 1000).toFixed(3)}` : DASH;
+    return car.gapLeaderMs > 0 ? `+${(car.gapLeaderMs / 1000).toFixed(3)}` : DASH;
   }
   return car.gapMs > 0 ? `+${(car.gapMs / 1000).toFixed(3)}` : car.bestLapMs > 0 ? '' : DASH;
 }
@@ -175,6 +198,7 @@ export const formatters: Record<string, Formatter> = {
   gt: (v, arg) => (isNum(v) && v > Number(arg ?? 0) ? true : null),
   team: (v) => teamOf(isNum(v) ? v : undefined).color,
   event: (v, _, { view }) => (v ? eventText(v as EventView, view) : DASH),
+  eventParts: (v, _, { view }) => (v ? eventParts(v as EventView, view) : []),
   eventTone: (v) => (typeof v === 'string' ? (EVENT_TONES[v] ?? 'info') : null),
   lapLabel: (v) => (isNum(v) && v > 0 ? `G${v}` : DASH),
 
@@ -189,14 +213,17 @@ export const formatters: Record<string, Formatter> = {
   noTeamLogo: (v) => (teamOf(isNum(v) ? v : undefined).logo ? null : true),
   compoundName: (v) => compound(v)?.name ?? '',
   offset: (v) => (isNum(v) ? `+${v}’` : DASH),
-  // Usura gomma: verde fino a WEAR_OK, arancio fino a WEAR_HIGH, poi rosso (soglie anche in _variables.scss)
-  wearTone: (v) => (isNum(v) ? (v < WEAR_OK ? 'ok' : v < WEAR_HIGH ? 'high' : 'over') : null),
-  // Integrità delle ali: 100% = nessun danno; l'ala anteriore conta il lato più danneggiato
-  frontWing: (v) => {
-    const damage = v as CarDamage | undefined;
-    return damage ? `${100 - Math.max(damage.frontLeftWingDamage, damage.frontRightWingDamage)}%` : DASH;
+  // Strategia di gara: stato della finestra dei pit, giri della gomma, margine di carburante
+  pitWindow: (v, _, { view }) => {
+    const pit = v as RaceView['pit'] | undefined;
+    const s = t.monitor.blocks.strategy;
+    if (!pit?.idealLap || !view.race.lap) return DASH;
+    const laps = pit.idealLap - view.race.lap;
+    if (laps > 0) return laps === 1 ? s.inOne : fill(s.in, { n: laps });
+    return view.race.lap <= pit.latestLap ? s.open : s.closed;
   },
-  health: (v) => (isNum(v) ? `${100 - v}%` : DASH),
+  tyreAge: (v) => (isNum(v) ? fill(t.monitor.blocks.strategy.age, { n: v }) : ''),
+  fuelLaps: (v) => (isNum(v) ? fill(t.monitor.blocks.strategy.fuelLaps, { laps: signed(v, 1) }) : DASH),
   // Usura dei componenti della power unit: verde fino a PU_OK, arancio fino a PU_HIGH, poi rosso
   puTone: (v) => (isNum(v) ? (v < PU_OK ? 'ok' : v < PU_HIGH ? 'high' : 'over') : null),
 };

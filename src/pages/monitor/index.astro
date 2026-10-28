@@ -9,8 +9,10 @@ import PlayerCard from '@components/blocks/PlayerCard.astro';
 import Timing from '@components/blocks/Timing.astro';
 import Forecast from '@components/blocks/Forecast.astro';
 import Engine from '@components/blocks/Engine.astro';
+import Feed from '@components/blocks/Feed.astro';
 import Pedals from '@components/blocks/Pedals.astro';
 import Car from '@components/blocks/Car.astro';
+import Strategy from '@components/blocks/Strategy.astro';
 import { t } from '@i18n/index';
 
 const m = t.monitor;
@@ -44,7 +46,9 @@ const dots = ['.', '.', '.'];
         <Timing />
         <Forecast />
         <Engine />
+        <Feed />
         <Pedals />
+        <Strategy />
         <Car />
       </div>
       <AllBlocks />

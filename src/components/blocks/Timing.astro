@@ -3,16 +3,18 @@ import TeamLogo from './TeamLogo.astro';
 import { t } from '@i18n/index';
 
 // Classifica live per i giri veloci: posizione, logo, sigla e mescola; giro migliore (viola il più veloce)
-// e settori (viola = migliore assoluto, verde = personale, attenuati quelli del giro precedente)
+// e settori (viola = migliore assoluto, verde = personale, attenuati quelli del giro precedente).
+// A sinistra del giro migliore il distacco dal primo: sul giro migliore in qualifica, sul traguardo in gara.
 const b = t.monitor.blocks.timing;
 const sectors = [0, 1, 2];
 ---
 
-<section class="timing-tower" data-block="timing" aria-labelledby="timing-title">
+<section class="timing-tower" data-block="timing" data-attr="data-race:race.isRace|bool" aria-labelledby="timing-title">
   <p class="timing-tower-head">
     <span class="timing-tower-title" id="timing-title">
       {b.title}
     </span>
+    <span class="timing-tower-interval"></span>
     <span class="timing-tower-best">{b.best}</span>
     {sectors.map((i) => (
       <span class="timing-tower-sector">{b.sectors[i]}</span>
@@ -36,6 +38,7 @@ const sectors = [0, 1, 2];
           <span class="timing-tower-tag pit">{b.pit}</span>
           <span class="timing-tower-tag out">{b.out}</span>
         </span>
+        <span class="timing-tower-interval" data-text=".|towerGap" data-attr="data-leader:position|eq:1"></span>
         <span class="timing-tower-best" data-text="bestLapMs|lapTime" data-attr="data-tone:bestLapTone"></span>
         {sectors.map((i) => (
           <span

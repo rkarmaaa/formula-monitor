@@ -75,6 +75,102 @@
     }
   }
 
+  // Selettore della schermata (solo simulazione): vista attuale + doppie frecce, menu che si apre verso l'alto
+  .monitor-bar-modes {
+    position: relative;
+    flex-shrink: 0;
+    margin-left: auto;
+    border-left: $border-thin solid $color-line;
+
+    &[hidden] {
+      display: none;
+    }
+
+    &:not([hidden]) + .monitor-bar-actions {
+      margin-left: 0;
+    }
+  }
+
+  .monitor-bar-mode {
+    @include label($fs-10);
+    @include focus-ring(-$focus-width);
+    display: flex;
+    align-items: center;
+    gap: $sp-8;
+    height: $monitor-bar-height;
+    padding-inline: $sp-16 $sp-12;
+    color: $color-ink-strong;
+    transition: background-color $dur-fast $ease-out;
+
+    @include hover {
+      background: $color-white-hover;
+    }
+
+    &[aria-expanded='true'] {
+      background: $color-surface-raised;
+    }
+
+    .icon {
+      width: $icon-sm;
+      height: $icon-sm;
+      color: $color-ink-soft;
+    }
+
+    @include respond(phone) {
+      padding-inline: $sp-12 $sp-8;
+    }
+  }
+
+  .monitor-bar-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + #{$border-thin});
+    z-index: $z-bar;
+    min-width: 100%;
+    border: $border-thin solid $color-line;
+    background: $color-bg;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .monitor-bar-option {
+    @include label($fs-10);
+    @include focus-ring(-$focus-width);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $sp-16;
+    width: 100%;
+    height: $monitor-bar-height;
+    padding-inline: $sp-16 $sp-12;
+    color: $color-ink-faint;
+    white-space: nowrap;
+    transition:
+      background-color $dur-fast $ease-out,
+      color $dur-fast $ease-out;
+
+    @include hover {
+      background: $color-white-hover;
+      color: $color-ink-strong;
+    }
+
+    .icon {
+      width: $icon-sm;
+      height: $icon-sm;
+      visibility: hidden;
+    }
+
+    &[aria-pressed='true'] {
+      color: $color-ink-strong;
+
+      .icon {
+        visibility: visible;
+      }
+    }
+  }
+
   .monitor-bar-actions {
     display: flex;
     margin-left: auto;
