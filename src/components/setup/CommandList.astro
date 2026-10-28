@@ -2,19 +2,18 @@
 import Icon from '@components/ui/Icon.astro';
 import { t } from '@i18n/index';
 
-// Comandi da terminale (o URL) con bottone copia; `live` = valore riempito dal bridge
+// Comandi da terminale (o URL) con bottone copia
 interface Props {
   lines: string[];
-  live?: 'url';
 }
 
-const { lines, live } = Astro.props;
+const { lines } = Astro.props;
 ---
 
 <ol class="command-list">
   {lines.map((line) => (
     <li class="command-list-line">
-      <code class="command-list-code" data-bridge-url={live ? '' : undefined}>
+      <code class="command-list-code">
         {line}
       </code>
       <button class="command-list-copy" type="button" data-copy aria-label={t.common.copy}>

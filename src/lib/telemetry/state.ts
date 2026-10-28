@@ -13,7 +13,7 @@ export interface EventRecord {
 const TRACE_STEP = 10; // metri tra due campioni del giro di riferimento
 const TRACE_SLOTS = 1000; // fino a 10 km di pista
 const MAX_EVENTS = 60;
-const QUIET_EVENTS = new Set(['BUTN', 'STLG']);
+const QUIET_EVENTS = new Set(['BUTN', 'STLG', 'SPTP']);
 
 export interface RaceState {
   version: number;

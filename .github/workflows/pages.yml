@@ -1,7 +1,7 @@
 name: GitHub Pages
 
 # Versione online: home, tutorial e monitor. Il monitor si collega al bridge locale
-# (npm start su questo PC, porta 20780) quando è in esecuzione.
+# (npm start su questo PC, porta 20780, o npm run dev, porta 4321) quando è in esecuzione.
 # Pubblicazione a ogni push su main (repository pubblico: Pages gratuito) o a mano
 on:
   push:
@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # storia completa: la versione conta i commit
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -33,7 +35,7 @@ jobs:
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}/
-          PUBLIC_BRIDGE: localhost:20780
+          PUBLIC_BRIDGE: localhost:20780,localhost:4321
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -403,8 +403,12 @@ export function buildView(state: RaceState): RaceView {
     (best, car) => (car.bestLapMs > 0 && (best === 0 || car.bestLapMs < best) ? car.bestLapMs : best),
     0,
   );
+  // In gara i settori seguono il giro in corso; in qualifica restano quelli del giro migliore (somma = MIGLIORE)
   cars.forEach((car, k) => {
-    car.sectors = sectors[k]!.map(({ ms, live, invalid }, i) => ({
+    const shown = isRace
+      ? sectors[k]!
+      : sectorTimes(car.history, car.history?.bestLapTimeLapNum ?? 0).map((ms) => ({ ms, live: false, invalid: false }));
+    car.sectors = shown.map(({ ms, live, invalid }, i) => ({
       ms,
       live,
       tone: ms > 0 && invalid ? 'invalid' : toneOf(ms, car.bestSectorsMs[i] ?? 0, bestSectorsMs[i] ?? 0),

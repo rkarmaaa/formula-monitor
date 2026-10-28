@@ -79,7 +79,6 @@ export default {
       },
     },
     ipPlaceholder: 'IP del tuo PC',
-    urlPlaceholder: 'http://IP-del-PC:20780/monitor/',
   },
 
   monitor: {
@@ -333,7 +332,6 @@ export default {
       CHQF: 'Bandiera a scacchi',
       RCWN: '{car} vince la gara',
       PENA: '{car} · {penalty}: {infringement}',
-      SPTP: 'Speed trap: {car} a {speed}',
       LGOT: 'Semafori spenti!',
       DTSV: '{car} sconta il drive through',
       SGSV: '{car} sconta lo stop & go',

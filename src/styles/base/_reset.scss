@@ -41,6 +41,12 @@ video {
   height: auto;
 }
 
+// Immagini non selezionabili né trascinabili
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 input,
 button,
 textarea,

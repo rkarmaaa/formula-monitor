@@ -15,6 +15,8 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 - **Stack:** Astro 7 statico · TypeScript strict · SCSS (solo `@use`) · bridge Node 22.18+ (TypeScript eseguito
   nativamente da Node, senza build).
 - **Lingua:** italiano, testi in `src/i18n/it.ts`.
+- **Versione:** automatica dai commit (`server/version.ts`, footer): `major.minor` da `package.json`, patch = commit
+  dopo l'ultimo cambio di `"version"`. Per una nuova minor/major si alza a mano `package.json` (patch a 0).
 
 | Comando                       | Cosa fa                                                                                 |
 | ----------------------------- | --------------------------------------------------------------------------------------- |

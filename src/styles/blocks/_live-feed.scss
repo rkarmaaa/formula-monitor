@@ -1,7 +1,7 @@
 @use '../abstracts' as *;
 
 // Live feed: titolo e filo, poi i messaggi più recenti in alto (giro in colonna fissa, sigle evidenziate);
-// la lista è tagliata dal fondo della scheda e sfuma nel carbone
+// la lista è tagliata dal fondo della scheda e sfuma nel carbone; con il mouse sopra scorre (barra nascosta)
 .live-feed {
   @include card;
   @include stack(dp($q-feed-gap));
@@ -42,13 +42,21 @@
 
   .live-feed-list {
     @include stack(dp($q-feed-row-gap));
+    flex: 1;
     min-height: 0;
+    padding-bottom: dp($q-feed-fade);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .live-feed-row {
     display: flex;
     align-items: baseline;
-    white-space: nowrap;
   }
 
   .live-feed-lap {
@@ -57,10 +65,15 @@
     width: dp($q-feed-lap-w);
   }
 
-  // Niente ellipsis: con il rifilo alle maiuscole taglierebbe le discendenti; il bordo della scheda chiude la riga
+  // A capo fino a 3 righe, poi "…"; senza rifilo alle maiuscole, che taglierebbe le discendenti dell'ultima riga
   .live-feed-text {
-    @include cap-trim;
+    display: -webkit-box;
     min-width: 0;
+    overflow: hidden;
+    line-height: $lh-heading;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $feed-lines;
+    line-clamp: $feed-lines;
 
     [data-name] {
       color: $color-ink;

@@ -1,7 +1,7 @@
 {
   "name": "formula-monitor",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Dashboard live per la telemetria UDP di F1 25 (PS5, Xbox, PC), ottimizzata per display verticali 9:16.",
   "license": "MIT",

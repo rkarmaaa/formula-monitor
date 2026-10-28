@@ -1,6 +1,10 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import icon from 'astro-icon';
 import formulaMonitorBridge from './server/integration.ts';
+import { appVersion } from './server/version.ts';
+
+// Versione mostrata nel footer, calcolata dai commit (vedi server/version.ts)
+process.env.PUBLIC_VERSION ??= appVersion();
 
 const fontsource = (pkg: string, file: string) => `./node_modules/${pkg}/files/${file}.woff2`;
 

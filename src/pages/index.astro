@@ -8,6 +8,7 @@ import UdpSettings from '@components/setup/UdpSettings.astro';
 import CommandList from '@components/setup/CommandList.astro';
 import { accent } from '@lib/text';
 import { t } from '@i18n/index';
+import { site } from '@data/site';
 
 const h = t.home;
 const tut = h.tutorial;
@@ -59,7 +60,7 @@ const [game, open] = tut.steps;
         <div class="home-tutorial-body">
           <h3 class="home-tutorial-step-title">{open!.title}</h3>
           <p class="home-tutorial-text">{open!.text}</p>
-          <CommandList lines={[h.urlPlaceholder]} live="url" />
+          <CommandList lines={[`${site.url}monitor/`]} />
           <div class="home-tutorial-actions">
             <Button href={href('monitor/')} arrow>
               {h.hero.start}

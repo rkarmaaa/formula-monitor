@@ -27,14 +27,13 @@ export function lapTime(ms: number): string {
   return minutes ? `${minutes}:${seconds}` : seconds;
 }
 
-const toKmh = (kmh: number, view: RaceView) => (view.units.speed === 'mph' ? kmh * 0.621371 : kmh);
 const toTemp = (celsius: number, view: RaceView) => (view.units.temp === 'f' ? (celsius * 9) / 5 + 32 : celsius);
 
 const compound = (id: unknown) => (isNum(id) ? t.f1.compounds[id] : undefined);
 const COMPOUND_CLASS: Record<string, string> = { S: 'soft', M: 'medium', H: 'hard', I: 'inter', W: 'wet', D: 'hard' };
 
 // Valori dei messaggi di gara: piloti ({car}, {other}) più i dettagli del singolo evento
-function eventValues(record: EventView, view: RaceView, name: (car?: CarView) => string): Record<string, string> {
+function eventValues(record: EventView, name: (car?: CarView) => string): Record<string, string> {
   const { event } = record;
   const base = { car: name(record.car), other: name(record.other) };
   switch (event.code) {
@@ -49,11 +48,6 @@ function eventValues(record: EventView, view: RaceView, name: (car?: CarView) =>
       const penalty = `${t.f1.penalties[penaltyType] ?? DASH}${penaltyType === 4 && time ? ` +${time} s` : ''}`;
       return { ...base, penalty, infringement: t.f1.infringements[infringementType] ?? DASH };
     }
-    case 'SPTP':
-      return {
-        ...base,
-        speed: `${Math.round(toKmh(event.details.speed, view))} ${view.units.speed === 'mph' ? 'mph' : 'km/h'}`,
-      };
     case 'SCAR':
       return {
         type: t.f1.safetyCar[event.details.safetyCarType] ?? DASH,
@@ -71,8 +65,8 @@ export interface TextPart {
   name: boolean;
 }
 
-function eventParts(record: EventView, view: RaceView): TextPart[] {
-  const values = eventValues(record, view, (car) => car?.code ?? DASH);
+function eventParts(record: EventView): TextPart[] {
+  const values = eventValues(record, (car) => car?.code ?? DASH);
   return eventTemplate(record)
     .split(/(\{\w+\})/)
     .filter(Boolean)
@@ -120,7 +114,7 @@ export const formatters: Record<string, Formatter> = {
   bool: (v) => (v ? true : null),
   eq: (v, arg) => (String(v) === arg ? true : null),
   team: (v) => teamOf(isNum(v) ? v : undefined).color,
-  eventParts: (v, _, { view }) => (v ? eventParts(v as EventView, view) : []),
+  eventParts: (v) => (v ? eventParts(v as EventView) : []),
   lapLabel: (v) => (isNum(v) && v > 0 ? `G${v}` : DASH),
 
   // ——— Monitor in qualifica ———

@@ -1,9 +1,9 @@
 import { t } from '@i18n/index';
-import { connectBridge, monitorUrl } from './bridge';
+import { connectBridge } from './bridge';
 
-// Pagine informative: IP e URL del bridge in tempo reale, bottoni copia
+// Pagine informative: IP del bridge in tempo reale, bottoni copia
 function initBridge() {
-  if (!document.querySelector('[data-bridge-ip], [data-bridge-url]')) return;
+  if (!document.querySelector('[data-bridge-ip]')) return;
   connectBridge({
     onStatus(status) {
       const ip = status.addresses[0];
@@ -12,9 +12,6 @@ function initBridge() {
         el.textContent = ip;
         delete el.dataset.empty;
       });
-      document
-        .querySelectorAll<HTMLElement>('[data-bridge-url]')
-        .forEach((el) => (el.textContent = monitorUrl(status)));
     },
   });
 }

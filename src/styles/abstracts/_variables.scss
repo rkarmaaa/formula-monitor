@@ -47,6 +47,7 @@ $color-black: $gray-0;
 // rosso = più lento del proprio migliore / delta in perdita)
 $color-best: #b325cc;
 $color-personal: #089d09;
+$color-personal-soft: rgba($color-personal, 0.7); // verde dei settori in classifica, meno acceso
 $color-warn: #eacc08;
 $color-danger: #bb152e;
 $color-live: $color-personal;
@@ -376,7 +377,8 @@ $q-pu-bar-h: 3;
 $q-feed-pad-x: 12;
 $q-feed-pad-y: 16;
 $q-feed-gap: 12;
-$q-feed-row-gap: 10;
+$q-feed-row-gap: 8;
 $q-feed-lap-w: 32;
 $q-feed-fade: 63;
+$feed-lines: 3; // righe massime di un messaggio del live feed
 $radius-round: 50%;
