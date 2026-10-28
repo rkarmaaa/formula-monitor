@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ports } from '../src/data/games.ts';
 import { createBridge } from './bridge.ts';
@@ -41,7 +41,8 @@ async function resolveFile(pathname: string): Promise<string | undefined> {
   }
   const safe = normalize(decoded).replace(/^([/\\])+/, '');
   const target = join(root, safe);
-  if (!target.startsWith(root)) return undefined;
+  // Solo file dentro dist/ (con il separatore: "dist-altro" accanto non deve passare)
+  if (target !== root && !target.startsWith(root + sep)) return undefined;
   for (const candidate of [target, join(target, 'index.html'), `${target}.html`]) {
     const info = await stat(candidate).catch(() => undefined);
     if (info?.isFile()) return candidate;

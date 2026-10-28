@@ -31,12 +31,14 @@
     color: $color-ink-faint;
   }
 
-  // Le righe si dividono l'altezza disponibile, fino a 46 px di design ciascuna (20–22 auto)
+  // Le righe si dividono l'altezza disponibile, fino a 46 px di design ciascuna (20–22 auto).
+  // La lista esce dal padding della scheda (overflow nascosto): la riga del giocatore arriva ai bordi laterali
   .timing-tower-list {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
+    margin-inline: calc(-1 * #{dp($q-card-pad-x)});
     overflow: hidden;
   }
 
@@ -44,9 +46,8 @@
     flex: 1 1 0;
     min-height: 0;
     max-height: dp($q-row-max);
-    margin-inline: calc(-1 * #{dp($q-card-pad-x)});
     padding-inline: dp($q-card-pad-x);
-    border-bottom: $border-thin solid $color-line;
+    border-bottom: $border-thin solid $color-surface-raised;
     font-size: dp($q-fs-row);
     line-height: $lh-none;
 
@@ -56,6 +57,10 @@
 
     &[data-player] {
       background: $color-player;
+
+      .timing-tower-pos {
+        color: $color-ink;
+      }
     }
 
     &[data-garage],
@@ -91,11 +96,7 @@
 
   // Chip della mescola: cerchio con fondo al 20% del colore
   .timing-tower-tyre {
-    @include flex-center;
-    flex-shrink: 0;
-    width: dp($q-chip);
-    height: dp($q-chip);
-    border-radius: $radius-round;
+    @include chip-letter(dp($q-chip));
     font-family: $font-body;
     font-size: dp($q-fs-chip);
     font-weight: $fw-semibold;
@@ -129,11 +130,12 @@
   }
 
   .timing-tower-tag {
-    @include label($fs-tag);
+    @include label($fs-14);
     display: none;
     padding: $tag-pad;
     background: $color-surface-high;
     color: $color-ink-soft;
+    letter-spacing: 2%;
   }
 
   .timing-tower-best,

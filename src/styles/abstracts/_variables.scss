@@ -68,6 +68,7 @@ $tyre-hard: $gray-900;
 $tyre-inter: #089d09;
 $tyre-wet: #2f80ff;
 $tyre-chip-alpha: 20%;
+$cap-height-body: 0.71; // altezza delle maiuscole di Geist (em): centra otticamente la lettera dei chip
 
 // Trasparenze derivate
 $color-bg-glass: rgba(20, 20, 20, 0.9);
@@ -464,8 +465,8 @@ $car-shape: #4c4c4c;
 // Power unit: 4 × 2 componenti con barra d'usura (verde, arancio, rosso secondo le soglie in formatters.ts)
 $q-pu-pad-y: 6;
 $q-pu-pad-x: 8;
-$q-pu-gap: 4;
-$q-fs-pu: 16;
+$q-pu-gap: 5;
+$q-fs-pu: 14;
 $q-pu-bar-h: 3;
 
 // Live feed: messaggi a 10 di distanza, giro in colonna da 32, sfumatura in fondo alta 63

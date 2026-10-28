@@ -9,10 +9,10 @@
   --trace-grid: #{$color-line};
   display: flex;
   flex-direction: column;
-  gap: dp($q-lap-gap);
+  gap: dp(14);
   min-width: 0;
   min-height: 0;
-  padding: dp($q-card-pad-x);
+  padding: dp(16);
 
   // La traccia occupa lo spazio sotto la legenda
   .pedals-canvas {
@@ -79,10 +79,6 @@
     @include hover {
       color: $color-ink;
     }
-  }
-
-  .pedals-zoom {
-    border: $border-thin solid $color-line;
   }
 
   .pedals-range {

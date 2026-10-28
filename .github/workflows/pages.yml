@@ -2,8 +2,10 @@ name: GitHub Pages
 
 # Versione online: home, tutorial e monitor. Il monitor si collega al bridge locale
 # (npm start su questo PC, porta 20780) quando è in esecuzione.
-# Avvio manuale: Pages su repository privato richiede GitHub Pro (o repository pubblico)
+# Pubblicazione a ogni push su main (repository pubblico: Pages gratuito) o a mano
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

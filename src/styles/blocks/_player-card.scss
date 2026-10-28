@@ -38,10 +38,7 @@
   }
 
   .player-card-chip {
-    @include flex-center;
-    width: dp($q-chip-lg);
-    height: dp($q-chip-lg);
-    border-radius: $radius-round;
+    @include chip-letter(dp($q-chip-lg));
     background: color-mix(in srgb, currentColor $tyre-chip-alpha, transparent);
 
     &:empty {

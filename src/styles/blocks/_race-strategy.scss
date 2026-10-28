@@ -57,10 +57,7 @@
   }
 
   .race-strategy-chip {
-    @include flex-center;
-    width: dp($q-chip);
-    height: dp($q-chip);
-    border-radius: $radius-round;
+    @include chip-letter(dp($q-chip));
     background: color-mix(in srgb, currentColor $tyre-chip-alpha, transparent);
     font-size: dp($q-fs-chip);
 

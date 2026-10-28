@@ -235,6 +235,20 @@
   );
 }
 
+// Chip tondo con una lettera (mescola) centrata otticamente: la riga è rifilata alle maiuscole e scende di metà
+// dello spazio libero, così la lettera sta al centro esatto del cerchio (il centraggio flex la lascerebbe alta)
+@mixin chip-letter($size) {
+  display: block;
+  flex-shrink: 0;
+  width: $size;
+  height: $size;
+  padding-top: calc((#{$size} - #{$cap-height-body} * 1em) / 2);
+  border-radius: $radius-round;
+  line-height: $lh-none;
+  text-align: center;
+  text-box: trim-both cap alphabetic;
+}
+
 // Colore della mescola sull'elemento con data-compound (chip e nomi: testo pieno, fondo al 20%)
 @mixin compound-tones {
   &[data-compound='soft'] {
