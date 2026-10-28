@@ -33,7 +33,7 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
   qualifica e gara (`fm:pedals:qualifying|race`: finestra di tempo e tracce visibili), sempre dietro
   `src/scripts/prefs.ts` (try/catch).
 - **`src/data/circuits.ts`**: forme reali dei circuiti da github.com/bacinger/f1-circuits (MIT), generate una volta
-  e incluse nel sorgente; servono a mostrare la mappa prima che le auto girino.
+  e incluse nel sorgente; servono ad allineare il tracciato appreso (`track.ts`, oggi senza blocco a schermo).
 - **`respond(landscape)`**: unica media query sulle proporzioni, perché il monitor dipende dal formato dello schermo.
 - **`dp()` e `--dp`**: le misure del cruscotto sono pixel del frame Figma scalati sullo schermo (container query),
   non token `$sp-*`; i raggi esistono solo nei grafici dati (chip, anelli, sagome delle gomme).
@@ -55,10 +55,8 @@ src/lib/telemetry/      state.ts (reducer), view.ts (vista per frame), track.ts 
 src/lib/sim/            simulatore isomorfo, gara o qualifica (demo ?demo nel browser e mock UDP)
 src/components/blocks/  blocchi del cruscotto (Header, PlayerCard, Timing, Forecast, Engine, Feed, Pedals, Strategy, Car,
                         CarShape, TeamLogo); in gara (`data-race` sul cruscotto) Strategy sostituisce Pedals
-                        + Map e Block (cornice) per la simulazione completa
-src/components/widgets/ i 24 blocchi completi (catalogo in src/data/widgets.ts), visibili solo in simulazione
 src/scripts/monitor/    index (attesa/cruscotto, diagnosi), runtime (rAF + ripiego a timer), sources, bind, formatters
-src/scripts/blocks/     renderer canvas: mappa, pedali, grafico posizioni, forze G
+src/scripts/blocks/     renderer canvas dei pedali
 ```
 
 Regole del codice:
@@ -80,17 +78,16 @@ La **simulazione sviluppatore** (simulatore nel browser) si apre dal link nel fo
 `/monitor/?demo` (qualifica), `?demo=race`, `&format=2026`; non resta salvata nell'URL. Nella barra in basso, a
 destra, il selettore della schermata (vista attuale + doppie frecce, menu verso l'alto) riavvia la simulazione con
 l'altra sessione. In qualifica la simulazione parte già avanti, con un giro lanciato valido: il delta si vede subito. C'è sempre
-almeno un ritiro subito (in gara l'auto colpita nel contatto al via, in qualifica un guasto). Sotto i blocchi base
-mostra **tutti i blocchi completi** con ogni dato disponibile, in una griglia scorrevole 12 × 24 (24 colonne a
-16:9) dove ogni blocco prende la misura dal catalogo. I blocchi di una sola versione usano `data-game-only`,
-nascosti in base a `html[data-game]` impostato dal formato rilevato.
+almeno un ritiro subito (in gara l'auto colpita nel contatto al via, in qualifica un guasto). La simulazione mostra
+solo il cruscotto, come con il gioco vero: niente blocchi aggiuntivi sotto. `html[data-game]` riporta la versione
+del gioco rilevata dal formato dei pacchetti.
 
-## 5. Mappa
+## 5. Tracciato appreso
 
-Il gioco non invia la forma della pista. All'arrivo del pacchetto Session la mappa mostra la forma reale del
-circuito (auto posizionate per distanza sul giro); con ~12% di pista osservata la forma viene allineata alle
-coordinate del gioco (rotazione, scala, specchiatura, traguardo, verso) e completa i tratti non ancora visti.
-Il tracciato osservato è salvato per circuito e la mappa resta sempre orientata a nord.
+Il gioco non invia la forma della pista. `src/lib/telemetry/track.ts` impara il tracciato dalle posizioni delle auto
+e, con ~12% di pista osservata, allinea la forma reale del circuito alle coordinate del gioco (rotazione, scala,
+specchiatura, traguardo, verso); il tracciato è salvato per circuito. Oggi nessun blocco del cruscotto lo mostra
+(la mappa è stata tolta): resta pronto e coperto dai test per un futuro blocco.
 
 ## 6. Definition of done
 

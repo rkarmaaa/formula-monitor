@@ -102,62 +102,8 @@
   }
 
   &[data-view='wait'] .monitor-board,
-  &[data-view='wait'] .monitor-all,
   &[data-view='board'] .monitor-wait {
     display: none;
-  }
-
-  // Simulazione: il primo schermo resta il cruscotto base, sotto si scorre su tutti gli altri blocchi
-  &[data-demo] .monitor-main {
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-
-  .monitor-all {
-    border-top: $border-thin solid $color-line-strong;
-  }
-
-  .monitor-all-title {
-    @include label($fs-10);
-    display: flex;
-    align-items: center;
-    gap: $sp-12;
-    height: $block-head-height * 2;
-    padding-inline: $sp-10;
-    color: $color-ink-soft;
-
-    &::before {
-      @include rule($tick);
-    }
-  }
-
-  // Griglia 12 × 24 come quella originale del 9:16: ogni blocco prende la sua misura dal catalogo.
-  // In 16:9 le colonne raddoppiano, così due "schermi verticali" stanno affiancati.
-  .monitor-all-grid {
-    display: grid;
-    grid-template-columns: repeat($grid-columns, minmax(0, 1fr));
-    grid-auto-rows: calc((100dvh - #{$monitor-bar-height}) / #{$grid-rows});
-    grid-auto-flow: row dense;
-    gap: $board-gap;
-    background: $color-line;
-
-    @include respond(landscape) {
-      grid-template-columns: repeat($grid-columns * 2, minmax(0, 1fr));
-    }
-
-    > .block {
-      grid-column: span var(--span-w, 6);
-      grid-row: span var(--span-h, 3);
-
-      @include respond(phone) {
-        grid-column: span var(--span-wp, 6);
-      }
-
-      // Respiro interno dei blocchi completi (quelli base gestiscono da sé il proprio)
-      .block-body {
-        padding: 0 $sp-cq-sm $sp-cq-xs;
-      }
-    }
   }
 
   // In attesa la barra non mostra la sessione precedente

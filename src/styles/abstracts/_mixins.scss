@@ -96,14 +96,6 @@
   text-transform: uppercase;
 }
 
-// Etichetta condensata per i blocchi densi della simulazione completa: stessa voce dei numeri (Saira)
-@mixin racing-label($size: $fs-micro) {
-  @include label($size);
-  font-family: $font-display;
-  font-stretch: $stretch-condensed;
-  letter-spacing: $tracking-wide;
-}
-
 // Etichetta preceduta da un trattino orizzontale: firma geometrica del brand
 @mixin eyebrow($color: $color-ink-soft) {
   @include label($fs-11);
@@ -269,24 +261,6 @@
 
   &[data-compound='wet'] {
     color: $tyre-wet;
-  }
-}
-
-// Barra squadrata riempita da --v (0..1) impostata dal binder
-@mixin meter($color: $color-ink-strong, $height: $bar-thin) {
-  position: relative;
-  height: $height;
-  background: $color-line-strong;
-  overflow: hidden;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: $color;
-    transform-origin: left center;
-    transform: scaleX(var(--v, 0));
-    transition: transform $dur-data linear;
   }
 }
 

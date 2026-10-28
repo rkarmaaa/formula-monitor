@@ -73,10 +73,9 @@ Spazi `$sp-*` per le pagine · `$touch-min` 48 px · usura di gomme e ali con co
 ## 3. Componenti
 
 **Classi root esistenti** (una variante non può avere uno di questi nomi):
-`button` `icon` `skip-link` `command-list` `udp-settings` `hero-car` `block` `team-logo` `monitor-bar`
-`monitor-wait` `monitor` `site-footer` `home-hero` `home-tutorial` `not-found` `tyre-chip` `battle-car`, i blocchi
-del monitor `quali-header` `player-card` `timing-tower` `forecast` `power-unit` `pedals` `car-state` `race-strategy` `live-feed` `track-map`
-e i blocchi della simulazione completa `w-*` (vedi `src/styles/widgets/`).
+`button` `icon` `skip-link` `command-list` `udp-settings` `hero-car` `team-logo` `monitor-bar`
+`monitor-wait` `monitor` `site-footer` `home-hero` `home-tutorial` `not-found`, i blocchi del monitor
+`quali-header` `player-card` `timing-tower` `forecast` `power-unit` `live-feed` `pedals` `car-state` `race-strategy`
 
 | Componente (`src/components/`)         | Anatomia                                                                                                                         | Dati / stati                                           |
 | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
@@ -90,7 +89,6 @@ e i blocchi della simulazione completa `w-*` (vedi `src/styles/widgets/`).
 | `blocks/Strategy`                      | `race-strategy` (solo gara) › finestra pit, gomma, barra gara · rientro, carburante                                              | `data-compound`, `--from/--to/--now`                   |
 | `blocks/Car` + `CarShape`              | `car-state` › anello ala ant. · sagoma centrata con gomme colorate e 4 anelli · anello alettone (anelli aperti verso la vettura) | `--v` → `--wear` graduale                              |
 | `blocks/TeamLogo`                      | `team-logo` › logo 1:1 o quadrato colore team                                                                                    | `sm` (classifica) `lg` (intestazione)                  |
-| `blocks/Map`, `blocks/Block`           | mappa e cornice dei blocchi della simulazione completa                                                                           | `data-block`                                           |
 | `monitor/MonitorBar`                   | `monitor-bar` › dominio, stato, sessione, selettore della schermata (solo demo: vista + menu), schermo intero, esci              | `data-state`, `aria-expanded`, `aria-pressed`          |
 | `ui/Button`, `home/HeroCar`, `setup/*` | pagine informative                                                                                                               |                                                        |
 
@@ -100,7 +98,7 @@ e i blocchi della simulazione completa `w-*` (vedi `src/styles/widgets/`).
 - **Cruscotto**: aree in `layout/_monitor.scss`. 9:16 = intestazione, scheda giocatore, classifica, poi in basso
   meteo e power unit (325) accanto al live feed (296), sotto i pedali (in gara la strategia), a destra gomme e ali
   (Figma 1291:192). 16:9 = classifica a tutta altezza a sinistra, a destra le stesse schede del 9:16.
-- **Simulazione** (`?demo`): sotto il cruscotto, tutti i blocchi completi e la mappa.
+- **Simulazione** (`?demo`): lo stesso cruscotto con dati simulati, senza blocchi aggiuntivi.
 
 ### Aggiungere un blocco al cruscotto
 

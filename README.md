@@ -7,7 +7,7 @@
 **Il muretto box di F1 25, sul tuo schermo.**
 
 Telemetria live di F1 25 (PS5 · Xbox · PC) in qualsiasi browser di casa: timer della sessione,<br />
-classifica con i tempi di settore e mappa del circuito. Pensato per il 9:16, funziona anche a 16:9.
+classifica con settori e distacchi, delta, gomme, power unit, live feed e strategia di gara. Pensato per il 9:16, funziona anche a 16:9.
 
 [![CI](https://github.com/rkarmaaa/formula-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/rkarmaaa/formula-monitor/actions/workflows/ci.yml)
 ![Node](https://img.shields.io/badge/node-%E2%89%A522.18-000000?logo=node.js&logoColor=white)
@@ -25,11 +25,10 @@ classifica con i tempi di settore e mappa del circuito. Pensato per il 9:16, fun
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | 📡 **Live dal gioco**      | Un piccolo bridge Node riceve l'UDP di F1 25 e lo porta in qualsiasi browser di casa: telefono, tablet, secondo monitor.                    |
 | ⏱️ **Qualifica in chiaro** | Timer della sessione e classifica di tutti i piloti con giro migliore, distacco e S1·S2·S3: viola il migliore assoluto, verde il personale. |
-| 🗺️ **Mappa subito**        | La forma reale del circuito appare appena entri in sessione, poi si allinea da sola alle posizioni del gioco.                               |
 | ⏳ **Attesa che spiega**   | Finché la sessione non parte il monitor dice cosa manca: PC non raggiungibile, nessun dato UDP, formato sbagliato.                          |
 | 🎮 **Due formati**         | F1 25 (formato 2025) e Season Pack 2026 (22 auto): riconosciuti automaticamente.                                                            |
 | ◼️ **Grafite**             | Design geometrico in bianco e nero, spigoli vivi; il colore è solo dato.                                                                    |
-| 🧪 **Simulazione**         | Dal footer della home: una sessione simulata con tutti i 24 blocchi completi (battaglia, gomme, strategia, ERS, danni, meteo…).             |
+| 🧪 **Simulazione**         | Dal footer della home: qualifica o gara simulate nel browser, con il selettore della schermata nella barra.                                 |
 
 ## 🚀 Avvio rapido
 
@@ -74,16 +73,16 @@ collegarsi a un indirizzo di rete locale.
 ```bash
 npm run dev                         # sito + bridge UDP sulla stessa porta → http://localhost:4321
 npm run mock -- --session quali     # gioco finto via UDP (--format 2026 --rate 60 --laps 10)
-npm test                            # codec, gara e qualifica simulate, allineamento della mappa
+npm test                            # codec, gara e qualifica simulate, tracciato appreso
 npm run check                       # TypeScript e Astro: 0 errori, 0 warning, 0 hint
 ```
 
-| Scorciatoia                   | Azione                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| `/monitor/?demo`              | qualifica simulata nel browser con tutti i blocchi, senza bridge né gioco |
-| `?demo=race` · `&format=2026` | gara simulata · formato 2026                                              |
-| `F`                           | schermo intero                                                            |
-| `?bridge=IP:20780`            | collegati a un bridge su un altro PC                                      |
+| Scorciatoia                   | Azione                                                |
+| ----------------------------- | ----------------------------------------------------- |
+| `/monitor/?demo`              | qualifica simulata nel browser, senza bridge né gioco |
+| `?demo=race` · `&format=2026` | gara simulata · formato 2026                          |
+| `F`                           | schermo intero                                        |
+| `?bridge=IP:20780`            | collegati a un bridge su un altro PC                  |
 
 ## 🧠 Come funziona
 
@@ -98,10 +97,10 @@ flowchart LR
 
 - **Codec dichiarativo**: la stessa definizione legge e scrive i pacchetti; ogni dimensione è verificata nei
   test contro le specifiche ufficiali EA.
-- **Mappa**: forma reale del circuito ([bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT)
+- **Circuiti**: forma reale dei circuiti per il tracciato appreso ([bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT)
   allineata alle coordinate del gioco con un fit di Procrustes; il tracciato osservato la sostituisce man mano.
-- **Binder**: i blocchi sono markup con `data-text`, `data-var`, `data-attr`, `data-list`; solo la mappa ha un
-  renderer dedicato.
+- **Binder**: i blocchi sono markup con `data-text`, `data-var`, `data-attr`, `data-list`; solo il grafico dei
+  pedali ha un renderer dedicato.
 - **Simulatore**: Monza reale con profilo di velocità fisico, 20–22 auto, gara o qualifica.
 
 <details>
@@ -114,8 +113,8 @@ src/lib/telemetry/ stato, vista, tracciato appreso e allineamento della forma re
 src/lib/sim/       simulatore di gara e qualifica
 src/data/          formati, forme dei circuiti, team, piste, dati demo
 src/i18n/it.ts     tutti i testi dell'interfaccia
-src/components/    home (illustrazione, tutorial), monitor (barra), blocchi (sessione, classifica, mappa)
-src/scripts/       runtime del monitor, binder, renderer della mappa
+src/components/    home (illustrazione, tutorial), monitor (barra), blocchi del cruscotto
+src/scripts/       runtime del monitor, binder, renderer dei pedali
 src/styles/        design system SCSS (token, mixin, un partial per componente)
 docs/              protocollo UDP ed elenco completo dei dati
 ```

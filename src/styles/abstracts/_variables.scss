@@ -76,16 +76,6 @@ $color-white-tint: rgba(217, 217, 217, 0.06);
 $color-white-hover: rgba(217, 217, 217, 0.1);
 $color-player: $gray-200;
 
-// Mappa (lette dal canvas come custom property)
-$map-track: $gray-400;
-$map-track-edge: $gray-150;
-$map-sector: $gray-600;
-$map-drs: $gray-700;
-$map-label: $gray-700;
-$map-label-bg: rgba(0, 0, 0, 0.75);
-$map-player: $gray-1000;
-$map-start: $gray-1000;
-
 // ——— Font ———
 $font-display: var(--font-display);
 $font-body: var(--font-body);
@@ -123,13 +113,6 @@ $fs-body: 15px 16px;
 $fs-small: $fs-14;
 $fs-micro: $fs-11;
 $fs-button: $fs-14;
-
-// Valori dei blocchi: scalano con il box (container query), non con la pagina
-$value-hero: clamp(1.75rem, min(30cqh, 16cqw), 9rem);
-$value-md: clamp(0.875rem, 6cqmin, 1.5rem);
-$label-block: clamp(0.5625rem, 2.4cqmin, 0.75rem);
-// Righe della classifica: scalano con larghezza e altezza per far stare tutte le auto
-$value-list: clamp(0.5625rem, min(3.3cqw, 2.3cqh), 1.375rem);
 
 $lh-none: 1;
 $lh-display: 0.92;
@@ -173,11 +156,6 @@ $sp-96: 6rem; // 96px
 $sp-128: 8rem; // 128px
 $step-index: 5rem; // 80px, colonna dei numeri del tutorial
 
-// Spazi relativi al blocco (container query)
-$sp-cq-xs: clamp(0.125rem, 0.8cqmin, 0.375rem);
-$sp-cq-sm: clamp(0.25rem, 1.6cqmin, 0.75rem);
-$sp-cq-md: clamp(0.5rem, 3cqmin, 1.25rem);
-
 $section-space: $sp-80;
 $section-space-tab: $sp-64;
 $section-space-phone: $sp-48;
@@ -195,8 +173,6 @@ $touch-min-sm: 40px;
 
 // Monitor: barra comandi in basso, griglia dei blocchi
 $monitor-bar-height: 40px;
-$board-gap: 1px;
-$block-head-height: 20px;
 // Foto dell'hero: colonna centrale alta, in bianco e nero e scurita, sfumata nel nero su ogni lato
 $hero-photo-width: 72svh;
 $hero-photo-width-phone: 118vw;
@@ -209,79 +185,10 @@ $hero-photo-shade:
   radial-gradient(ellipse 60% 55% at 50% 62%, rgba(20, 20, 20, 0) 40%, rgba(20, 20, 20, 0.7) 100%);
 $hero-top: clamp(64px, 12svh, 136px);
 
-// Colonne della classifica (in em: seguono la dimensione del testo della riga)
-$col-pos: 2.2em;
-$row-height: 1.8em;
-$fs-head: 0.62em;
-$fs-tag: 0.58em;
-$fs-chip: 0.72em;
-$chip: 1.3em;
-$cell-pad: 0.35em;
+// Tag della classifica (Box, Out): in em, seguono il testo della riga
 $tag-pad: 0.25em 0.35em;
-$driver-gap: 0.4em;
-$driver-pad: 0.5em;
-$col-stripe: 0.22em;
-$col-driver: 3.6em;
-$col-time: 4.9em;
-$col-gap: 4.6em;
-$col-sector: 3.7em;
-$col-tyre: 1.5em;
 
-// ——— Blocchi della simulazione completa (src/components/widgets) ———
-// Valori che scalano con il box del blocco (container query)
-$value-xl: clamp(2rem, 40cqmin, 12rem);
-$value-lg: clamp(1.375rem, 22cqmin, 6rem);
-$value-sm: clamp(0.8125rem, 7.5cqmin, 1.625rem);
-$value-xs: clamp(0.6875rem, 5cqmin, 1rem);
-$label-widget: $label-block;
-$lh-snug: 1.35;
-$fw-black: $fw-heavy;
-$sp-3: 0.1875rem; // 3px
-
-// Soglie delle container query (larghezza / altezza del corpo del blocco)
-$cq-tiny: 9rem;
-$cq-xs: 11rem;
-$cq-sm: 16rem;
-$cq-md: 24rem;
-$cq-lg: 32rem;
-$cqh-xs: 3.5rem;
-$cqh-sm: 4.5rem;
-$cqh-md: 7rem;
-
-// Colonne delle tabelle dei blocchi (em)
-$col-gap-sm: 4.8em;
-$col-tyre-sm: 3.4em;
-$col-stops: 2em;
-$col-lap: 2.6em;
-$col-chip: 1.6em;
-$col-label: 4.2em;
-$col-value: 2.8em;
-$row-max: 2.4em;
-
-// Strumenti: barre, chip delle mescole, quadranti
-$bar-thin: 4px;
-$bar-medium: 8px;
-$border-heavy: 3px;
-$chip-size: 1.7em;
-$chip-ring: 0.18em;
-$chip-text: 0.8em;
-$icon-inline-lg: 1.6em;
-$rev-leds: 15;
-$rev-sharpness: 8;
-$dial-size: 90cqh;
-$dial-travel: 45cqh;
-$steer-travel: 40cqw;
-
-// Semantica dei dati dei blocchi: più lento (giallo), scala delle temperature
-$color-slower: $color-warn;
-$temp-cold: #4aa8ff;
-$temp-ok: $color-personal;
-$temp-hot: #ff9d3a;
-$temp-over: $color-danger;
-$mix-tint: 16%;
-$mix-heat: 60%;
 $opacity-fill: 0.35;
-$opacity-muted: 0.6;
 
 $bp-phone: 37.5em; // 600px
 $bp-tab-port: 56.25em; // 900px
@@ -335,8 +242,6 @@ $stagger: 80ms;
 $arrow-shift: 4px;
 
 // Simulazione completa: griglia del catalogo dei blocchi (src/data/widgets.ts) e versioni di gioco
-$grid-columns: 12;
-$grid-rows: 24;
 $games: f1-25, f1-25-2026;
 
 // ——— Monitor in qualifica (Figma "QUALI & TESTING") ———
@@ -386,7 +291,6 @@ $q-row-max: 46;
 $q-logo-sm: 22;
 $q-chip: 22;
 $q-fs-chip: 16;
-$q-name-gap: 16;
 $q-logo-gap: 12;
 $q-col-pos: 40;
 $q-col-code: 64;
@@ -395,7 +299,6 @@ $q-col-sector: 84;
 $q-col-gap: 24;
 
 // Riquadri in basso: meteo, pedali, gomme e ali
-$q-bottom-h: 523;
 $q-content-w: 1016; // larghezza utile del 9:16 (1080 − 2 × 32)
 // Sezione in basso (505, Figma 1291:192): meteo e power unit (325) affiancati al live feed (296), sotto i pedali
 // (o la strategia in gara); a destra gomme e ali (363). Altezze 150 + 150 + 173 con 16 tra i riquadri.

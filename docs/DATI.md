@@ -3,11 +3,9 @@
 Tutto ciò che la telemetria UDP di F1 25 rende disponibile durante una sessione, raggruppato per tema.
 ★ = dato che l'HUD del gioco non mostra o mostra solo nei menu.
 
-**Blocchi attuali** (redesign "Grafite", ottobre 2026): **Sessione** (circuito, tipo, tempo rimanente o giro),
-**Classifica** (posizione, pilota, giro migliore, distacco/intervallo, S1-S2-S3 con viola e verde, mescola) e
-**Mappa** (forma reale del circuito, auto, settori, DRS, gialle). Nelle tabelle che seguono la colonna
-**Blocco** indica il blocco completo che mostra il dato: oggi sono tutti visibili nella **simulazione
-sviluppatore** (`/monitor/?demo`) e sono i candidati da portare nel monitor reale, uno alla volta.
+Nelle tabelle che seguono la colonna **Blocco** indica dove il dato era mostrato nei vecchi blocchi completi della
+simulazione, rimossi nell'ottobre 2026: oggi resta un catalogo dei dati disponibili, candidati per i prossimi blocchi
+del cruscotto (disegnati prima in Figma). I dati già calcolati restano in `src/lib/telemetry/view.ts`.
 
 **Cruscotto base** (Figma QUALI & TESTING e RACE): intestazione (logo vettura, circuito, sessione, tempo o giri),
 scheda giocatore (posizione, mescola, settori, delta a 3 aggiornamenti/s, ultimo e migliore), classifica (distacco

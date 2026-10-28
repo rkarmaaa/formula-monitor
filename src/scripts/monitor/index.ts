@@ -4,10 +4,7 @@ import type { BridgeState, BridgeStatus } from '../bridge';
 import { createBinder, type Binder } from './bind';
 import { createRuntime } from './runtime';
 import { startBridge, startDemo, type DemoSource } from './sources';
-import { createMap } from '../blocks/map';
 import { createInputs } from '../blocks/inputs';
-import { createPositions } from '../blocks/positions';
-import { createGforce } from '../blocks/gforce';
 import { gameByFormat } from '@data/games';
 import type { RaceView } from '@lib/telemetry/view';
 import type { SimSession } from '@lib/sim/simulator';
@@ -35,30 +32,13 @@ let bridgeState: BridgeState = 'connecting';
 let bridgeStatus: BridgeStatus | undefined;
 let rejected: { format: number; at: number } | undefined;
 
-// ——— Blocchi: binder dichiarativo + renderer canvas (mappa e, in simulazione, grafici dei blocchi completi) ———
+// ——— Blocchi: binder dichiarativo + renderer canvas dei pedali ———
 interface Renderer {
   update(view: RaceView): void;
 }
-const canvasRenderers: Record<string, (root: HTMLElement) => Renderer> = {
-  map: createMap,
-  inputs: createInputs,
-  positions: createPositions,
-  gforce: createGforce,
-};
 
 const roots = [...document.querySelectorAll<HTMLElement>('.monitor-board [data-block], [data-bind]')];
 const renderers: Renderer[] = [createInputs($('.monitor-board [data-block="pedals"]'))];
-if (demo) {
-  // Simulazione sviluppatore: anche tutti i blocchi completi, con ogni dato disponibile
-  const all = $('[data-all]');
-  all.hidden = false;
-  monitor.toggleAttribute('data-demo', true);
-  for (const block of all.querySelectorAll<HTMLElement>('[data-block]')) {
-    roots.push(block);
-    const create = canvasRenderers[block.dataset.block ?? ''];
-    if (create) renderers.push(create(block));
-  }
-}
 const binders: Binder[] = roots.map((el) => createBinder(el));
 
 runtime.subscribe((view) => {
