@@ -8,7 +8,8 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 ## 1. Overview
 
 - **Prodotto:** cruscotto live per la telemetria UDP di F1 25 (formati 2025 e 2026), ottimizzato per display 9:16
-  e utilizzabile anche a 16:9. Si distribuisce come **exe per Windows** (`npm run build:exe`): il sito online
+  e utilizzabile anche a 16:9. Si distribuisce come **app per Windows (exe) e macOS (zip)** (`npm run build:exe`, ognuna
+  compilata sul proprio sistema dalla CI): il sito online
   (`PUBLIC_TARGET=site`) è solo la presentazione con download e demo live, perché un sito non riceve UDP. App: monitor
   con schermata di attesa (impostazioni del gioco e IP del PC) e cruscotto disegnato in Figma
   (file "Roba", frame **QUALI & TESTING**, nodo `1283:9`): intestazione con cronometro, scheda del giocatore
@@ -20,14 +21,14 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 - **Versione:** automatica dai commit (`server/version.ts`, footer): `major.minor` da `package.json`, patch = commit
   dopo l'ultimo cambio di `"version"`. Per una nuova minor/major si alza a mano `package.json` (patch a 0).
 
-| Comando                       | Cosa fa                                                                                 |
-| ----------------------------- | --------------------------------------------------------------------------------------- |
-| `npm run dev`                 | sito + bridge UDP→WebSocket su http://localhost:4321 (UDP 20777)                        |
-| `npm run build` / `npm start` | build in `dist/` / sito + bridge su http://IP:20780 (`--port`, `--udp`)                 |
-| `npm run build:exe`           | `release/FormulaMonitor.exe` (Node SEA: sito + bridge in un file, apre il monitor)      |
-| `npm run mock`                | gioco finto via UDP (`--session quali --format 2026 --rate 60 --laps 10 --host --port`) |
-| `npm test`                    | test Node (`node --test`): codec, gara e qualifica simulate, mappa                      |
-| `npm run check`               | `astro check`: 0 errori, 0 warning, 0 hint                                              |
+| Comando                       | Cosa fa                                                                                  |
+| ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `npm run dev`                 | sito + bridge UDP→WebSocket su http://localhost:4321 (UDP 20777)                         |
+| `npm run build` / `npm start` | build in `dist/` / sito + bridge su http://IP:20780 (`--port`, `--udp`)                  |
+| `npm run build:exe`           | `release/FormulaMonitor.exe` con icona (Windows) o zip macOS (Node SEA, apre il monitor) |
+| `npm run mock`                | gioco finto via UDP (`--session quali --format 2026 --rate 60 --laps 10 --host --port`)  |
+| `npm test`                    | test Node (`node --test`): codec, gara e qualifica simulate, mappa                       |
+| `npm run check`               | `astro check`: 0 errori, 0 warning, 0 hint                                               |
 
 ## 2. Deroghe alle regole Nuvola GO (motivate)
 
@@ -43,7 +44,8 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 - **`dp()` e `--dp`**: le misure del cruscotto sono pixel del frame Figma scalati sullo schermo (container query),
   non token `$sp-*`; i raggi esistono solo nei grafici dati (chip, anelli, sagome delle gomme).
 - **Loghi dei team** in `public/teams/<id>.png`, quadrati 128 × 128 dal CDN di formula1.com (bianchi per Mercedes,
-  Aston Martin, Audi e Cadillac, illeggibili in nero sul carbone); senza logo un quadrato nel colore del team.
+  Aston Martin, Audi e Cadillac, illeggibili in nero sul carbone) e, per la F2, da fiaformula2.com (96 px portati a
+  128, bianchi se l'originale è scuro); senza logo un quadrato nel colore del team (Konnersport, APXGP).
 - I file in `src/lib/` e `src/data/` usati dal server importano con percorsi relativi ed estensione `.ts`
   (Node li esegue direttamente): niente alias `@…` lì dentro e solo sintassi TypeScript "cancellabile"
   (`erasableSyntaxOnly`: niente `enum`, `namespace`, parameter properties).
@@ -55,13 +57,14 @@ server/bridge.ts        UDP → WebSocket (frame binari invariati) + stato JSON 
 server/integration.ts   bridge dentro il dev server di Astro (stessa porta, path /ws)
 server/start.ts         produzione: serve dist/ + bridge (server HTTP comune in server/http.ts)
 server/app.ts           ingresso dell'exe: sito incorporato (asset SEA) + bridge + apre il browser
-server/build-exe.ts     build dell'exe: sito, bundle rolldown, blob SEA iniettato con postject nel node.exe
+server/build-exe.ts     build dell'app: sito, bundle rolldown, blob SEA con postject; Windows: icona e dati del file
+                        (resedit, da favicon.svg); macOS: firma ad hoc e zip
 src/lib/f1/             struct.ts (codec dichiarativo), schema.ts (2025/2026), codec.ts (decode/encode)
 src/lib/telemetry/      state.ts (reducer), view.ts (vista per frame), track.ts (tracciato appreso +
                         allineamento della forma reale del circuito)
 src/lib/sim/            simulatore isomorfo, gara o qualifica (demo ?demo nel browser e mock UDP)
-src/components/blocks/  blocchi del cruscotto (Header, PlayerCard, Timing, Forecast, Engine, Feed, Pedals, Strategy, Car,
-                        CarShape, TeamLogo); in gara (`data-race` sul cruscotto) Strategy sostituisce Pedals
+src/components/blocks/  blocchi del cruscotto (Header, PlayerCard, Timing, Forecast, Engine, Feed, Pedals, Car,
+                        CarShape, TeamLogo); Strategy esiste ma è disattivato (i pedali restano anche in gara)
 src/scripts/monitor/    index (attesa/cruscotto, diagnosi), runtime (rAF + ripiego a timer), sources, bind, formatters
 src/scripts/blocks/     renderer canvas dei pedali
 ```

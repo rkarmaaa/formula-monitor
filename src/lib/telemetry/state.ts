@@ -45,6 +45,11 @@ export interface RaceState {
   gapLog: number[][];
   lastLapNum: number[];
   trace: { current: Float32Array; best?: Float32Array; bestMs: number; invalid: boolean };
+  // Settori dell'ultimo giro chiuso dal giocatore, dai dati del giro (lo storico arriva più tardi)
+  playerLastSectorsMs: number[];
+  // Bandiera a scacchi esposta; a sessione finita per il giocatore il delta resta fermo sull'ultimo valore
+  checkered: boolean;
+  finish?: { deltaMs?: number };
   track?: TrackOutline;
   counts: Partial<Record<PacketKind, number>>;
 }
@@ -65,6 +70,8 @@ export function createRaceState(): RaceState {
     gapLog: [],
     lastLapNum: [],
     trace: { current: emptyTrace(), bestMs: 0, invalid: false },
+    playerLastSectorsMs: [0, 0, 0],
+    checkered: false,
     counts: {},
   };
 }
@@ -106,6 +113,12 @@ function recordEvent(state: RaceState, event: RaceEvent) {
     case 'SCAR':
       if (event.details.eventType === 3) state.redFlag = false;
       break;
+    case 'CHQF':
+      state.checkered = true;
+      break;
+    case 'SEND':
+      freezeDelta(state);
+      break;
   }
   if (QUIET_EVENTS.has(event.code)) return;
   const lap = state.lapData?.lapData[state.playerIndex]?.currentLapNum ?? 0;
@@ -113,13 +126,32 @@ function recordEvent(state: RaceState, event: RaceEvent) {
   if (state.events.length > MAX_EVENTS) state.events.length = MAX_EVENTS;
 }
 
+// Fine della sessione per il giocatore: da qui il delta non cambia più (in-lap, giro di rientro, podio)
+function freezeDelta(state: RaceState, deltaMs = liveDelta(state)) {
+  state.finish ??= { deltaMs };
+}
+
 // Delta live: tempo sul giro corrente contro il miglior giro valido, campionato ogni TRACE_STEP metri
 function trackPlayerLap(state: RaceState, data: PacketData<'lapData'>) {
   const lap = data.lapData[state.playerIndex];
   if (!lap) return;
   const { trace } = state;
+  const before = state.lapData?.lapData[state.playerIndex];
+  // Traguardo dopo la bandiera a scacchi, o auto arrivata/ritirata: delta fermo sul valore prima della linea
+  if (
+    before &&
+    ((lap.resultStatus >= 3 && before.resultStatus < 3) ||
+      (state.checkered && lap.currentLapNum !== before.currentLapNum))
+  )
+    freezeDelta(state);
   const previous = state.lastLapNum[state.playerIndex];
   if (previous !== undefined && lap.currentLapNum === previous + 1) {
+    if (before?.currentLapNum === previous) {
+      const s1 = msOf(before.sector1TimeMinutesPart, before.sector1TimeMSPart);
+      const s2 = msOf(before.sector2TimeMinutesPart, before.sector2TimeMSPart);
+      const s3 = lap.lastLapTimeInMS - s1 - s2;
+      state.playerLastSectorsMs = s1 > 0 && s2 > 0 && s3 > 0 ? [s1, s2, s3] : [0, 0, 0];
+    }
     const completed = lap.lastLapTimeInMS;
     if (!trace.invalid && completed > 0 && (trace.bestMs === 0 || completed < trace.bestMs)) {
       trace.best = trace.current;
@@ -159,6 +191,7 @@ function learnTrack(state: RaceState, motion: PacketData<'motion'>) {
 }
 
 export function liveDelta(state: RaceState): number | undefined {
+  if (state.finish) return state.finish.deltaMs;
   const lap = state.lapData?.lapData[state.playerIndex];
   const best = state.trace.best;
   if (!lap || !best) return undefined;
@@ -208,6 +241,7 @@ export function applyPacket(state: RaceState, packet: Packet, format: UdpFormat)
       break;
     case 'finalClassification':
       state.classification = packet.data;
+      freezeDelta(state);
       break;
     case 'carDamage':
       state.damage = packet.data;

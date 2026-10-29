@@ -2,7 +2,7 @@ import { schemas } from '../f1/codec.ts';
 import { blank } from '../f1/struct.ts';
 import type { Packet, PacketHeader, RaceEvent, UdpFormat } from '../f1/schema.ts';
 import { demoGrid, demoGrid2026Extra, demoPlayerDriverId, demoTrack, type DemoDriver } from '../../data/demo.ts';
-import { buildTrack, sampleAt, type Track } from './track.ts';
+import { accel, braking, buildTrack, drag, sampleAt, type Track } from './track.ts';
 
 // Gara simulata che emette pacchetti F1 reali con le frequenze del gioco: serve alla modalità DEV
 // (nel browser, senza bridge) e al mock UDP (`npm run mock`) per provare tutta la catena.
@@ -136,6 +136,12 @@ function mulberry32(seed: number) {
 }
 
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+// Avvicina value a target al massimo di rate unità al secondo (pedali: tempi di reazione e di pressione)
+const approach = (value: number, target: number, rate: number, dt: number) =>
+  value + clamp(target - value, -rate * dt, rate * dt);
+const V_FULL_BRAKE = 83; // m/s ≈ 300 km/h: da qui in su il freno va al 100%
+const BRAKE_FROM = 4; // m/s²: sotto basta alzare il piede (rallentamenti brevi, scia)
+const SCRUB = 0.08; // resistenza delle gomme in curva, in proporzione all'accelerazione laterale
 const split = (ms: number) => ({ minutes: Math.floor(ms / 60_000), ms: Math.round(ms % 60_000) });
 const gearTops = [24, 34, 44, 54, 63, 72, 81, 93];
 
@@ -365,14 +371,13 @@ export function createSimulator(options: SimOptions): Simulator {
     if (room > 0 && room < FOLLOW_GAP && !canPass) target = Math.min(target, ahead!.speed * (room / FOLLOW_GAP));
 
     const previous = car.speed;
-    const maxAccel = Math.max(3, 17 - 0.15 * car.speed) * 1.08;
+    const maxAccel = accel(car.speed) * 1.08;
+    const maxBraking = braking(car.speed) * 1.1;
     car.speed =
-      target > car.speed ? Math.min(target, car.speed + maxAccel * dt) : Math.max(target, car.speed - 46 * dt);
+      target > car.speed ? Math.min(target, car.speed + maxAccel * dt) : Math.max(target, car.speed - maxBraking * dt);
     car.accel = (car.speed - previous) / dt;
-    const atLimit = car.speed >= target - 0.3;
-    car.throttle =
-      car.accel > 0.4 ? clamp(0.82 + car.accel / 40) : atLimit ? (Math.abs(curvature) < 0.002 ? 1 : 0.58) : 0;
-    car.brake = car.accel < -3 ? clamp(-car.accel / 44) : 0;
+    const flatOut = car.speed >= target - 0.3 && Math.abs(curvature) < 0.002 && !vscActive() && !cooling;
+    pedals(car, curvature, flatOut, dt);
     car.steer = clamp(-curvature * 48, -1, 1);
 
     const moved = car.speed * dt;
@@ -380,6 +385,23 @@ export function createSimulator(options: SimOptions): Simulator {
     car.distance += moved;
     if (car.distance > 0 && !cooling) progress(car, before, moved, curvature, dt);
     thermal(car, curvature, spec.heat, dt);
+  }
+
+  // Pedali come nelle tracce di telemetria reali: il gas si stacca in un decimo di secondo, il freno sale al
+  // massimo quasi subito e cala con la velocità (meno carico aerodinamico) fino a zero al punto di corda; in uscita
+  // il gas cresce in modo progressivo, a velocità costante in curva serve solo a vincere la resistenza dell'aria.
+  // La pressione richiesta segue la decelerazione (meno la parte dovuta all'aria) e la spinta oltre la resistenza.
+  function pedals(car: SimCar, curvature: number, flatOut: boolean, dt: number) {
+    const resistance = drag(car.speed) + SCRUB * car.speed * car.speed * Math.abs(curvature);
+    const decel = -car.accel - resistance;
+    const brakeTarget = decel > BRAKE_FROM ? clamp(decel / (braking(V_FULL_BRAKE) - drag(V_FULL_BRAKE))) : 0;
+    const push = car.accel + resistance;
+    const throttleTarget =
+      brakeTarget > 0.02 || push <= 0 ? 0 : flatOut ? 1 : clamp(push / (accel(car.speed) * 1.08 + resistance), 0.06, 1);
+    car.brake = approach(car.brake, brakeTarget, brakeTarget > car.brake ? 9 : 3.2, dt);
+    // Rilascio secco solo per staccare del tutto; le correzioni a gas parziale sono più dolci
+    const throttleRate = throttleTarget > car.throttle ? 2.6 : throttleTarget === 0 ? 11 : 1.8;
+    car.throttle = approach(car.throttle, throttleTarget, throttleRate, dt);
   }
 
   function crossingTime(car: SimCar, overshoot: number) {

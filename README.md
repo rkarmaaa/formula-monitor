@@ -7,7 +7,7 @@
 **Il muretto box di F1 25, sul tuo schermo.**
 
 Telemetria live di F1 25 (PS5 · Xbox · PC) in qualsiasi browser di casa: timer della sessione,<br />
-classifica con settori e distacchi, delta, gomme, power unit, live feed e strategia di gara. Pensato per il 9:16, funziona anche a 16:9.
+classifica con settori e distacchi, delta, gomme, power unit, live feed e pedali. Pensato per il 9:16, funziona anche a 16:9.
 
 [![CI](https://github.com/rkarmaaa/formula-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/rkarmaaa/formula-monitor/actions/workflows/ci.yml)
 ![Node](https://img.shields.io/badge/node-%E2%89%A522.18-000000?logo=node.js&logoColor=white)
@@ -21,22 +21,24 @@ classifica con settori e distacchi, delta, gomme, power unit, live feed e strate
 
 ## ✨ In breve
 
-|                            |                                                                                                                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 📡 **Live dal gioco**      | Un'app per Windows (un solo .exe) riceve l'UDP di F1 25 e lo porta in qualsiasi browser di casa: PC, telefono, tablet, secondo monitor.     |
-| ⏱️ **Qualifica in chiaro** | Timer della sessione e classifica di tutti i piloti con giro migliore, distacco e S1·S2·S3: viola il migliore assoluto, verde il personale. |
-| ⏳ **Attesa che spiega**   | Finché la sessione non parte il monitor dice cosa manca: PC non raggiungibile, nessun dato UDP, formato sbagliato.                          |
-| 🎮 **Due formati**         | F1 25 (formato 2025) e Season Pack 2026 (22 auto): riconosciuti automaticamente.                                                            |
-| ◼️ **Grafite**             | Design geometrico in bianco e nero, spigoli vivi; il colore è solo dato.                                                                    |
-| 🧪 **Simulazione**         | Dal footer della home: qualifica o gara simulate nel browser, con il selettore della schermata nella barra.                                 |
+|                            |                                                                                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📡 **Live dal gioco**      | Un'app per Windows e macOS (un solo file) riceve l'UDP di F1 25 e lo porta in qualsiasi browser di casa: PC, telefono, tablet, secondo monitor. |
+| ⏱️ **Qualifica in chiaro** | Timer della sessione e classifica di tutti i piloti con giro migliore, distacco e S1·S2·S3: viola il migliore assoluto, verde il personale.     |
+| ⏳ **Attesa che spiega**   | Finché la sessione non parte il monitor dice cosa manca: PC non raggiungibile, nessun dato UDP, formato sbagliato.                              |
+| 🎮 **Due formati**         | F1 25 (formato 2025) e Season Pack 2026 (22 auto): riconosciuti automaticamente.                                                                |
+| ◼️ **Grafite**             | Design geometrico in bianco e nero, spigoli vivi; il colore è solo dato.                                                                        |
+| 🧪 **Simulazione**         | Dal footer della home: qualifica o gara simulate nel browser, con il selettore della schermata nella barra.                                     |
 
 ## 🚀 Avvio rapido
 
 Scarica **[FormulaMonitor.exe](https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor.exe)**
-(Windows 10/11) e aprilo: niente da installare. Si apre il monitor nel browser, in attesa, con l'IP del PC da
+(Windows 10/11) o lo zip per Mac ([Apple Silicon](https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor-macOS-AppleSilicon.zip),
+[Intel](https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor-macOS-Intel.zip)) e aprilo: niente da installare. Si apre il monitor nel browser, in attesa, con l'IP del PC da
 inserire nel gioco e l'indirizzo da aprire su telefono o tablet della stessa rete.
 
 > 💡 Windows può avvisare che l'app non è riconosciuta (non è firmata): _Ulteriori informazioni → Esegui comunque_.
+> Su Mac l'app non è notarizzata: se viene bloccata, _Impostazioni di Sistema → Privacy e sicurezza → Apri comunque_.
 > Al primo avvio consenti l'accesso alle reti private, altrimenti i dati della console non arrivano.
 
 Da sorgente serve **Node.js 22.18+** (consigliato 24): `npm install`, `npm run build`, `npm start`.
@@ -61,7 +63,8 @@ _Opzioni di gioco → Impostazioni → Impostazioni telemetria UDP_
 
 - `pages.yml` pubblica su GitHub Pages la presentazione del prodotto (`PUBLIC_TARGET=site`): download dell'exe,
   demo live del cruscotto e come funziona. Un sito non riceve UDP, quindi online il monitor è sempre in simulazione.
-- `release.yml` a ogni push su `main` crea l'exe (`npm run build:exe`, Node SEA) e lo pubblica nella release
+- `release.yml` a ogni push su `main` crea l'exe per Windows e gli zip per macOS (`npm run build:exe`, Node SEA, su
+  runner Windows, macOS Apple Silicon e Intel) e li pubblica nella release
   `v<versione>`. La versione è automatica: `major.minor` da `package.json`, patch = commit successivi.
 
 ## 🛠️ Sviluppo

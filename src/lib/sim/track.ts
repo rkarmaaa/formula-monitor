@@ -16,8 +16,18 @@ export interface Track {
 const V_MAX = 93; // m/s ≈ 335 km/h
 const V_MIN = 19;
 const LATERAL_GRIP = 35; // m/s² in curva
-const BRAKING = 40;
-const accel = (v: number) => Math.max(3, 17 - 0.15 * v);
+
+// Come nei dati reali: in frenata ~5 g a 300 km/h e ~3 g sotto i 100 (il carico aerodinamico cala con la
+// velocità); trazione limitata dal motore in alto e dalle gomme in basso
+export const braking = (v: number) => 26 + 0.0034 * v * v;
+export const accel = (v: number) => Math.max(3, 17 - 0.15 * v);
+// Resistenza aerodinamica (m/s²): rallenta l'auto anche senza freno e chiede gas per tenere la velocità
+export const drag = (v: number) => 0.0012 * v * v;
+
+// Cerchio di aderenza: la parte di grip usata in curva non è disponibile per frenare o accelerare. Ne nascono la
+// frenata "a scalare" verso il punto di corda e la pressione progressiva del gas in uscita.
+const longitudinal = (v: number, k: number) =>
+  Math.sqrt(Math.max(0.04, 1 - ((v * v * Math.abs(k)) / LATERAL_GRIP) ** 4));
 
 function catmullRom(points: [number, number][], substeps = 48): [number, number][] {
   const out: [number, number][] = [];
@@ -95,11 +105,13 @@ export function buildTrack(control: [number, number][], length: number): Track {
   for (let pass = 0; pass < 2; pass++) {
     for (let i = 0; i < samples; i++) {
       const j = (i + 1) % samples;
-      speed[j] = Math.min(speed[j]!, Math.sqrt(speed[i]! ** 2 + 2 * accel(speed[i]!) * STEP));
+      const grip = longitudinal(speed[i]!, curvature[i]!);
+      speed[j] = Math.min(speed[j]!, Math.sqrt(speed[i]! ** 2 + 2 * accel(speed[i]!) * grip * STEP));
     }
     for (let i = samples - 1; i >= 0; i--) {
       const j = (i - 1 + samples) % samples;
-      speed[j] = Math.min(speed[j]!, Math.sqrt(speed[i]! ** 2 + 2 * BRAKING * STEP));
+      const grip = longitudinal(speed[i]!, curvature[i]!);
+      speed[j] = Math.min(speed[j]!, Math.sqrt(speed[i]! ** 2 + 2 * braking(speed[i]!) * grip * STEP));
     }
   }
 

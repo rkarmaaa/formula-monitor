@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start", "--", "--port", "20790", "--udp", "20877"],
       "port": 20790
+    },
+    {
+      "name": "formula-monitor-site-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["astro", "preview", "--port", "4330"],
+      "port": 4330
     }
   ]
 }

@@ -44,17 +44,24 @@ export function createInputs(root: HTMLElement) {
     const data = values[series];
     const now = time[(head - 1 + CAPACITY) % CAPACITY]!;
     const seconds = RANGES[range]!;
-    const x = (i: number) => width - ((now - time[i]!) / seconds) * width;
+    // La finestra di tempo copre la parte visibile; il canvas sborda a sinistra (tagliato dal contenitore)
+    const visible = canvas.parentElement?.clientWidth || width;
+    const x = (i: number) => width - ((now - time[i]!) / seconds) * visible;
     const y = (i: number) => height - 1 - data[i]! * (height - 2);
     ctx.beginPath();
     let first = -1;
     let last = -1;
+    let older = -1; // ultimo campione fuori dalla finestra: la linea parte da lì, oltre il bordo
     for (let k = count; k > 0; k--) {
       const i = (head - k + CAPACITY) % CAPACITY;
-      if (now - time[i]! > seconds) continue;
+      if (x(i) < 0) {
+        older = i;
+        continue;
+      }
       if (first < 0) {
-        first = i;
-        ctx.moveTo(x(i), y(i));
+        first = older >= 0 ? older : i;
+        ctx.moveTo(x(first), y(first));
+        if (first !== i) ctx.lineTo(x(i), y(i));
       } else ctx.lineTo(x(i), y(i));
       last = i;
     }

@@ -1,8 +1,11 @@
 name: Release
 
-# Exe per Windows a ogni push su main: release "v<versione>" (versione automatica dai commit, vedi
-# server/version.ts) con FormulaMonitor.exe allegato. Il sito scarica sempre l'ultima:
+# App a ogni push su main: release "v<versione>" (versione automatica dai commit, vedi server/version.ts) con
+# l'exe per Windows e lo zip per macOS (Apple Silicon e Intel). Ogni sistema compila il suo binario (Node SEA usa
+# il node che esegue la build), poi un solo job pubblica. Il sito scarica sempre l'ultima:
 # https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor.exe
+# https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor-macOS-AppleSilicon.zip
+# https://github.com/rkarmaaa/formula-monitor/releases/latest/download/FormulaMonitor-macOS-Intel.zip
 on:
   push:
     branches: [main]
@@ -16,8 +19,17 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  exe:
-    runs-on: windows-latest
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            file: release/FormulaMonitor.exe
+          - os: macos-latest
+            file: release/FormulaMonitor-macOS-AppleSilicon.zip
+          - os: macos-15-intel
+            file: release/FormulaMonitor-macOS-Intel.zip
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,17 +41,36 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build:exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.os }}
+          path: ${{ matrix.file }}
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
       - id: version
-        shell: bash
         run: echo "tag=v$(node -e "import('./server/version.ts').then((m) => console.log(m.appVersion()))")" >> "$GITHUB_OUTPUT"
       - name: Pubblica la release
-        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.version.outputs.tag }}
         run: |
+          files=(release/FormulaMonitor.exe release/FormulaMonitor-macOS-AppleSilicon.zip release/FormulaMonitor-macOS-Intel.zip)
           if gh release view "$TAG" > /dev/null 2>&1; then
-            gh release upload "$TAG" release/FormulaMonitor.exe --clobber
+            gh release upload "$TAG" "${files[@]}" --clobber
           else
-            gh release create "$TAG" release/FormulaMonitor.exe --target "$GITHUB_SHA" --title "Formula Monitor $TAG" --generate-notes --latest
+            gh release create "$TAG" "${files[@]}" --target "$GITHUB_SHA" --title "Formula Monitor $TAG" --generate-notes --latest
           fi

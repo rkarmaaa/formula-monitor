@@ -15,14 +15,20 @@ export default {
   home: {
     title: 'Formula Monitor — telemetria live per F1 25',
     description:
-      'Cruscotto in tempo reale per F1 25 su PS5, Xbox e PC: cronometro, classifica con settori, gomme e meteo su qualsiasi schermo di casa. App gratuita per Windows.',
+      'Cruscotto in tempo reale per F1 25 su PS5, Xbox e PC: cronometro, classifica con settori, gomme e meteo su qualsiasi schermo di casa. App gratuita per Windows e macOS.',
     hero: {
       eyebrow: 'Telemetria live · F1 25',
       heading: 'Il muretto box, *sul tuo schermo.*',
-      lead: 'Un’app gratuita per Windows: riceve la telemetria del gioco e la mostra in un cruscotto live sul PC, sul telefono o sul tablet.',
-      download: 'Scarica per Windows',
+      lead: 'Un’app gratuita per Windows e macOS: riceve la telemetria del gioco e la mostra in un cruscotto live sul PC, sul telefono o sul tablet.',
+      download: {
+        choose: 'Scegli la versione',
+        // label = testo del pulsante, option = voce del menu
+        windows: { label: 'Scarica per Windows', option: 'Windows 10 e 11' },
+        'mac-arm': { label: 'Scarica per macOS', option: 'macOS · Apple Silicon (M1 e successivi)' },
+        'mac-intel': { label: 'Scarica per macOS Intel', option: 'macOS · Intel' },
+      },
       demo: 'Prova la demo',
-      note: 'Windows 10 e 11 · PS5, Xbox e PC · F1 25 e Season Pack 2026',
+      note: 'Windows 10 e 11 · macOS 13 e successivi · PS5, Xbox e PC · F1 25 e Season Pack 2026',
       scroll: 'Scorri per scoprire come funziona',
     },
     preview: {
@@ -41,7 +47,7 @@ export default {
         { title: 'Live feed', text: 'Sorpassi, penalità, ritiri e bandiere, man mano che succedono.' },
         {
           title: 'Gara e qualifica',
-          text: 'In gara la strategia prende il posto dei pedali: finestra dei box e ritmo.',
+          text: 'Pedali e settori in ogni sessione; a bandiera a scacchi il delta resta fermo sul tuo ultimo giro.',
         },
       ],
     },
@@ -52,9 +58,10 @@ export default {
       steps: [
         {
           title: 'Scarica e apri Formula Monitor',
-          text: 'Un solo file, niente da installare. Si apre il cruscotto in attesa, con l’IP del PC da inserire nel gioco.',
+          text: 'Un solo file, niente da installare, per Windows o Mac. Si apre il cruscotto in attesa, con l’IP del computer da inserire nel gioco.',
           notes: [
             'Windows potrebbe avvisare che l’app non è riconosciuta: Ulteriori informazioni → Esegui comunque.',
+            'Su Mac apri lo zip e fai doppio clic su FormulaMonitor (si apre nel Terminale). Se macOS lo blocca: Impostazioni di Sistema → Privacy e sicurezza → Apri comunque.',
             'Al primo avvio consenti l’accesso alle reti private, altrimenti i dati della console non arrivano.',
           ],
         },

@@ -16,6 +16,7 @@
   }
 
   .power-unit-part {
+    user-select: none;
     --bar: #{$color-personal};
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;

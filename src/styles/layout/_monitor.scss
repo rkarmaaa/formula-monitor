@@ -3,7 +3,7 @@
 // Monitor a tutto schermo: contenuto sopra, barra in basso. Il cruscotto riproduce il Figma "QUALI & TESTING":
 // --dp = pixel del design, scalati per stare nello schermo. In 9:16 i blocchi sono impilati come nel design;
 // oltre 1:1 la classifica va a sinistra a tutta altezza, a destra scheda del giocatore, meteo, pedali e gomme.
-// In basso meteo e power unit accanto al live feed, poi i pedali; in gara (data-race) la strategia li sostituisce.
+// In basso meteo e power unit accanto al live feed, poi i pedali, in qualifica come in gara.
 .monitor {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
@@ -40,6 +40,7 @@
     gap: dp($q-gap);
     height: 100%;
     padding: dp($q-pad);
+    padding-top: dp(26);
 
     // 16:9: classifica a tutta altezza a sinistra, a destra il resto del 9:16 con le stesse misure
     @include respond(landscape) {
@@ -81,19 +82,8 @@
       grid-area: feed;
     }
 
-    > [data-block='pedals'],
-    > [data-block='strategy'] {
+    > [data-block='pedals'] {
       grid-area: pedals;
-    }
-
-    // In gara la strategia prende il posto dei pedali (stessa area)
-    > [data-block='strategy'],
-    &[data-race] > [data-block='pedals'] {
-      display: none;
-    }
-
-    &[data-race] > [data-block='strategy'] {
-      display: grid;
     }
 
     > [data-block='car'] {

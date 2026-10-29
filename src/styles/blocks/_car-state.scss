@@ -42,6 +42,7 @@
   // Anello aperto: l'arco parte da un estremo dell'apertura (verso la vettura) e copre --v dello spazio utile;
   // il resto è la traccia tenue dello stesso colore. Il valore resta al centro.
   .car-state-ring {
+    user-select: none;
     @include wear-color;
     @include flex-center;
     --ring-start: #{$ring-wheel-start};

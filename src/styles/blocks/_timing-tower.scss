@@ -60,6 +60,11 @@
       .timing-tower-pos {
         color: $color-ink;
       }
+
+      // Il tempo del giocatore più luminoso degli altri (il viola del migliore assoluto resta)
+      .timing-tower-best:not([data-tone='best']) {
+        color: $color-ink-strong;
+      }
     }
 
     &[data-garage],
@@ -107,25 +112,7 @@
       visibility: hidden;
     }
 
-    &[data-compound='soft'] {
-      color: $tyre-soft;
-    }
-
-    &[data-compound='medium'] {
-      color: $tyre-medium;
-    }
-
-    &[data-compound='hard'] {
-      color: $tyre-hard;
-    }
-
-    &[data-compound='inter'] {
-      color: $tyre-inter;
-    }
-
-    &[data-compound='wet'] {
-      color: $tyre-wet;
-    }
+    @include compound-tones;
   }
 
   .timing-tower-tag {

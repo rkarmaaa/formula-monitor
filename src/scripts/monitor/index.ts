@@ -44,7 +44,7 @@ const renderers: Renderer[] = [createInputs($('.monitor-board [data-block="pedal
 const binders: Binder[] = roots.map((el) => createBinder(el));
 
 runtime.subscribe((view) => {
-  // In gara il cruscotto cambia: distacchi in classifica, strategia al posto dei pedali
+  // In gara il cruscotto cambia: distacchi in classifica e giri in alto
   board.toggleAttribute('data-race', view.race.isRace);
   if (monitor.dataset.view !== 'board') return;
   for (const binder of binders) binder.update(view, view);

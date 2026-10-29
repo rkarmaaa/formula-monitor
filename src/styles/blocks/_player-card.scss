@@ -85,6 +85,10 @@
     &[data-tone='slower'] {
       background: $sector-slower;
     }
+
+    & span {
+      transform: translateY(dp(1));
+    }
   }
 
   .player-card-delta {

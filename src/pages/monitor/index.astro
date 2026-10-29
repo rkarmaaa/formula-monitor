@@ -10,7 +10,6 @@ import Engine from '@components/blocks/Engine.astro';
 import Feed from '@components/blocks/Feed.astro';
 import Pedals from '@components/blocks/Pedals.astro';
 import Car from '@components/blocks/Car.astro';
-import Strategy from '@components/blocks/Strategy.astro';
 import { t } from '@i18n/index';
 import { site } from '@data/site';
 
@@ -48,7 +47,7 @@ const dots = ['.', '.', '.'];
         </div>
         <div class="monitor-wait-settings">
           <p class="monitor-wait-label">{m.wait.settings}</p>
-          <p class="monitor-wait-path">{t.home.tutorial.steps[0]!.text}</p>
+          <p class="monitor-wait-path">{t.home.tutorial.steps[1]!.text}</p>
           <UdpSettings />
         </div>
       </section>
@@ -60,7 +59,6 @@ const dots = ['.', '.', '.'];
         <Engine />
         <Feed />
         <Pedals />
-        <Strategy />
         <Car />
       </div>
     </main>

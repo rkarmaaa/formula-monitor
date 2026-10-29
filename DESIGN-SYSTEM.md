@@ -4,7 +4,7 @@ Documento di riferimento per i prossimi aggiornamenti. Tutti i valori vivono in
 `src/styles/abstracts/_variables.scss`, i mixin in `_mixins.scss`; qui si spiega **quando** usarli.
 
 **Fonte del design**: Figma, file "Roba", frame **QUALI & TESTING** (nodo `1283:9`, 1080 × 1920) e **RACE**
-(nodo `1283:76`, stessi blocchi: distacchi in classifica, giri in alto, strategia al posto dei pedali).
+(nodo `1283:76`, stessi blocchi: distacchi in classifica, giri in alto; i pedali restano anche in gara, il blocco strategia è disattivato).
 Ogni modifica visiva al monitor parte da lì: i token `$q-*` sono le misure del frame in pixel di design.
 
 ## 1. Filosofia
@@ -41,7 +41,7 @@ Un monitor da muretto box: carbone, schede a filo, dati grandi e leggibili. Ogni
 | `$tyre-soft/medium/hard/inter/wet`, `$tyre-chip-alpha` | #B92020, #EACC08, #D9D9D9…    | chip mescola: testo pieno, fondo al 20%      |
 
 I colori dei team sono **dati** (`src/data/teams.ts`, custom property `--team`); i loghi stanno in
-`public/teams/<id>.png` e si attivano con `logo` nel team. Senza logo resta un quadrato nel colore del team.
+`public/teams/<id>.png` e si attivano con `logo` nel team (F1 e F2). Senza logo resta un quadrato nel colore del team.
 
 ### Tipografia (font del progetto, stile del Figma)
 
@@ -96,7 +96,7 @@ Spazi `$sp-*` per le pagine · `$touch-min` 48 px · usura di gomme e ali con co
 
 - **Attesa** (`data-view="wait"`) finché non arriva il pacchetto Session; torna all'attesa dopo 15 s senza dati.
 - **Cruscotto**: aree in `layout/_monitor.scss`. 9:16 = intestazione, scheda giocatore, classifica, poi in basso
-  meteo e power unit (325) accanto al live feed (296), sotto i pedali (in gara la strategia), a destra gomme e ali
+  meteo e power unit (325) accanto al live feed (296), sotto i pedali (anche in gara), a destra gomme e ali
   (Figma 1291:192). 16:9 = classifica a tutta altezza a sinistra, a destra le stesse schede del 9:16.
 - **Simulazione** (`?demo`): lo stesso cruscotto con dati simulati, senza blocchi aggiuntivi.
 

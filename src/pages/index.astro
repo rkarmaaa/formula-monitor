@@ -4,12 +4,13 @@ import SiteLayout from '@layouts/SiteLayout.astro';
 import Button from '@components/ui/Button.astro';
 import Icon from '@components/ui/Icon.astro';
 import HeroCar from '@components/home/HeroCar.astro';
+import DownloadButton from '@components/home/DownloadButton.astro';
 import UdpSettings from '@components/setup/UdpSettings.astro';
 import { accent } from '@lib/text';
 import { t } from '@i18n/index';
 import { site } from '@data/site';
 
-// Presentazione del prodotto: download dell'app per Windows, demo live del cruscotto, come funziona
+// Presentazione del prodotto: download dell'app per Windows e macOS, demo live del cruscotto, come funziona
 const h = t.home;
 const tut = h.tutorial;
 const pre = h.preview;
@@ -25,9 +26,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
       <h1 class="home-hero-title" id="home-title" set:html={accent(h.hero.heading)} />
       <p class="home-hero-lead">{h.hero.lead}</p>
       <div class="home-hero-actions">
-        <Button href={site.download} size="lg" icon="lucide:download">
-          {h.hero.download}
-        </Button>
+        <DownloadButton id="download-hero" size="lg" />
         <Button href={href('monitor/?demo')} size="lg" variant="outline">
           {h.hero.demo}
         </Button>
@@ -81,9 +80,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
             ))}
           </ul>
           <div class="home-tutorial-actions">
-            <Button href={site.download} icon="lucide:download">
-              {h.hero.download}
-            </Button>
+            <DownloadButton id="download-tutorial" />
           </div>
         </div>
       </li>

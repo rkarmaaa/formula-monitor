@@ -1,0 +1,59 @@
+---
+import Icon from '@components/ui/Icon.astro';
+import { downloads, site } from '@data/site';
+import { t } from '@i18n/index';
+
+// Download dell'app: un solo pulsante con la versione giusta per il sistema del visitatore (riconosciuto da
+// src/scripts/download.ts) e, a destra, la freccia con il menu di tutte le versioni. Senza JavaScript: Windows.
+interface Props {
+  id: string;
+  size?: 'md' | 'lg';
+}
+
+const { id, size = 'md' } = Astro.props;
+const d = t.home.hero.download;
+const [first] = downloads;
+const url = (file: string) => site.releases + file;
+---
+
+<div class:list={['download-button', size]} data-download>
+  <a class="download-button-main" href={url(first!.file)} data-download-main>
+    {downloads.map(({ id: option, icon }) => (
+      <span class="download-button-face" data-face={option} hidden={option !== first!.id}>
+        <Icon name={icon} />
+        <span>{d[option].label}</span>
+      </span>
+    ))}
+  </a>
+  <button
+    class="download-button-toggle"
+    type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls={id}
+    aria-label={d.choose}
+    data-download-toggle
+  >
+    <Icon name="lucide:chevron-down" />
+  </button>
+  <ul class="download-button-menu" id={id} aria-label={d.choose} hidden>
+    {downloads.map(({ id: option, file, icon }) => (
+      <li>
+        <a
+          class="download-button-option"
+          href={url(file)}
+          data-option={option}
+          aria-current={option === first!.id ? 'true' : undefined}
+        >
+          <Icon name={icon} />
+          <span>{d[option].option}</span>
+          <Icon name="lucide:check" class="download-button-check" />
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  import '@scripts/download';
+</script>

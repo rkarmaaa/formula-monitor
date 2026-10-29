@@ -8,12 +8,13 @@ simulazione, rimossi nell'ottobre 2026: oggi resta un catalogo dei dati disponib
 del cruscotto (disegnati prima in Figma). I dati già calcolati restano in `src/lib/telemetry/view.ts`.
 
 **Cruscotto base** (Figma QUALI & TESTING e RACE): intestazione (logo vettura, circuito, sessione, tempo o giri),
-scheda giocatore (posizione, mescola, settori, delta a 3 aggiornamenti/s, ultimo e migliore), classifica (distacco
+scheda giocatore (posizione, mescola, settori colorati nel giro e per 5,5 s dopo il traguardo, poi grigi; delta a 3
+aggiornamenti/s, fermo dal traguardo dopo la bandiera a scacchi, a fine sessione o ad auto arrivata; ultimo e migliore), classifica (distacco
 dal primo: sul giro migliore in qualifica, sul traguardo in gara), meteo (4 previsioni), power unit, live feed
 (messaggi di gara), gomme e ali (usura delle 4 gomme e danno delle ali con colore
-graduale) e, in qualifica, pedali; in gara al loro posto la **strategia**: finestra pit (tra quanti giri / aperta /
-chiusa, sulla barra della gara), gomma montata con i giri fatti, posizione al rientro se ti fermi adesso, margine di
-carburante a fine gara.
+graduale) e pedali, in qualifica come in gara. Il blocco **strategia** (finestra pit, gomma montata, rientro,
+carburante: `Strategy.astro`) è disattivato: resta nel sorgente ma non è montato nel cruscotto.
+Mescole: F1 (S rossa, M gialla, H bianca, I verde, W blu) e F2 (Super soft viola con una S, poi S, M, H, W).
 
 ## Gara e classifica
 

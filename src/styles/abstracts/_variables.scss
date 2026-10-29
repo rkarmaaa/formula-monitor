@@ -54,15 +54,17 @@ $color-live: $color-personal;
 $color-wear: #b74815;
 $color-critical: #b92020;
 
-// Barre dei settori del giocatore (gradienti dal Figma)
-$sector-best: linear-gradient(to right, #a315bc, #4b0a56);
-$sector-personal: linear-gradient(to right, #089d09, #033703);
-$sector-slower: linear-gradient(to right, #bc152e, #560a15);
-$sector-none: linear-gradient(to right, $gray-400, $gray-200);
+// Barre dei settori del giocatore: tinta piena con una luce morbida in alto a sinistra e un'ombra leggera a
+// destra (il Figma sfumava fino al quasi nero, sporcando il colore)
+$sector-best: linear-gradient(105deg, #c446dd, $color-best 45%, #8a1c9f);
+$sector-personal: linear-gradient(105deg, #2dbb2e, $color-personal 45%, #077a08);
+$sector-slower: linear-gradient(105deg, #d93a52, $color-danger 45%, #911226);
+$sector-none: linear-gradient(105deg, $gray-400, $gray-300);
 // Posizione del giocatore: cifre sfumate dall'alto (Figma)
 $position-fill: linear-gradient(to bottom, $gray-900, #585858);
 
 // Mescole: testo pieno, fondo del chip al 20%
+$tyre-supersoft: #9b4dff; // F2: Super soft viola
 $tyre-soft: $color-critical;
 $tyre-medium: #eacc08;
 $tyre-hard: $gray-900;
@@ -334,6 +336,7 @@ $q-fs-ring: 28;
 $q-pedals-button: 24;
 $q-fs-pedals-zoom: 14;
 $q-pedals-range-w: 48;
+$q-pedals-bleed: 12; // il canvas sborda a sinistra di tanto, tagliato dal blocco
 
 // Strategia di gara (Figma nodo 1285:2162): finestra pit, rientro, carburante
 $q-strategy-gap: 32;

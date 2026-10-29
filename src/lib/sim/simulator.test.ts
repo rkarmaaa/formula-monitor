@@ -31,6 +31,9 @@ for (const format of [2025, 2026] as const) {
     for (const code of ['SSTA', 'LGOT', 'FTLP', 'DRSE', 'CHQF', 'RCWN', 'SEND']) assert.ok(codes.has(code), code);
 
     const view = buildView(state);
+    assert.ok(state.finish, 'a fine gara il delta è fermo');
+    for (const packet of sim.step(5)) applyPacket(state, packet, format);
+    assert.equal(buildView(state).liveDeltaMs, view.liveDeltaMs, 'il delta non cambia più dopo il traguardo');
     const expected = format === 2026 ? 22 : 20;
     assert.equal(view.cars.length, expected);
     assert.deepEqual(

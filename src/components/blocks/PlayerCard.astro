@@ -1,8 +1,9 @@
 ---
 import { t } from '@i18n/index';
 
-// Scheda del giocatore: posizione e mescola montata; settori del giro in corso (viola/verde/rosso), delta live
-// sul proprio miglior giro (al massimo 3 aggiornamenti al secondo, data-every), ultimo e migliore
+// Scheda del giocatore: posizione e mescola montata; settori del giro in corso (viola/verde/rosso, colorati ancora
+// qualche secondo dopo il traguardo, poi grigi), delta live sul proprio miglior giro (al massimo 3 aggiornamenti
+// al secondo, data-every; fermo a fine sessione), ultimo e migliore
 const b = t.monitor.blocks.player;
 const sectors = [0, 1, 2];
 ---
@@ -22,9 +23,9 @@ const sectors = [0, 1, 2];
       {sectors.map((i) => (
         <li
           class="player-card-sector"
-          data-attr={`data-tone:player.sectors.${i}.tone; data-live:player.sectors.${i}.live|bool`}
+          data-attr={`data-tone:playerSectors.${i}.tone; data-live:playerSectors.${i}.live|bool`}
         >
-          {b.sectors[i]}
+          <span>{b.sectors[i]}</span>
         </li>
       ))}
     </ol>

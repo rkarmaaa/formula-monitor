@@ -243,6 +243,10 @@
 
 // Colore della mescola sull'elemento con data-compound (chip e nomi: testo pieno, fondo al 20%)
 @mixin compound-tones {
+  &[data-compound='supersoft'] {
+    color: $tyre-supersoft;
+  }
+
   &[data-compound='soft'] {
     color: $tyre-soft;
   }

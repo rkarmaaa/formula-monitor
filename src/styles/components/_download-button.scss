@@ -1,0 +1,118 @@
+@use '../abstracts' as *;
+
+// Download: pulsante pieno con la versione del sistema + freccia separata da un filo; il menu delle versioni si
+// apre sotto, largo almeno quanto il pulsante
+.download-button {
+  position: relative;
+  display: inline-flex;
+
+  .download-button-main,
+  .download-button-toggle {
+    @include button-base;
+    background: $color-primary;
+    color: $color-on-primary;
+
+    @include hover {
+      background: $color-primary-deep;
+    }
+
+    .icon {
+      width: $icon-sm;
+      height: $icon-sm;
+    }
+  }
+
+  .download-button-toggle {
+    padding: 0 $sp-16;
+    border-left-color: $color-on-primary;
+
+    .icon {
+      transition: transform $dur-base $ease-out;
+    }
+
+    &[aria-expanded='true'] .icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  .download-button-face {
+    display: inline-flex;
+    align-items: center;
+    gap: $sp-12;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .download-button-menu {
+    position: absolute;
+    top: calc(100% + #{$sp-4});
+    left: 0;
+    z-index: $z-bar;
+    min-width: 100%;
+    border: $border-thin solid $color-line-strong;
+    background: $color-bg;
+    text-align: left;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .download-button-option {
+    @include label($fs-button);
+    @include focus-ring(-$focus-width);
+    display: flex;
+    align-items: center;
+    gap: $sp-12;
+    min-height: $touch-min;
+    padding-inline: $sp-16;
+    color: $color-ink-soft;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color $dur-fast $ease-out,
+      color $dur-fast $ease-out;
+
+    @include hover {
+      background: $color-white-hover;
+      color: $color-ink-strong;
+    }
+
+    .icon {
+      width: $icon-sm;
+      height: $icon-sm;
+    }
+
+    .download-button-check {
+      margin-left: auto;
+      visibility: hidden;
+    }
+
+    &[aria-current='true'] {
+      color: $color-ink-strong;
+
+      .download-button-check {
+        visibility: visible;
+      }
+    }
+  }
+
+  &.lg {
+    .download-button-main,
+    .download-button-toggle {
+      min-height: $sp-52;
+    }
+
+    .download-button-main {
+      padding: 0 $sp-28;
+    }
+  }
+
+  @include reduced-motion {
+    .download-button-toggle .icon {
+      transition: none;
+    }
+  }
+}

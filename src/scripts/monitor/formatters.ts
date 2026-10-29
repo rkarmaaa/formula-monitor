@@ -30,7 +30,21 @@ export function lapTime(ms: number): string {
 const toTemp = (celsius: number, view: RaceView) => (view.units.temp === 'f' ? (celsius * 9) / 5 + 32 : celsius);
 
 const compound = (id: unknown) => (isNum(id) ? t.f1.compounds[id] : undefined);
-const COMPOUND_CLASS: Record<string, string> = { S: 'soft', M: 'medium', H: 'hard', I: 'inter', W: 'wet', D: 'hard' };
+// Colore della mescola per ID visivo: F1 (16–18, 7, 8), F2 (19–22, 15; la Super soft è viola), F1 classica (9, 10)
+const COMPOUND_CLASS: Record<number, string> = {
+  16: 'soft',
+  17: 'medium',
+  18: 'hard',
+  7: 'inter',
+  8: 'wet',
+  19: 'supersoft',
+  20: 'soft',
+  21: 'medium',
+  22: 'hard',
+  15: 'wet',
+  9: 'hard',
+  10: 'wet',
+};
 
 // Valori dei messaggi di gara: piloti ({car}, {other}) più i dettagli del singolo evento
 function eventValues(record: EventView, name: (car?: CarView) => string): Record<string, string> {
@@ -99,7 +113,7 @@ export const formatters: Record<string, Formatter> = {
   pos: (v) => (isNum(v) && v > 0 ? `P${v}` : DASH),
   compoundLetter: (v) => compound(v)?.short ?? '',
   towerGap: (v, _, { view }) => towerGap(v as CarView | undefined, view),
-  compoundClass: (v) => COMPOUND_CLASS[compound(v)?.short ?? ''] ?? null,
+  compoundClass: (v) => (isNum(v) ? (COMPOUND_CLASS[v] ?? null) : null),
   track: (v) => (isNum(v) ? (tracks[v]?.name ?? DASH) : DASH),
   session: (v) => (isNum(v) ? (t.f1.sessionTypes[v] ?? DASH) : DASH),
   time: (v) => {

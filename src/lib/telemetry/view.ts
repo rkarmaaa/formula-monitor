@@ -282,18 +282,23 @@ function battle(
 const toneOf = (ms: number, personal: number, overall: number): TimeTone =>
   ms <= 0 ? 'none' : overall <= 0 || ms <= overall ? 'best' : personal <= 0 || ms <= personal ? 'personal' : 'slower';
 
-// Settori del giro: quelli già percorsi sono "live", gli altri mostrano il giro precedente
-function playerSectors(player: CarView | undefined, overall: number[]): SectorView[] {
+// Settori del giro: quelli già percorsi sono "live" e colorati, gli altri grigi. Chiuso il giro, tutti e tre
+// restano colorati per SECTOR_HOLD_MS con i tempi del giro appena finito, poi tornano grigi.
+const SECTOR_HOLD_MS = 5500;
+
+function playerSectors(player: CarView | undefined, lastSectors: number[], overall: number[]): SectorView[] {
   const lap = player?.lap;
   if (!player || !lap) return [0, 1, 2].map(() => ({ ms: 0, tone: 'none', live: false }));
   const current = [
     msOf(lap.sector1TimeMinutesPart, lap.sector1TimeMSPart),
     msOf(lap.sector2TimeMinutesPart, lap.sector2TimeMSPart),
   ];
+  const last = lastSectors.some((ms) => ms > 0) ? lastSectors : player.lastSectorsMs;
+  const hold = lap.sector === 0 && lap.currentLapNum > 1 && lap.currentLapTimeInMS < SECTOR_HOLD_MS;
   return [0, 1, 2].map((i) => {
-    const live = lap.sector > i && (current[i] ?? 0) > 0;
-    const ms = live ? current[i]! : (player.lastSectorsMs[i] ?? 0);
-    return { ms, live, tone: toneOf(ms, player.bestSectorsMs[i] ?? 0, overall[i] ?? 0) };
+    const ms = lap.sector > i && (current[i] ?? 0) > 0 ? current[i]! : (last[i] ?? 0);
+    const live = ms > 0 && (lap.sector > i || hold);
+    return { ms, live, tone: live ? toneOf(ms, player.bestSectorsMs[i] ?? 0, overall[i] ?? 0) : 'none' };
   });
 }
 
@@ -407,7 +412,11 @@ export function buildView(state: RaceState): RaceView {
   cars.forEach((car, k) => {
     const shown = isRace
       ? sectors[k]!
-      : sectorTimes(car.history, car.history?.bestLapTimeLapNum ?? 0).map((ms) => ({ ms, live: false, invalid: false }));
+      : sectorTimes(car.history, car.history?.bestLapTimeLapNum ?? 0).map((ms) => ({
+          ms,
+          live: false,
+          invalid: false,
+        }));
     car.sectors = shown.map(({ ms, live, invalid }, i) => ({
       ms,
       live,
@@ -458,7 +467,7 @@ export function buildView(state: RaceState): RaceView {
     },
     playerBestMs: state.trace.bestMs || player?.bestLapMs || 0,
     bestSectorsMs,
-    playerSectors: playerSectors(player, bestSectorsMs),
+    playerSectors: playerSectors(player, state.playerLastSectorsMs, bestSectorsMs),
     playerLaps: playerLaps(player, bestSectorsMs, fastestMs),
     speedTraps,
     fastestLap: state.fastestLap && { car: byIndex(state.fastestLap.carIndex), timeMs: state.fastestLap.timeMs },
