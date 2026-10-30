@@ -10,7 +10,7 @@ del cruscotto (disegnati prima in Figma). I dati già calcolati restano in `src/
 **Cruscotto base** (Figma QUALI & TESTING e RACE): intestazione (logo vettura, circuito, sessione, tempo o giri),
 scheda giocatore (posizione, mescola, settori colorati nel giro e per 5,5 s dopo il traguardo, poi grigi; delta a 3
 aggiornamenti/s, fermo dal traguardo dopo la bandiera a scacchi, a fine sessione o ad auto arrivata; ultimo e migliore), classifica (distacco
-dal primo: sul giro migliore in qualifica, sul traguardo in gara), meteo (4 previsioni), power unit, live feed
+dal primo: sul giro migliore in qualifica, sul traguardo in gara), meteo (fino a 4 previsioni, una colonna ciascuna), power unit, live feed
 (messaggi di gara), gomme e ali (usura delle 4 gomme e danno delle ali con colore
 graduale) e pedali, in qualifica come in gara. Il blocco **strategia** (finestra pit, gomma montata, rientro,
 carburante: `Strategy.astro`) è disattivato: resta nel sorgente ma non è montato nel cruscotto.
@@ -24,7 +24,7 @@ Mescole: F1 (S rossa, M gialla, H bianca, I verde, W blu) e F2 (Super soft viola
 | Giro corrente / totale, giri mancanti, avanzamento                 | Lap Data + Session         | Giro                  |
 | Tempo di sessione rimanente                                        | Session                    | Giro, Sessione        |
 | Intervallo dall'auto davanti e dal leader per **ogni** pilota ★    | Lap Data                   | Classifica            |
-| Doppiati (calcolati dalla distanza percorsa) ★                     | Lap Data                   | Classifica            |
+| Doppiati (distanza percorsa, ferma al traguardo) ★                 | Lap Data                   | Classifica            |
 | Mescola ed **età gomme di ogni avversario** ★                      | Car Status                 | Classifica, Battaglia |
 | Numero di soste di ogni pilota ★                                   | Lap Data                   | Classifica            |
 | Secondi di penalità e **avvisi per track limits** di ogni pilota ★ | Lap Data                   | Classifica            |

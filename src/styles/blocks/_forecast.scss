@@ -1,13 +1,14 @@
 @use '../abstracts' as *;
 
-// Meteo previsto: quattro caselle divise da un filo, quella con pioggia evidenziata
+// Meteo previsto: fino a quattro caselle (una colonna per previsione) divise da un filo, quella con pioggia evidenziata
 .forecast {
   @include card($color-surface-raised);
   min-width: 0;
 
   .forecast-list {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
     gap: $border-thin;
     height: 100%;
   }

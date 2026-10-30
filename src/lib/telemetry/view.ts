@@ -351,10 +351,11 @@ export interface WeatherSlot {
   wet: boolean;
 }
 
-const WEATHER_SLOTS = 5;
+const WEATHER_SLOTS = 4;
 const RAIN_WEATHER = 3; // da "pioggia leggera" in su
 
-// Previsioni della sessione in corso a partire dalla prossima (offset > 0); se il gioco ne manda meno, anche l'attuale
+// Previsioni della sessione in corso (al massimo 4) a partire dalla prossima (offset > 0); se il gioco ne manda meno,
+// anche l'attuale
 function weatherNext(session: SessionData | undefined): WeatherSlot[] {
   if (!session) return [];
   const own = session.weatherForecastSamples
@@ -380,12 +381,16 @@ export function buildView(state: RaceState): RaceView {
     .filter((car): car is CarView => car !== undefined)
     .sort((a, b) => (a.position || 99) - (b.position || 99));
 
-  // Doppiato = un giro intero di distanza percorsa in meno, non solo un numero di giro diverso
+  // Doppiato = un giro intero di distanza percorsa in meno, non solo un numero di giro diverso.
+  // Chi ha tagliato il traguardo conta con la distanza sulla linea (dopo, il gioco la sposta): fra due auto
+  // arrivate la differenza è un multiplo del giro, arrotondato; chi corre ancora conta i giri interi.
   const leader = cars[0];
   const trackLength = session?.trackLength ?? 0;
+  const distanceOf = (car: CarView) => state.finishDistance[car.index] ?? car.lap?.totalDistance ?? 0;
   for (const car of cars) {
-    const behind = leader?.lap && car.lap ? leader.lap.totalDistance - car.lap.totalDistance : 0;
-    car.lapsDown = trackLength && !car.retired ? Math.max(0, Math.floor(behind / trackLength)) : 0;
+    const behind = leader?.lap && car.lap ? (distanceOf(leader) - distanceOf(car)) / (trackLength || 1) : 0;
+    const laps = state.finishDistance[car.index] !== undefined ? Math.round(behind) : Math.floor(behind);
+    car.lapsDown = trackLength && !car.retired ? Math.max(0, laps) : 0;
   }
   const player = cars.find((car) => car.isPlayer);
   const playerAt = player ? cars.indexOf(player) : -1;

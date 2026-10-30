@@ -181,14 +181,29 @@ if (demo) {
 render();
 
 // ——— Schermo intero e schermo sempre acceso ———
+// Wake Lock per tutta la vita della pagina: lo schermo non si spegne per inattività mentre il monitor è aperto.
+// Il browser lo rilascia quando la scheda è nascosta: si richiede di nuovo al ritorno e al primo gesto se rifiutato.
 let wakeLock: WakeLockSentinel | undefined;
+let requesting = false;
 async function keepAwake() {
+  if (wakeLock || requesting || document.visibilityState !== 'visible') return;
+  requesting = true;
   try {
-    wakeLock = await navigator.wakeLock?.request('screen');
+    const lock = await navigator.wakeLock?.request('screen');
+    if (!lock) return;
+    wakeLock = lock;
+    lock.addEventListener('release', () => {
+      if (wakeLock === lock) wakeLock = undefined;
+    });
   } catch {
-    /* Wake Lock disponibile solo in contesto sicuro (localhost/HTTPS) */
+    /* Wake Lock disponibile solo in contesto sicuro (localhost/HTTPS) e con la pagina visibile */
+  } finally {
+    requesting = false;
   }
 }
+void keepAwake();
+document.addEventListener('visibilitychange', () => void keepAwake());
+for (const type of ['pointerdown', 'keydown'] as const) document.addEventListener(type, () => void keepAwake());
 
 document.addEventListener('click', (event) => {
   if (!(event.target as HTMLElement).closest('[data-action="fullscreen"]')) return;
@@ -201,9 +216,4 @@ document.addEventListener('keydown', (event) => {
 });
 document.addEventListener('fullscreenchange', () => {
   document.documentElement.classList.toggle('fullscreen', Boolean(document.fullscreenElement));
-  if (document.fullscreenElement) void keepAwake();
-  else void wakeLock?.release();
-});
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && document.fullscreenElement) void keepAwake();
 });

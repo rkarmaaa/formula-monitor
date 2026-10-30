@@ -44,6 +44,8 @@ export interface RaceState {
   // Distacco dal leader all'inizio di ogni giro, per auto: base per trend e "ti raggiunge in N giri"
   gapLog: number[][];
   lastLapNum: number[];
+  // Distanza percorsa al traguardo, per auto: dopo la linea il gioco la sposta (giro di rientro), i doppiati no
+  finishDistance: number[];
   trace: { current: Float32Array; best?: Float32Array; bestMs: number; invalid: boolean };
   // Settori dell'ultimo giro chiuso dal giocatore, dai dati del giro (lo storico arriva più tardi)
   playerLastSectorsMs: number[];
@@ -69,6 +71,7 @@ export function createRaceState(): RaceState {
     redFlag: false,
     gapLog: [],
     lastLapNum: [],
+    finishDistance: [],
     trace: { current: emptyTrace(), bestMs: 0, invalid: false },
     playerLastSectorsMs: [0, 0, 0],
     checkered: false,
@@ -182,6 +185,20 @@ function logGaps(state: RaceState, data: PacketData<'lapData'>) {
   });
 }
 
+// Arrivo di ogni auto (risultato "finito" o cambio di giro dopo la bandiera a scacchi o sull'ultimo giro):
+// resta la distanza dell'ultimo dato prima della linea
+function freezeDistances(state: RaceState, data: PacketData<'lapData'>) {
+  const totalLaps = state.session?.totalLaps ?? 0;
+  data.lapData.forEach((lap, index) => {
+    const before = state.lapData?.lapData[index];
+    if (!before || before.resultStatus < 2 || state.finishDistance[index] !== undefined) return;
+    const crossed =
+      lap.currentLapNum !== before.currentLapNum &&
+      (state.checkered || (totalLaps > 0 && before.currentLapNum >= totalLaps));
+    if (lap.resultStatus === 3 || crossed) state.finishDistance[index] = before.totalDistance;
+  });
+}
+
 function learnTrack(state: RaceState, motion: PacketData<'motion'>) {
   const { session, lapData } = state;
   if (!session?.trackLength || !lapData) return;
@@ -222,6 +239,7 @@ export function applyPacket(state: RaceState, packet: Packet, format: UdpFormat)
     case 'lapData':
       trackPlayerLap(state, packet.data);
       logGaps(state, packet.data);
+      freezeDistances(state, packet.data);
       state.lapData = packet.data;
       break;
     case 'event':

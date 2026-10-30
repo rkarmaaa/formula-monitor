@@ -52,6 +52,19 @@ for (const format of [2025, 2026] as const) {
       view.cars.every((car) => car.lapsDown === 0 || car.retired),
       'nessun doppiato in una gara di 6 giri',
     );
+
+    // Dopo il traguardo il gioco sposta la distanza percorsa (giro di rientro): i distacchi non diventano giri
+    const lapData = state.lapData!;
+    const length = state.session!.trackLength;
+    const moved = lapData.lapData.map((lap, i) => ({
+      ...lap,
+      totalDistance: lap.totalDistance + (i % 2 ? -1 : 2) * length,
+    }));
+    applyPacket(state, { kind: 'lapData', data: { ...lapData, lapData: moved } }, format);
+    assert.ok(
+      buildView(state).cars.every((car) => car.lapsDown === 0 || car.retired),
+      'nessun doppiato dopo il traguardo',
+    );
   });
 }
 
