@@ -6,6 +6,7 @@ import { createRuntime } from './runtime';
 import { startBridge, startDemo, type DemoSource } from './sources';
 import { createInputs } from '../blocks/inputs';
 import { gameByFormat } from '@data/games';
+import { site } from '@data/site';
 import type { RaceView } from '@lib/telemetry/view';
 import type { SimSession } from '@lib/sim/simulator';
 
@@ -118,6 +119,10 @@ function renderDomain() {
 }
 renderDomain();
 
+const justReloaded = () =>
+  performance.now() < 30_000 &&
+  (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined)?.type === 'reload';
+
 if (demo) {
   const format = params.get('format') === '2026' ? 2026 : 2025;
   applyFormat(format);
@@ -168,6 +173,9 @@ if (demo) {
       render();
     },
     onStatus(next) {
+      // App aggiornata e riavviata: la pagina carica il sito della nuova versione (una volta: niente ricariche a
+      // catena se le versioni non tornano)
+      if (next.version && next.version !== site.version && !justReloaded()) return location.reload();
       bridgeStatus = next;
       renderDomain();
     },

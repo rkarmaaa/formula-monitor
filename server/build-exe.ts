@@ -114,6 +114,7 @@ await build({
   input: join(root, 'server', 'app.ts'),
   platform: 'node',
   external: ['bufferutil', 'utf-8-validate'], // dipendenze facoltative di ws
+  transform: { define: { 'process.env.FM_VERSION': JSON.stringify(version) } }, // versione per l'aggiornamento
   output: { file: main, format: 'cjs', minify: true },
   logLevel: 'warn',
 });

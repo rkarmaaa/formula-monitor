@@ -9,7 +9,7 @@ per partial, niente `--`/`__`, niente `<style>`. Design system: `DESIGN-SYSTEM.m
 
 - **Prodotto:** cruscotto live per la telemetria UDP di F1 25 (formati 2025 e 2026), ottimizzato per display 9:16
   e utilizzabile anche a 16:9. Si distribuisce come **app per Windows (exe) e macOS (zip)** (`npm run build:exe`, ognuna
-  compilata sul proprio sistema dalla CI): il sito online
+  compilata sul proprio sistema dalla CI; l'exe si aggiorna da solo dall'ultima release): il sito online
   (`PUBLIC_TARGET=site`) è solo la presentazione con download e demo live, perché un sito non riceve UDP. App: monitor
   con schermata di attesa (impostazioni del gioco e IP del PC) e cruscotto disegnato in Figma
   (file "Roba", frame **QUALI & TESTING**, nodo `1283:9`): intestazione con cronometro, scheda del giocatore
@@ -57,6 +57,8 @@ server/bridge.ts        UDP → WebSocket (frame binari invariati) + stato JSON 
 server/integration.ts   bridge dentro il dev server di Astro (stessa porta, path /ws)
 server/start.ts         produzione: serve dist/ + bridge (server HTTP comune in server/http.ts)
 server/app.ts           ingresso dell'exe: sito incorporato (asset SEA) + bridge + apre il browser
+server/update.ts        aggiornamento automatico dell'exe (Windows): ultima release GitHub, download verificato
+                        (dimensione, SHA-256), exe rinominato e sostituito, riavvio a gioco fermo (--restarted)
 server/build-exe.ts     build dell'app: sito, bundle rolldown, blob SEA con postject; Windows: icona e dati del file
                         (resedit, da favicon.svg); macOS: firma ad hoc e zip
 src/lib/f1/             struct.ts (codec dichiarativo), schema.ts (2025/2026), codec.ts (decode/encode)

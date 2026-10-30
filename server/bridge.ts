@@ -17,12 +17,15 @@ export interface BridgeStatus {
   lastPacketAgo?: number;
   clients: number;
   error?: string;
+  // Versione dell'app (exe): se cambia dopo un aggiornamento la pagina si ricarica
+  version?: string;
 }
 
 interface BridgeOptions {
   server: Server;
   udpPort?: number;
   httpPort?: number;
+  version?: string;
   log?: (message: string) => void;
 }
 
@@ -40,7 +43,7 @@ export function lanAddresses(): string[] {
   return [...new Set(all)].sort((a, b) => rank(a) - rank(b));
 }
 
-export function createBridge({ server, udpPort = ports.udp, httpPort, log = console.log }: BridgeOptions) {
+export function createBridge({ server, udpPort = ports.udp, httpPort, version, log = console.log }: BridgeOptions) {
   const wss = new WebSocketServer({ noServer: true });
   const udp = dgram.createSocket({ type: 'udp4', reuseAddr: true });
   const addresses = lanAddresses();
@@ -66,6 +69,7 @@ export function createBridge({ server, udpPort = ports.udp, httpPort, log = cons
     lastPacketAgo: lastPacket ? Date.now() - lastPacket : undefined,
     clients: wss.clients.size,
     error,
+    version,
   });
 
   const broadcast = (data: Buffer | string, binary: boolean) => {
@@ -97,6 +101,8 @@ export function createBridge({ server, udpPort = ports.udp, httpPort, log = cons
 
   return {
     addresses,
+    // Millisecondi dall'ultimo pacchetto del gioco (Infinity se non ne è mai arrivato uno)
+    idleFor: () => (lastPacket ? Date.now() - lastPacket : Infinity),
     close() {
       clearInterval(timer);
       server.off('upgrade', onUpgrade);

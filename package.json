@@ -18,7 +18,7 @@
     "build:exe": "node server/build-exe.ts",
     "start": "node server/start.ts",
     "mock": "node server/mock.ts",
-    "test": "node --test \"src/**/*.test.ts\"",
+    "test": "node --test \"src/**/*.test.ts\" \"server/**/*.test.ts\"",
     "check": "astro check",
     "format": "prettier --write .",
     "astro": "astro"
